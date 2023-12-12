@@ -13,8 +13,14 @@ void robot_type::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
     float linear_x = msg->linear.x;
     float angular_z = msg->angular.z;
     RCLCPP_INFO(get_logger(), "Received Twist message: linear_x = %f, angular_z = %f", linear_x, angular_z);
-    
 }
+
+int robot_type::getRpm(float linear_vel, float radius)
+{
+    int rpm = static_cast<int>((linear_vel * 60) / (2 * M_PI * radius));
+    return rpm;
+}
+
 robot_type::~robot_type()
 {
     // Cleanup, if needed
