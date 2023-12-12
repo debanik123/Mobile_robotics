@@ -30,6 +30,7 @@ private:
     int getRpm(float linear_vel);
     int diffDrive(float linear_x, float angular_z);
     int ackermannDrive(float linear_x, float angular_z);
+    int tricycleDrive(float linear_x, float angular_z);
 };
 
 #endif  // ROBOT_TYPE_HPP
