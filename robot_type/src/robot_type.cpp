@@ -24,14 +24,7 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
     float steering_angle = atan2(whell_L * angular_z, linear_x);
     if (std::abs(steering_angle) < 1e-6) {
         RCLCPP_INFO(get_logger(), "Steering angle is close to zero. Setting default values.");
-
-        float left_wheel_vel = linear_x - (angular_z * wheelbase / 2.0);
-        float right_wheel_vel = linear_x + (angular_z * wheelbase / 2.0);
-
-        int left_wheel_rpm = getRpm(left_wheel_vel);
-        int right_wheel_rpm = getRpm(right_wheel_vel);
-
-        RCLCPP_INFO(get_logger(), "Left Wheel RPM: %d, Right Wheel RPM: %d", left_wheel_rpm, right_wheel_rpm);
+        int diff_ = diffDrive(linear_x, angular_z);
 
     }
     else
