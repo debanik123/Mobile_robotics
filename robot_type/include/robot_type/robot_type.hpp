@@ -35,6 +35,14 @@ private:
     float lx = 0.15; // m
     float ly = 0.2; //m
 
+        //     | ^
+        //     | L
+        //     | ~
+        //     /\   
+        //    /  \  
+        //   /    \ //
+    float L = 0.5; //
+    
     int getRpm(float linear_vel);
     int diffDrive(float linear_x, float angular_z);
     int ackermannDrive(float linear_x, float angular_z);

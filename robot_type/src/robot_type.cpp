@@ -18,7 +18,8 @@ void robot_type::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
     // int ackerDrive_ = ackermannDrive(linear_x, angular_z);
     // int triDrive_ = tricycleDrive(linear_x, angular_z);
     // int forDrive_ = four_wheel_drive(linear_x, angular_z);
-    int forDrive_ = mechDrive(linear_x, linear_y, angular_z);
+    // int forDrive_ = mechDrive(linear_x, linear_y, angular_z);
+    int omniDrive_ = omniDrive(linear_x, linear_y, angular_z);
 
     RCLCPP_INFO(get_logger(), "Received Twist message: linear_x = %f, angular_z = %f", linear_x, angular_z);
 }
@@ -110,6 +111,23 @@ int robot_type::diffDrive(float linear_x, float angular_z)
 
 int robot_type::omniDrive(float linear_x, float linear_y, float angular_z)
 {
+    float rot = L*angular_z;
+
+    float FO_wheel_vel = linear_y + rot;
+    float LO_wheel_vel = -linear_x*sin(M_PI/3.0)-linear_y*cos(M_PI/3.0)+ rot;
+    float RO_wheel_vel = linear_x*sin(M_PI/3.0)-linear_y*cos(M_PI/3.0)+ rot;
+
+    int FO_wheel_rpm = getRpm(FO_wheel_vel);
+    int LO_wheel_rpm = getRpm(LO_wheel_vel);
+    int RO_wheel_rpm = getRpm(RO_wheel_vel);
+
+    RCLCPP_INFO(get_logger(), "FO_wheel_vel: %f", FO_wheel_vel);
+    RCLCPP_INFO(get_logger(), "LO_wheel_vel: %f", LO_wheel_vel);
+    RCLCPP_INFO(get_logger(), "RO_wheel_vel: %f", RO_wheel_vel);
+
+    RCLCPP_INFO(get_logger(), "FO_wheel_rpm: %d", FO_wheel_rpm);
+    RCLCPP_INFO(get_logger(), "LO_wheel_rpm: %d", LO_wheel_rpm);
+    RCLCPP_INFO(get_logger(), "RO_wheel_rpm: %d", RO_wheel_rpm);
 
 }
 
