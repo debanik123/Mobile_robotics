@@ -75,6 +75,7 @@ int robot_type::diffDrive(float linear_x, float angular_z)
 int robot_type::getRpm(float linear_vel)
 {
     int rpm = static_cast<int>((linear_vel * 60) / (2 * M_PI * wheel_radius));
+    rpm = std::min(255, std::max(-255, rpm));
     return rpm;
 }
 
