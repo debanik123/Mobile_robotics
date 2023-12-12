@@ -25,9 +25,13 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
 
     float left_wheel_vel = linear_x * (turning_radius - wheelbase / 2.0) / turning_radius;
     float right_wheel_vel = linear_x * (turning_radius + wheelbase / 2.0) / turning_radius;
+    
+    float angular_velocity = linear_x * tan(steering_angle) / wheelbase;
 
     int left_wheel_rpm = getRpm(left_wheel_vel);
     int right_wheel_rpm = getRpm(right_wheel_vel);
+
+    
 
 
 }
