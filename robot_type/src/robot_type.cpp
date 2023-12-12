@@ -14,24 +14,38 @@ void robot_type::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
     float linear_y = msg->linear.x;
     float angular_z = msg->angular.z;
 
-    int diff_ = diffDrive(linear_x, angular_z, wheelbase, wheel_radius);
+    int diff_ = diffDrive(linear_x, angular_z);
     RCLCPP_INFO(get_logger(), "Received Twist message: linear_x = %f, angular_z = %f", linear_x, angular_z);
 }
 
-int robot_type::diffDrive(float linear_x, float angular_z, float wheelbase, float wheel_radius)
+int robot_type::ackermannDrive(float linear_x, float angular_z)
+{
+    float steering_angle = atan2(whell_L * angular_z, linear_x);
+    float turning_radius = whell_L / tan(steering_angle);
+
+    float left_wheel_vel = linear_x * (turning_radius - wheelbase / 2.0) / turning_radius;
+    float right_wheel_vel = linear_x * (turning_radius + wheelbase / 2.0) / turning_radius;
+
+    int left_wheel_rpm = getRpm(left_wheel_vel);
+    int right_wheel_rpm = getRpm(right_wheel_vel);
+
+
+}
+
+int robot_type::diffDrive(float linear_x, float angular_z)
 {
     float left_wheel_vel = linear_x - (angular_z * wheelbase / 2.0);
     float right_wheel_vel = linear_x + (angular_z * wheelbase / 2.0);
 
-    int left_wheel_rpm = getRpm(left_wheel_vel, wheel_radius);
-    int right_wheel_rpm = getRpm(right_wheel_vel, wheel_radius);
+    int left_wheel_rpm = getRpm(left_wheel_vel);
+    int right_wheel_rpm = getRpm(right_wheel_vel);
 
     RCLCPP_INFO(get_logger(), "left_wheel_rpm: %d, right_wheel_rpm: %d", left_wheel_rpm, right_wheel_rpm);
     return 0;
 }
 
 
-int robot_type::getRpm(float linear_vel, float wheel_radius)
+int robot_type::getRpm(float linear_vel)
 {
     int rpm = static_cast<int>((linear_vel * 60) / (2 * M_PI * wheel_radius));
     return rpm;
