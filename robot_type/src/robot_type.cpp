@@ -17,7 +17,8 @@ void robot_type::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
     // int diff_ = diffDrive(linear_x, angular_z);
     // int ackerDrive_ = ackermannDrive(linear_x, angular_z);
     // int triDrive_ = tricycleDrive(linear_x, angular_z);
-    int forDrive_ = four_wheel_drive(linear_x, angular_z);
+    // int forDrive_ = four_wheel_drive(linear_x, angular_z);
+    int forDrive_ = mechDrive(linear_x, linear_y, angular_z);
 
     RCLCPP_INFO(get_logger(), "Received Twist message: linear_x = %f, angular_z = %f", linear_x, angular_z);
 }
@@ -107,14 +108,35 @@ int robot_type::diffDrive(float linear_x, float angular_z)
     return 0;
 }
 
-int robot_type::omniDrive(float linear_x, float angular_z)
+int robot_type::omniDrive(float linear_x, float linear_y, float angular_z)
 {
 
 }
 
-int robot_type::mechDrive(float linear_x, float angular_z)
+int robot_type::mechDrive(float linear_x, float linear_y, float angular_z)
 {
+    float rot = lx + ly;
+    // velocity
+    float front_left_vel = (linear_x - linear_y - rot * angular_z);
+    float front_right_vel = (linear_x + linear_y + rot * angular_z);
+    float back_left_vel = (linear_x + linear_y - rot * angular_z);
+    float back_right_vel = (linear_x - linear_y + rot * angular_z);
+
+    int front_left_rpm = getRpm(front_left_vel);
+    int front_right_rpm = getRpm(front_right_vel);
+    int back_left_rpm = getRpm(back_left_vel);
+    int back_right_rpm = getRpm(back_right_vel);
+
+    RCLCPP_INFO(get_logger(), "Front Left Velocity: %f", front_left_vel);
+    RCLCPP_INFO(get_logger(), "Front Right Velocity: %f", front_right_vel);
+    RCLCPP_INFO(get_logger(), "Back Left Velocity: %f", back_left_vel);
+    RCLCPP_INFO(get_logger(), "Back Right Velocity: %f", back_right_vel);
     
+    RCLCPP_INFO(get_logger(), "Front Left RPM: %d", front_left_rpm);
+    RCLCPP_INFO(get_logger(), "Front Right RPM: %d", front_right_rpm);
+    RCLCPP_INFO(get_logger(), "Back Left RPM: %d", back_left_rpm);
+    RCLCPP_INFO(get_logger(), "Back Right RPM: %d", back_right_rpm);
+    return 0;
 }
 
 

@@ -27,13 +27,23 @@ private:
     float wheelbase = 0.9;  // Replace with your robot's wheelbase in meters
     float wheel_radius = 0.207;  // Replace with your robot's wheel radius in meters
 
+    // y
+    // |
+    // |
+    //  ----- x
+    // The robot is 15 cm in width and 20 cm in length.
+    float lx = 0.15; // m
+    float ly = 0.2; //m
+
     int getRpm(float linear_vel);
     int diffDrive(float linear_x, float angular_z);
     int ackermannDrive(float linear_x, float angular_z);
     int tricycleDrive(float linear_x, float angular_z);
     int four_wheel_drive(float linear_x, float angular_z);
-    int omniDrive(float linear_x, float angular_z);
-    int mechDrive(float linear_x, float angular_z);
+    int omniDrive(float linear_x, float linear_y, float angular_z);
+    int mechDrive(float linear_x, float linear_y, float angular_z);
+
+
 };
 
 #endif  // ROBOT_TYPE_HPP
