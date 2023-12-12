@@ -16,7 +16,8 @@ void robot_type::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
 
     // int diff_ = diffDrive(linear_x, angular_z);
     // int ackerDrive_ = ackermannDrive(linear_x, angular_z);
-    int triDrive_ = tricycleDrive(linear_x, angular_z);
+    // int triDrive_ = tricycleDrive(linear_x, angular_z);
+    int forDrive_ = four_wheel_drive(linear_x, angular_z);
 
     RCLCPP_INFO(get_logger(), "Received Twist message: linear_x = %f, angular_z = %f", linear_x, angular_z);
 }
@@ -65,6 +66,31 @@ int robot_type::tricycleDrive(float linear_x, float angular_z)
     // RCLCPP_INFO(get_logger(), "Steering Angle (asin): %f radians", steering_angle_tri);
     RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_vel);
     RCLCPP_INFO(get_logger(), "Drive Velocity (RPM): %d RPM", drive_vel_rpm);
+
+    return 0;
+}
+
+int robot_type::four_wheel_drive(float linear_x, float angular_z)
+{
+    float left_FW_wheel_vel = linear_x - (angular_z * wheelbase / 2.0);
+    float left_BW_wheel_vel = linear_x - (angular_z * wheelbase / 2.0);
+    float right_FW_wheel_vel = linear_x + (angular_z * wheelbase / 2.0);
+    float right_BW_wheel_vel = linear_x + (angular_z * wheelbase / 2.0);
+
+    float left_FW_wheel_rpm = getRpm(left_FW_wheel_vel);
+    float left_BW_wheel_rpm = getRpm(left_BW_wheel_vel);
+    float right_FW_wheel_rpm = getRpm(right_FW_wheel_vel);
+    float right_BW_wheel_rpm = getRpm(right_BW_wheel_vel);
+
+    RCLCPP_INFO(get_logger(), "Left Front Wheel Velocity: %f m/s", left_FW_wheel_vel);
+    RCLCPP_INFO(get_logger(), "Left Back Wheel Velocity: %f m/s", left_BW_wheel_vel);
+    RCLCPP_INFO(get_logger(), "Right Front Wheel Velocity: %f m/s", right_FW_wheel_vel);
+    RCLCPP_INFO(get_logger(), "Right Back Wheel Velocity: %f m/s", right_BW_wheel_vel);
+
+    RCLCPP_INFO(get_logger(), "Left Front Wheel RPM: %f RPM", left_FW_wheel_rpm);
+    RCLCPP_INFO(get_logger(), "Left Back Wheel RPM: %f RPM", left_BW_wheel_rpm);
+    RCLCPP_INFO(get_logger(), "Right Front Wheel RPM: %f RPM", right_FW_wheel_rpm);
+    RCLCPP_INFO(get_logger(), "Right Back Wheel RPM: %f RPM", right_BW_wheel_rpm);
 
     return 0;
 }
