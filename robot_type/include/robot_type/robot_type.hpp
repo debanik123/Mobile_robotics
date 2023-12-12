@@ -18,7 +18,7 @@ private:
     double wheelbase = 0.9;  // Replace with your robot's wheelbase in meters
     double wheel_radius = 0.207;  // Replace with your robot's wheel radius in meters
 
-    int getRpm(float vel);
+    int getRpm(float linear_vel, float radius);
 };
 
 #endif  // ROBOT_TYPE_HPP
