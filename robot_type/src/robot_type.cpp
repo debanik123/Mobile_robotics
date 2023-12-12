@@ -14,7 +14,8 @@ void robot_type::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
     float linear_y = msg->linear.x;
     float angular_z = msg->angular.z;
 
-    int diff_ = diffDrive(linear_x, angular_z);
+    // int diff_ = diffDrive(linear_x, angular_z);
+    int ackerDrive_ = ackermannDrive(linear_x, angular_z);
     RCLCPP_INFO(get_logger(), "Received Twist message: linear_x = %f, angular_z = %f", linear_x, angular_z);
 }
 
@@ -31,8 +32,14 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
     int left_wheel_rpm = getRpm(left_wheel_vel);
     int right_wheel_rpm = getRpm(right_wheel_vel);
 
-    
+    // Print information for illustration
+    RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
+    RCLCPP_INFO(get_logger(), "Turning Radius: %f meters", turning_radius);
+    RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", left_wheel_vel, right_wheel_vel);
+    RCLCPP_INFO(get_logger(), "Angular Velocity (omega): %f rad/s", angular_velocity);
+    RCLCPP_INFO(get_logger(), "Left Wheel RPM: %d, Right Wheel RPM: %d", left_wheel_rpm, right_wheel_rpm);
 
+    return 0;
 
 }
 

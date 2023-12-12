@@ -23,7 +23,7 @@ private:
 //      ----
 //      wheelbase
 
-    float whell_L = 1.0; // Replace with your robot's whell_L in meters
+    float whell_L = 1.2; // Replace with your robot's whell_L in meters
     float wheelbase = 0.9;  // Replace with your robot's wheelbase in meters
     float wheel_radius = 0.207;  // Replace with your robot's wheel radius in meters
 
