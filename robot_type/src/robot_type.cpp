@@ -107,6 +107,16 @@ int robot_type::diffDrive(float linear_x, float angular_z)
     return 0;
 }
 
+int robot_type::omniDrive(float linear_x, float angular_z)
+{
+
+}
+
+int robot_type::mechDrive(float linear_x, float angular_z)
+{
+    
+}
+
 
 int robot_type::getRpm(float linear_vel)
 {

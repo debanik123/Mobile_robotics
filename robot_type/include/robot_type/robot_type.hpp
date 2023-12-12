@@ -32,6 +32,8 @@ private:
     int ackermannDrive(float linear_x, float angular_z);
     int tricycleDrive(float linear_x, float angular_z);
     int four_wheel_drive(float linear_x, float angular_z);
+    int omniDrive(float linear_x, float angular_z);
+    int mechDrive(float linear_x, float angular_z);
 };
 
 #endif  // ROBOT_TYPE_HPP
