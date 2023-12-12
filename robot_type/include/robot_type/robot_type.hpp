@@ -4,7 +4,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp/logging.hpp>
 #include <geometry_msgs/msg/twist.hpp>
-
+#include <cmath>
 class robot_type : public rclcpp::Node
 {
 public:
