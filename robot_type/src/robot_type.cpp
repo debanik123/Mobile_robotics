@@ -11,9 +11,23 @@ robot_type::robot_type()
 void robot_type::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
 {
     float linear_x = msg->linear.x;
+    float linear_y = msg->linear.x;
     float angular_z = msg->angular.z;
     RCLCPP_INFO(get_logger(), "Received Twist message: linear_x = %f, angular_z = %f", linear_x, angular_z);
 }
+
+int robot_type::diffDrive(float linear_x, float angular_z, float wheelbase, float radius)
+{
+    float left_wheel_vel = linear_x - (angular_z * wheelbase / 2.0);
+    float right_wheel_vel = linear_x + (angular_z * wheelbase / 2.0);
+
+    int left_wheel_rpm = getRpm(left_wheel_vel, radius);
+    int right_wheel_rpm = getRpm(right_wheel_vel, radius);
+
+    RCLCPP_INFO(get_logger(), "left_wheel_rpm: %d, right_wheel_rpm: %d", left_wheel_rpm, right_wheel_rpm);
+    return 0;
+}
+
 
 int robot_type::getRpm(float linear_vel, float radius)
 {
