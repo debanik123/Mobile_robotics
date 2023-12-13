@@ -33,7 +33,7 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
         drive_velocity = 0.0;
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
-        
+        RCLCPP_INFO(get_logger(), "Cond1");
     }
 
     if(linear_x == 0 && angular_z != 0)
@@ -43,6 +43,7 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
 
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
+        RCLCPP_INFO(get_logger(), "Cond2");
     }
 
     if(linear_x != 0 && angular_z == 0)
@@ -52,10 +53,11 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
 
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
+        RCLCPP_INFO(get_logger(), "Cond3");
     }
 
 
-    else
+    if(linear_x != 0 && angular_z != 0)
     {
         steering_angle = atan(angular_z*Wb/linear_x); //alpha
         drive_velocity = hypot(angular_z*Wb, linear_x); // traction velocity
@@ -68,6 +70,7 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
 
         else
         {
+            
             R = Wb / tan(steering_angle);
 
             drive_velocity_right = drive_velocity*(1+(Wt/2.0*R));
@@ -92,7 +95,7 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
             RCLCPP_INFO(get_logger(), "Left steering_angle: %f radians, Right steering_angle: %f radians", steering_angle_l, steering_angle_l);
             RCLCPP_INFO(get_logger(), "Angular Velocity (omega): %f rad/s", angular_velocity);
             RCLCPP_INFO(get_logger(), "Left Wheel RPM: %d, Right Wheel RPM: %d", left_wheel_rpm, right_wheel_rpm);
-            
+            RCLCPP_INFO(get_logger(), "Cond4");
         }
     }
 
