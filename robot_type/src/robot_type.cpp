@@ -15,9 +15,9 @@ void robot_type::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
     float angular_z = msg->angular.z;
 
     // int diff_ = diffDrive(linear_x, angular_z);
-    // int ackerDrive_ = ackermannDrive(linear_x, angular_z);
+    int ackerDrive_ = ackermannDrive(linear_x, angular_z);
     // int triDrive_ty1 = tricycleDrive_type1(linear_x, angular_z);
-    int triDrive_ty2 = tricycleDrive_type2(linear_x, angular_z);
+    // int triDrive_ty2 = tricycleDrive_type2_bicycle(linear_x, angular_z);
     // int forDrive_ = four_wheel_drive(linear_x, angular_z);
     // int forDrive_ = mechDrive(linear_x, linear_y, angular_z);
     // int omniDrive_ = omniDrive(linear_x, linear_y, angular_z);
@@ -32,6 +32,13 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
     {
         steering_angle = 0.0;
         drive_velocity = 0.0;
+
+        drive_velocity_left = drive_velocity;
+        drive_velocity_right = drive_velocity;
+        int right_wheel_rpm = getRpm(drive_velocity_right);
+        int left_wheel_rpm = getRpm(drive_velocity_left);
+        RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", drive_velocity_left, drive_velocity_right);
+
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
         RCLCPP_INFO(get_logger(), "Cond1");
@@ -42,6 +49,12 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
         steering_angle = angular_z > 0 ? M_PI_2 : -M_PI_2;
         drive_velocity = abs(angular_z)*Wb;
 
+        drive_velocity_left = drive_velocity;
+        drive_velocity_right = drive_velocity;
+        int right_wheel_rpm = getRpm(drive_velocity_right);
+        int left_wheel_rpm = getRpm(drive_velocity_left);
+        RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", drive_velocity_left, drive_velocity_right);
+
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
         RCLCPP_INFO(get_logger(), "Cond2");
@@ -51,6 +64,12 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
     {
         steering_angle = 0.0; // arctan(0) = 0 radians ;; angular_z = 0.0;
         drive_velocity = linear_x;
+
+        drive_velocity_left = drive_velocity;
+        drive_velocity_right = drive_velocity;
+        int right_wheel_rpm = getRpm(drive_velocity_right);
+        int left_wheel_rpm = getRpm(drive_velocity_left);
+        RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", drive_velocity_left, drive_velocity_right);
 
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
@@ -115,6 +134,13 @@ int robot_type::tricycleDrive_type1(float linear_x, float angular_z) // three wh
     {
         steering_angle = 0.0;
         drive_velocity = 0.0;
+
+        drive_velocity_left = drive_velocity;
+        drive_velocity_right = drive_velocity;
+        int right_wheel_rpm = getRpm(drive_velocity_right);
+        int left_wheel_rpm = getRpm(drive_velocity_left);
+        RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", drive_velocity_left, drive_velocity_right);
+
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
         RCLCPP_INFO(get_logger(), "Cond1");
@@ -125,6 +151,12 @@ int robot_type::tricycleDrive_type1(float linear_x, float angular_z) // three wh
         steering_angle = angular_z > 0 ? M_PI_2 : -M_PI_2;
         drive_velocity = abs(angular_z)*Wb;
 
+        drive_velocity_left = drive_velocity;
+        drive_velocity_right = drive_velocity;
+        int right_wheel_rpm = getRpm(drive_velocity_right);
+        int left_wheel_rpm = getRpm(drive_velocity_left);
+        RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", drive_velocity_left, drive_velocity_right);
+
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
         RCLCPP_INFO(get_logger(), "Cond2");
@@ -134,7 +166,15 @@ int robot_type::tricycleDrive_type1(float linear_x, float angular_z) // three wh
     {
         steering_angle = 0.0; // arctan(0) = 0 radians ;; angular_z = 0.0;
         drive_velocity = linear_x;
+        int drive_vel_rpm = getRpm(drive_velocity);
 
+        drive_velocity_left = drive_velocity;
+        drive_velocity_right = drive_velocity;
+        int right_wheel_rpm = getRpm(drive_velocity_right);
+        int left_wheel_rpm = getRpm(drive_velocity_left);
+        RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", drive_velocity_left, drive_velocity_right);
+
+        RCLCPP_INFO(get_logger(), "Drive Velocity (RPM): %d RPM", drive_vel_rpm);
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
         RCLCPP_INFO(get_logger(), "Cond3");
@@ -178,16 +218,20 @@ int robot_type::tricycleDrive_type1(float linear_x, float angular_z) // three wh
 
 }
 
-int robot_type::tricycleDrive_type2(float linear_x, float angular_z) // three wheel (2 drive wheel two power)
+int robot_type::tricycleDrive_type2_bicycle(float linear_x, float angular_z) // three wheel (2 drive wheel two power)
 {
 
     if(linear_x == 0 && angular_z == 0)
     {
         steering_angle = 0.0;
         drive_velocity = 0.0;
+
+        int drive_vel_rpm = getRpm(drive_velocity);
+        RCLCPP_INFO(get_logger(), "Drive Velocity (RPM): %d RPM", drive_vel_rpm);
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
         RCLCPP_INFO(get_logger(), "Cond1");
+        
     }
 
     if(linear_x == 0 && angular_z != 0)
@@ -195,6 +239,8 @@ int robot_type::tricycleDrive_type2(float linear_x, float angular_z) // three wh
         steering_angle = angular_z > 0 ? M_PI_2 : -M_PI_2;
         drive_velocity = abs(angular_z)*Wb;
 
+        int drive_vel_rpm = getRpm(drive_velocity);
+        RCLCPP_INFO(get_logger(), "Drive Velocity (RPM): %d RPM", drive_vel_rpm);
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
         RCLCPP_INFO(get_logger(), "Cond2");
@@ -204,7 +250,8 @@ int robot_type::tricycleDrive_type2(float linear_x, float angular_z) // three wh
     {
         steering_angle = 0.0; // arctan(0) = 0 radians ;; angular_z = 0.0;
         drive_velocity = linear_x;
-
+        int drive_vel_rpm = getRpm(drive_velocity);
+        RCLCPP_INFO(get_logger(), "Drive Velocity (RPM): %d RPM", drive_vel_rpm);
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
         RCLCPP_INFO(get_logger(), "Cond3");
@@ -217,6 +264,8 @@ int robot_type::tricycleDrive_type2(float linear_x, float angular_z) // three wh
         drive_velocity = hypot(angular_z*Wb, linear_x); // traction velocity
         angular_velocity = drive_velocity*tan(steering_angle) / Wb;
         // Print information for illustration
+        int drive_vel_rpm = getRpm(drive_velocity);
+        RCLCPP_INFO(get_logger(), "Drive Velocity (RPM): %d RPM", drive_vel_rpm);
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
         RCLCPP_INFO(get_logger(), "Angular Velocity (omega): %f rad/s", angular_velocity);
@@ -227,6 +276,7 @@ int robot_type::tricycleDrive_type2(float linear_x, float angular_z) // three wh
     return 0;
 
 }
+
 
 int robot_type::four_wheel_drive(float linear_x, float angular_z)
 {
