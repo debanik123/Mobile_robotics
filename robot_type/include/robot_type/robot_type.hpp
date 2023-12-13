@@ -42,7 +42,33 @@ private:
         //    /  \  
         //   /    \ //
     float L = 0.5; //
-    
+
+
+    // \-----------\
+    //       |         
+    //       |
+    //       |  Wb
+    //       |
+    //       |
+    // |-----------|
+    //       Wt
+
+    float Wb = 1.1; // m
+    float Wt = 0.8; // m
+
+    float steering_angle;
+    float drive_velocity;
+
+    float drive_velocity_left;
+    float drive_velocity_right;
+    float angular_velocity;
+
+    float steering_angle_r;
+    float steering_angle_l;
+
+
+    float R; // turning radius
+
     int getRpm(float linear_vel);
     int diffDrive(float linear_x, float angular_z);
     int ackermannDrive(float linear_x, float angular_z);

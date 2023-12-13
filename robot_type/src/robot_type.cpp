@@ -15,41 +15,88 @@ void robot_type::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
     float angular_z = msg->angular.z;
 
     // int diff_ = diffDrive(linear_x, angular_z);
-    // int ackerDrive_ = ackermannDrive(linear_x, angular_z);
+    int ackerDrive_ = ackermannDrive(linear_x, angular_z);
     // int triDrive_ = tricycleDrive(linear_x, angular_z);
     // int forDrive_ = four_wheel_drive(linear_x, angular_z);
     // int forDrive_ = mechDrive(linear_x, linear_y, angular_z);
-    int omniDrive_ = omniDrive(linear_x, linear_y, angular_z);
+    // int omniDrive_ = omniDrive(linear_x, linear_y, angular_z);
 
     RCLCPP_INFO(get_logger(), "Received Twist message: linear_x = %f, angular_z = %f", linear_x, angular_z);
 }
 
 int robot_type::ackermannDrive(float linear_x, float angular_z)
 {
-    float steering_angle = atan2(whell_L * angular_z, linear_x);
-    if (std::abs(steering_angle) < 1e-6) {
-        RCLCPP_INFO(get_logger(), "Steering angle is close to zero. Setting default values.");
-        int diff_ = diffDrive(linear_x, angular_z);
 
+    if(linear_x == 0 && angular_z == 0)
+    {
+        steering_angle = 0.0;
+        drive_velocity = 0.0;
+        RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
+        RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
+        
     }
+
+    if(linear_x == 0 && angular_z != 0)
+    {
+        steering_angle = angular_z > 0 ? M_PI_2 : -M_PI_2;
+        drive_velocity = abs(angular_z)*Wb;
+
+        RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
+        RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
+    }
+
+    if(linear_x != 0 && angular_z == 0)
+    {
+        steering_angle = 0.0; // arctan(0) = 0 radians ;; angular_z = 0.0;
+        drive_velocity = linear_x;
+
+        RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
+        RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
+    }
+
+
     else
     {
-        float turning_radius = whell_L / tan(steering_angle);
-        float left_wheel_vel = linear_x * (turning_radius - whell_L / 2.0) / turning_radius;
-        float right_wheel_vel = linear_x * (turning_radius + whell_L / 2.0) / turning_radius;
-        
-        float angular_velocity = linear_x * tan(steering_angle) / whell_L;
+        steering_angle = atan(angular_z*Wb/linear_x); //alpha
+        drive_velocity = hypot(angular_z*Wb, linear_x); // traction velocity
 
-        int left_wheel_rpm = getRpm(left_wheel_vel);
-        int right_wheel_rpm = getRpm(right_wheel_vel);
+        if (fabs(steering_angle) < 1e-6)
+        {
+            drive_velocity_left = drive_velocity;
+            drive_velocity_right = drive_velocity;
+        }
 
-        // Print information for illustration
-        RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
-        RCLCPP_INFO(get_logger(), "Turning Radius: %f meters", turning_radius);
-        RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", left_wheel_vel, right_wheel_vel);
-        RCLCPP_INFO(get_logger(), "Angular Velocity (omega): %f rad/s", angular_velocity);
-        RCLCPP_INFO(get_logger(), "Left Wheel RPM: %d, Right Wheel RPM: %d", left_wheel_rpm, right_wheel_rpm);
+        else
+        {
+            R = Wb / tan(steering_angle);
+
+            drive_velocity_right = drive_velocity*(1+(Wt/2.0*R));
+            drive_velocity_left = drive_velocity*(1-(Wt/2.0*R));
+
+            double numerator = 2 * Wb * std::sin(steering_angle);
+            double denominator_first_member = 2 * Wb * std::cos(steering_angle);
+            double denominator_second_member = Wt * std::sin(steering_angle);
+
+            steering_angle_r = std::atan2(numerator, denominator_first_member - denominator_second_member);
+            steering_angle_l = std::atan2(numerator, denominator_first_member + denominator_second_member);
+
+            angular_velocity = drive_velocity*tan(steering_angle) / Wb;
+
+            int right_wheel_rpm = getRpm(drive_velocity_right);
+            int left_wheel_rpm = getRpm(drive_velocity_left);
+            
+            // Print information for illustration
+            RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
+            RCLCPP_INFO(get_logger(), "Turning Radius: %f meters", R);
+            RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", drive_velocity_left, drive_velocity_right);
+            RCLCPP_INFO(get_logger(), "Left steering_angle: %f radians, Right steering_angle: %f radians", steering_angle_l, steering_angle_l);
+            RCLCPP_INFO(get_logger(), "Angular Velocity (omega): %f rad/s", angular_velocity);
+            RCLCPP_INFO(get_logger(), "Left Wheel RPM: %d, Right Wheel RPM: %d", left_wheel_rpm, right_wheel_rpm);
+            
+        }
     }
+
+
 
     
 
