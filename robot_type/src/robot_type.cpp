@@ -38,6 +38,7 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
         int right_wheel_rpm = getRpm(drive_velocity_right);
         int left_wheel_rpm = getRpm(drive_velocity_left);
         RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", drive_velocity_left, drive_velocity_right);
+        RCLCPP_INFO(get_logger(), "Left Wheel RPM: %d, Right Wheel RPM: %d", left_wheel_rpm, right_wheel_rpm);
 
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
@@ -54,6 +55,7 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
         int right_wheel_rpm = getRpm(drive_velocity_right);
         int left_wheel_rpm = getRpm(drive_velocity_left);
         RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", drive_velocity_left, drive_velocity_right);
+        RCLCPP_INFO(get_logger(), "Left Wheel RPM: %d, Right Wheel RPM: %d", left_wheel_rpm, right_wheel_rpm);
 
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
@@ -70,6 +72,7 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
         int right_wheel_rpm = getRpm(drive_velocity_right);
         int left_wheel_rpm = getRpm(drive_velocity_left);
         RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", drive_velocity_left, drive_velocity_right);
+        RCLCPP_INFO(get_logger(), "Left Wheel RPM: %d, Right Wheel RPM: %d", left_wheel_rpm, right_wheel_rpm);
 
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
@@ -140,6 +143,7 @@ int robot_type::tricycleDrive_type1(float linear_x, float angular_z) // three wh
         int right_wheel_rpm = getRpm(drive_velocity_right);
         int left_wheel_rpm = getRpm(drive_velocity_left);
         RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", drive_velocity_left, drive_velocity_right);
+        RCLCPP_INFO(get_logger(), "Left Wheel RPM: %d, Right Wheel RPM: %d", left_wheel_rpm, right_wheel_rpm);
 
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
@@ -156,6 +160,7 @@ int robot_type::tricycleDrive_type1(float linear_x, float angular_z) // three wh
         int right_wheel_rpm = getRpm(drive_velocity_right);
         int left_wheel_rpm = getRpm(drive_velocity_left);
         RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", drive_velocity_left, drive_velocity_right);
+        RCLCPP_INFO(get_logger(), "Left Wheel RPM: %d, Right Wheel RPM: %d", left_wheel_rpm, right_wheel_rpm);
 
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
         RCLCPP_INFO(get_logger(), "Drive Velocity: %f m/s", drive_velocity);
@@ -173,6 +178,7 @@ int robot_type::tricycleDrive_type1(float linear_x, float angular_z) // three wh
         int right_wheel_rpm = getRpm(drive_velocity_right);
         int left_wheel_rpm = getRpm(drive_velocity_left);
         RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", drive_velocity_left, drive_velocity_right);
+        RCLCPP_INFO(get_logger(), "Left Wheel RPM: %d, Right Wheel RPM: %d", left_wheel_rpm, right_wheel_rpm);
 
         RCLCPP_INFO(get_logger(), "Drive Velocity (RPM): %d RPM", drive_vel_rpm);
         RCLCPP_INFO(get_logger(), "Steering Angle: %f radians", steering_angle);
