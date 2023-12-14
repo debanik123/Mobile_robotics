@@ -49,7 +49,7 @@ def clear_db():
 
 def create_random_names_no():
     fake = Faker()
-    for _ in range(5):
+    for _ in range(10):
         random_name = fake.name()
         random_phone_number = fake.phone_number()
         create_contact(random_name, random_phone_number)
@@ -70,9 +70,10 @@ def update_contact(row_id, new_name, new_phone_number):
 
 
 
+
+create_random_names_no()
 # update_contact(5, 'debanik', '2556')
 # delete_row_by_id(1)
-# create_random_names_no()
 # clear_db()
 # Example usage
 # create_contact("John Doe", "123-456-7890")
