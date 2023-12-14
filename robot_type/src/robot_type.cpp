@@ -31,10 +31,19 @@ void robot_type::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
 int robot_type::ackermannDrive(float linear_x, float angular_z)
 {
     RCLCPP_INFO(get_logger(), "Ackermann Config");
+
+    std::vector<float> traction_commands;
+    std::vector<float> steering_commands;
+    std::vector<int> traction_commands_rpm;
+
     float v_x = linear_x;
     float v_y = angular_z*Wb;
 
     auto [is_xy, drive_velocity, steering_angle, rpm] = polar_from_cart(v_x, v_y, angular_z);
+
+    traction_commands = {drive_velocity, drive_velocity};
+    steering_commands = {steering_angle, steering_angle};
+    traction_commands_rpm = {rpm, rpm};
 
     if(is_xy)
     {
@@ -50,18 +59,23 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
         steering_angle_r = std::atan2(numerator, denominator_first_member - denominator_second_member);
         steering_angle_l = std::atan2(numerator, denominator_first_member + denominator_second_member);
 
-        angular_velocity = drive_velocity*tan(steering_angle) / Wb;
-
         int right_wheel_rpm = getRpm(drive_velocity_right);
         int left_wheel_rpm = getRpm(drive_velocity_left);
+
+        angular_velocity = drive_velocity*tan(steering_angle) / Wb;
+
+        traction_commands = {drive_velocity_right, drive_velocity_left};
+        steering_commands = {steering_angle_r, steering_angle_l};
+        traction_commands_rpm = {right_wheel_rpm, left_wheel_rpm};
         
         // Print information for illustration
-        RCLCPP_INFO(get_logger(), "Turning Radius: %f meters", R);
-        RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", drive_velocity_left, drive_velocity_right);
-        RCLCPP_INFO(get_logger(), "Left steering_angle: %f radians, Right steering_angle: %f radians", steering_angle_l, steering_angle_l);
-        RCLCPP_INFO(get_logger(), "Angular Velocity (omega): %f rad/s", angular_velocity);
-        RCLCPP_INFO(get_logger(), "Left Wheel RPM: %d, Right Wheel RPM: %d", left_wheel_rpm, right_wheel_rpm);
     }
+
+    RCLCPP_INFO(get_logger(), "Turning Radius: %f meters", R);
+    RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", traction_commands.at(1), traction_commands.at(0));
+    RCLCPP_INFO(get_logger(), "Left steering_angle: %f radians, Right steering_angle: %f radians", steering_commands.at(1), steering_commands.at(0));
+    RCLCPP_INFO(get_logger(), "Left Wheel RPM: %d, Right Wheel RPM: %d", traction_commands_rpm.at(1), traction_commands_rpm.at(0));
+    // RCLCPP_INFO(get_logger(), "Angular Velocity (omega): %f rad/s", angular_velocity);
     
     return 0;
 
@@ -70,10 +84,21 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
 int robot_type::tricycleDrive_type1(float linear_x, float angular_z) // three wheel (2 drive power wheel and one steer)
 {
     RCLCPP_INFO(get_logger(), "TricycleDrive_type1 Config");
+    std::vector<float> traction_commands;
+    std::vector<float> steering_commands;
+    std::vector<int> traction_commands_rpm;
+    
     float v_x = linear_x;
     float v_y = angular_z*Wb;
 
     auto [is_xy, drive_velocity, steering_angle, rpm] = polar_from_cart(v_x, v_y, angular_z);
+
+    // drive_velocity_right = drive_velocity;
+    // drive_velocity_left = drive_velocity;
+    traction_commands = {drive_velocity, drive_velocity};
+    steering_commands = {steering_angle};
+    traction_commands_rpm = {rpm, rpm};
+    
 
     if(is_xy)
     {
@@ -82,29 +107,40 @@ int robot_type::tricycleDrive_type1(float linear_x, float angular_z) // three wh
         drive_velocity_right = drive_velocity*(1+(Wt/2.0*R));
         drive_velocity_left = drive_velocity*(1-(Wt/2.0*R));
 
-        angular_velocity = drive_velocity*tan(steering_angle) / Wb;
-
         int right_wheel_rpm = getRpm(drive_velocity_right);
         int left_wheel_rpm = getRpm(drive_velocity_left);
-        
-        // Print information for illustration
-        RCLCPP_INFO(get_logger(), "Turning Radius: %f meters", R);
-        RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", drive_velocity_left, drive_velocity_right);
-        RCLCPP_INFO(get_logger(), "Angular Velocity (omega): %f rad/s", angular_velocity);
-        RCLCPP_INFO(get_logger(), "Left Wheel RPM: %d, Right Wheel RPM: %d", left_wheel_rpm, right_wheel_rpm);
-    }
-    
-    return 0;
 
+        angular_velocity = drive_velocity*tan(steering_angle) / Wb;
+
+        traction_commands = {drive_velocity_right, drive_velocity_left};
+        steering_commands = {steering_angle};
+        traction_commands_rpm = {right_wheel_rpm, left_wheel_rpm};
+        
+    }
+    // Print information for illustration
+    RCLCPP_INFO(get_logger(), "Turning Radius: %f meters", R);
+    RCLCPP_INFO(get_logger(), "Left Wheel Velocity: %f m/s, Right Wheel Velocity: %f m/s", traction_commands.at(1), traction_commands.at(0));
+    RCLCPP_INFO(get_logger(), "Left Wheel RPM: %d, Right Wheel RPM: %d", traction_commands_rpm.at(1), traction_commands_rpm.at(0));
+    // RCLCPP_INFO(get_logger(), "Angular Velocity (omega): %f rad/s", angular_velocity);
+    return 0;
 }
 
 int robot_type::tricycleDrive_type2_bicycle(float linear_x, float angular_z) // three wheel (2 drive wheel two power)
 {
     RCLCPP_INFO(get_logger(), "TricycleDrive_type2_bicycle Config");
+
+    std::vector<float> traction_commands;
+    std::vector<float> steering_commands;
+    std::vector<int> traction_commands_rpm;
+
     float v_x = linear_x;
     float v_y = angular_z*Wb;
 
     auto [is_xy, drive_velocity, steering_angle, rpm] = polar_from_cart(v_x, v_y, angular_z);
+
+    traction_commands = {drive_velocity};
+    steering_commands = {steering_angle};
+    traction_commands_rpm = {rpm};
 
 }
 
