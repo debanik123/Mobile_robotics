@@ -61,6 +61,7 @@ private:
     int omniDrive(float linear_x, float linear_y, float angular_z);
     int mechDrive(float linear_x, float linear_y, float angular_z);
     int four_steer_drive(float linear_x, float linear_y, float angular_z);
+    int two_steer_drive(float linear_x, float linear_y, float angular_z);
 
 
 };

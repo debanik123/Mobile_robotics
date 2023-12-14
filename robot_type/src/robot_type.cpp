@@ -21,7 +21,9 @@ void robot_type::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
     // int forDrive_ = four_wheel_drive(linear_x, angular_z);
     // int mechDrive_ = mechDrive(linear_x, linear_y, angular_z);
     // int omniDrive_ = omniDrive(linear_x, linear_y, angular_z);
-    int four_steer_drive_ = four_steer_drive(linear_x, linear_y, angular_z);
+    // int four_steer_drive_ = four_steer_drive(linear_x, linear_y, angular_z);
+    int two_steer_drive_ = two_steer_drive(linear_x, linear_y, angular_z);
+    
 
     // RCLCPP_INFO(get_logger(), "Received Twist message: linear_x = %f, angular_z = %f", linear_x, angular_z);
 }
@@ -398,6 +400,26 @@ int robot_type::four_steer_drive(float linear_x, float linear_y, float angular_z
     RCLCPP_INFO(get_logger(), "v3: %f, th3: %f, rpm3: %d", v3, th3, rpm3);
     RCLCPP_INFO(get_logger(), "v4: %f, th4: %f, rpm4: %d", v4, th4, rpm4);
 
+}
+
+int robot_type::two_steer_drive(float linear_x, float linear_y, float angular_z)
+{
+    float d = 0.0; // no track distance 
+    float l = Wb/2.0;
+
+    float v_x1 = linear_x;
+    float v_y1 = linear_y + l*angular_z;
+
+    float v_x2 = linear_x;
+    float v_y2 = linear_y - l*angular_z;
+
+    // 8x1 states vectors
+    auto [v1, th1, rpm1] = polar_from_cart(v_x1, v_y1, angular_z);
+    auto [v2, th2, rpm2] = polar_from_cart(v_x2, v_y2, angular_z);
+
+    // Print the variables
+    RCLCPP_INFO(get_logger(), "v1: %f, th1: %f, rpm1: %d", v1, th1, rpm1);
+    RCLCPP_INFO(get_logger(), "v2: %f, th2: %f, rpm2: %d", v2, th2, rpm2);
 }
 
 std::tuple<float, float, int> robot_type::polar_from_cart(float x,float y, float angular_z)
