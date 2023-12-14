@@ -52,7 +52,7 @@ private:
     float R; // turning radius
 
     int getRpm(float linear_vel);
-    std::tuple<float, float, int> polar_from_cart(float x,float y, float angular_z);
+    std::tuple<bool, float, float, int> polar_from_cart(float x,float y, float angular_z);
     int diffDrive(float linear_x, float angular_z);
     int ackermannDrive(float linear_x, float angular_z);
     int tricycleDrive_type1(float linear_x, float angular_z);
