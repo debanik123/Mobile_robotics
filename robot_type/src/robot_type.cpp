@@ -14,13 +14,14 @@ void robot_type::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
     float linear_y = msg->linear.x;
     float angular_z = msg->angular.z;
 
-    int diff_ = diffDrive(linear_x, angular_z);
+    // int diff_ = diffDrive(linear_x, angular_z);
     // int ackerDrive_ = ackermannDrive(linear_x, angular_z);
     // int triDrive_ty1 = tricycleDrive_type1(linear_x, angular_z);
     // int triDrive_ty2 = tricycleDrive_type2_bicycle(linear_x, angular_z);
     // int forDrive_ = four_wheel_drive(linear_x, angular_z);
     // int mechDrive_ = mechDrive(linear_x, linear_y, angular_z);
     // int omniDrive_ = omniDrive(linear_x, linear_y, angular_z);
+    int four_steer_drive_ = four_steer_drive(linear_x, linear_y, angular_z);
 
     // RCLCPP_INFO(get_logger(), "Received Twist message: linear_x = %f, angular_z = %f", linear_x, angular_z);
 }
@@ -392,10 +393,10 @@ int robot_type::four_steer_drive(float linear_x, float linear_y, float angular_z
     auto [v4, th4, rpm4] = polar_from_cart(v_x4, v_y4, angular_z);
 
     // Print the variables
-    RCLCPP_INFO(get_logger(), "v1: %f, th1: %f, rpm1: %f", v1, th1, rpm1);
-    RCLCPP_INFO(get_logger(), "v2: %f, th2: %f, rpm2: %f", v2, th2, rpm2);
-    RCLCPP_INFO(get_logger(), "v3: %f, th3: %f, rpm3: %f", v3, th3, rpm3);
-    RCLCPP_INFO(get_logger(), "v4: %f, th4: %f, rpm4: %f", v4, th4, rpm4);
+    RCLCPP_INFO(get_logger(), "v1: %f, th1: %f, rpm1: %d", v1, th1, rpm1);
+    RCLCPP_INFO(get_logger(), "v2: %f, th2: %f, rpm2: %d", v2, th2, rpm2);
+    RCLCPP_INFO(get_logger(), "v3: %f, th3: %f, rpm3: %d", v3, th3, rpm3);
+    RCLCPP_INFO(get_logger(), "v4: %f, th4: %f, rpm4: %d", v4, th4, rpm4);
 
 }
 
