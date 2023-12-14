@@ -15,8 +15,8 @@ void robot_type::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
     float angular_z = msg->angular.z;
 
     // int diff_ = diffDrive(linear_x, angular_z);
-    // int ackerDrive_ = ackermannDrive(linear_x, angular_z);
-    int triDrive_ty1 = tricycleDrive_type1(linear_x, angular_z);
+    int ackerDrive_ = ackermannDrive(linear_x, angular_z);
+    // int triDrive_ty1 = tricycleDrive_type1(linear_x, angular_z);
     // int triDrive_ty2 = tricycleDrive_type2_bicycle(linear_x, angular_z);
     // int forDrive_ = four_wheel_drive(linear_x, angular_z);
     // int mechDrive_ = mechDrive(linear_x, linear_y, angular_z);
