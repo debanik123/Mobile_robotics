@@ -385,6 +385,11 @@ int robot_type::four_steer_drive(float linear_x, float linear_y, float angular_z
     float v_x4 = linear_x + d*angular_z;
     float v_y4 = linear_y + l*angular_z;
 
+    auto [v1, th1, rpm1] = polar_from_cart(v_x1, v_y1, angular_z);
+    auto [v2, th2, rpm2] = polar_from_cart(v_x2, v_y2, angular_z);
+    auto [v3, th3, rpm3] = polar_from_cart(v_x3, v_y3, angular_z);
+    auto [v4, th4, rpm4] = polar_from_cart(v_x4, v_y4, angular_z);
+    
 
 }
 
