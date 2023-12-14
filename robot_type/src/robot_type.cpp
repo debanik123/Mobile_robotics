@@ -22,7 +22,7 @@ void robot_type::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
     // int mechDrive_ = mechDrive(linear_x, linear_y, angular_z);
     // int omniDrive_ = omniDrive(linear_x, linear_y, angular_z);
     // int four_steer_drive_ = four_steer_drive(linear_x, linear_y, angular_z);
-    int two_steer_drive_ = two_steer_drive(linear_x, linear_y, angular_z);
+    // int two_steer_drive_ = two_steer_drive(linear_x, linear_y, angular_z);
     
 
     // RCLCPP_INFO(get_logger(), "Received Twist message: linear_x = %f, angular_z = %f", linear_x, angular_z);
@@ -30,7 +30,7 @@ void robot_type::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
 
 int robot_type::ackermannDrive(float linear_x, float angular_z)
 {
-
+    RCLCPP_INFO(get_logger(), "Ackermann Config");
     float v_x = linear_x;
     float v_y = angular_z*Wb;
 
@@ -69,6 +69,7 @@ int robot_type::ackermannDrive(float linear_x, float angular_z)
 
 int robot_type::tricycleDrive_type1(float linear_x, float angular_z) // three wheel (2 drive power wheel and one steer)
 {
+    RCLCPP_INFO(get_logger(), "TricycleDrive_type1 Config");
     float v_x = linear_x;
     float v_y = angular_z*Wb;
 
@@ -99,6 +100,7 @@ int robot_type::tricycleDrive_type1(float linear_x, float angular_z) // three wh
 
 int robot_type::tricycleDrive_type2_bicycle(float linear_x, float angular_z) // three wheel (2 drive wheel two power)
 {
+    RCLCPP_INFO(get_logger(), "TricycleDrive_type2_bicycle Config");
     float v_x = linear_x;
     float v_y = angular_z*Wb;
 
@@ -109,6 +111,7 @@ int robot_type::tricycleDrive_type2_bicycle(float linear_x, float angular_z) // 
 
 int robot_type::four_wheel_drive(float linear_x, float angular_z)
 {
+    RCLCPP_INFO(get_logger(), "Four_wheel_drive Config");
     float left_FW_wheel_vel = linear_x - (angular_z * Wt / 2.0);
     float left_BW_wheel_vel = linear_x - (angular_z * Wt / 2.0);
     float right_FW_wheel_vel = linear_x + (angular_z * Wt / 2.0);
@@ -134,6 +137,7 @@ int robot_type::four_wheel_drive(float linear_x, float angular_z)
 
 int robot_type::diffDrive(float linear_x, float angular_z)
 {
+    RCLCPP_INFO(get_logger(), "DiffDrive Config");
     float left_wheel_vel = linear_x - (angular_z * Wt / 2.0);
     float right_wheel_vel = linear_x + (angular_z * Wt / 2.0);
 
@@ -146,6 +150,7 @@ int robot_type::diffDrive(float linear_x, float angular_z)
 
 int robot_type::omniDrive(float linear_x, float linear_y, float angular_z)
 {
+    RCLCPP_INFO(get_logger(), "OmniDrive Config");
     float rot = L*angular_z;
 
     float FO_wheel_vel = linear_y + rot;
@@ -168,6 +173,7 @@ int robot_type::omniDrive(float linear_x, float linear_y, float angular_z)
 
 int robot_type::mechDrive(float linear_x, float linear_y, float angular_z)
 {
+    RCLCPP_INFO(get_logger(), "MechDrive Config");
     float rot = Wt/2.0 + Wb/2.0; // [lx, ly]
     // velocity
     float front_left_vel = (linear_x - linear_y - rot * angular_z);
@@ -193,6 +199,7 @@ int robot_type::mechDrive(float linear_x, float linear_y, float angular_z)
 }
 int robot_type::four_steer_drive(float linear_x, float linear_y, float angular_z)
 {
+    RCLCPP_INFO(get_logger(), "Four_steer_drive Config");
     float d = Wt/2.0;
     float l = Wb/2.0;
     
@@ -224,6 +231,7 @@ int robot_type::four_steer_drive(float linear_x, float linear_y, float angular_z
 
 int robot_type::two_steer_drive(float linear_x, float linear_y, float angular_z)
 {
+    RCLCPP_INFO(get_logger(), "Two_steer_drive Config");
     float d = 0.0; // no track distance 
     float l = Wb/2.0;
 
