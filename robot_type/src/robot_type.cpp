@@ -368,7 +368,60 @@ int robot_type::mechDrive(float linear_x, float linear_y, float angular_z)
     RCLCPP_INFO(get_logger(), "Back Right RPM: %d", back_right_rpm);
     return 0;
 }
+int robot_type::four_steer_drive(float linear_x, float linear_y, float angular_z)
+{
+    float d = Wt/2.0;
+    float l = Wb/2.0;
+    
+    float v_x1 = linear_x - d*angular_z;
+    float v_y1 = linear_y + l*angular_z;
 
+    float v_x2 = linear_x - d*angular_z;
+    float v_y2 = linear_y - l*angular_z;
+
+    float v_x3 = linear_x + d*angular_z;
+    float v_y3 = linear_y - l*angular_z;
+
+    float v_x4 = linear_x + d*angular_z;
+    float v_y4 = linear_y + l*angular_z;
+
+
+}
+
+std::tuple<float, float, int> robot_type::polar_from_cart(float x,float y, float angular_z)
+{
+    float steering_angle;
+    float drive_velocity;
+    int drive_rpm;
+
+    if (x==0.0 && y == 0.0)
+    {
+        steering_angle = 0.0;
+        drive_velocity = 0.0;
+        drive_rpm = getRpm(drive_velocity);
+        
+    }
+    if (x==0.0 && y != 0.0)
+    {
+        steering_angle = angular_z > 0 ? M_PI_2 : -M_PI_2;
+        drive_velocity = hypot(x,y);
+        drive_rpm = getRpm(drive_velocity);
+    }
+    if (x!=0.0 && y == 0.0)
+    {
+        steering_angle = 0.0;
+        drive_velocity = hypot(x,y);
+        drive_rpm = getRpm(drive_velocity);
+    }
+    if(x!=0.0 && y != 0.0)
+    {
+        steering_angle = atan(y/x);
+        drive_velocity = hypot(x,y);
+        drive_rpm = getRpm(drive_velocity);
+    }
+    return std::make_tuple(steering_angle, drive_velocity, drive_rpm);
+
+}
 
 int robot_type::getRpm(float linear_vel)
 {

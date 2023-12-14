@@ -48,10 +48,11 @@ private:
 
     float steering_angle_r;
     float steering_angle_l;
-    
+
     float R; // turning radius
 
     int getRpm(float linear_vel);
+    std::tuple<float, float, int> polar_from_cart(float x,float y, float angular_z);
     int diffDrive(float linear_x, float angular_z);
     int ackermannDrive(float linear_x, float angular_z);
     int tricycleDrive_type1(float linear_x, float angular_z);
@@ -59,6 +60,7 @@ private:
     int four_wheel_drive(float linear_x, float angular_z);
     int omniDrive(float linear_x, float linear_y, float angular_z);
     int mechDrive(float linear_x, float linear_y, float angular_z);
+    int four_steer_drive(float linear_x, float linear_y, float angular_z);
 
 
 };
