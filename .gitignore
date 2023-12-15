@@ -4,7 +4,7 @@
 
 # But not these files & folders...
 !.gitignore
-!/robot_type
+!/amr_config
 !/README.md
 !/LICENSE
 !/basic_database

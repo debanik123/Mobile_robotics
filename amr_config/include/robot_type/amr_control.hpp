@@ -1,15 +1,15 @@
-#ifndef ROBOT_TYPE_HPP
-#define ROBOT_TYPE_HPP
+#ifndef AMR_CONTROL_HPP
+#define AMR_CONTROL_HPP
 
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp/logging.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 #include <cmath>
-class robot_type : public rclcpp::Node
+class amr_control : public rclcpp::Node
 {
 public:
-    robot_type();
-    ~robot_type();
+    amr_control();
+    ~amr_control();
 
     void CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg);
 
@@ -66,4 +66,4 @@ private:
 
 };
 
-#endif  // ROBOT_TYPE_HPP
+#endif  // amr_control_HPP

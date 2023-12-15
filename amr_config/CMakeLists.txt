@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(robot_type)
+project(amr_config)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -42,10 +42,10 @@ endif()
 
 ament_package()
 
-add_executable(robot_type src/robot_type.cpp)
-ament_target_dependencies(robot_type ${dependencies})
+add_executable(amr_control src/amr_control.cpp)
+ament_target_dependencies(amr_control ${dependencies})
 
 
 install(TARGETS
-  robot_type
+  amr_control
   DESTINATION lib/${PROJECT_NAME})
