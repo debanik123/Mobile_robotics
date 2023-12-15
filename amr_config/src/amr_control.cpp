@@ -258,10 +258,10 @@ int amr_control::four_steer_drive(float linear_x, float linear_y, float angular_
     auto [is_xy4, v4, th4, rpm4] = polar_from_cart(v_x4, v_y4, angular_z);
 
     // // Print the variables
-    // RCLCPP_INFO(get_logger(), "v1: %f, th1: %f, rpm1: %d", v1, th1, rpm1);
-    // RCLCPP_INFO(get_logger(), "v2: %f, th2: %f, rpm2: %d", v2, th2, rpm2);
-    // RCLCPP_INFO(get_logger(), "v3: %f, th3: %f, rpm3: %d", v3, th3, rpm3);
-    // RCLCPP_INFO(get_logger(), "v4: %f, th4: %f, rpm4: %d", v4, th4, rpm4);
+    RCLCPP_INFO(get_logger(), "v1: %f, th1: %f, rpm1: %d", v1, th1, rpm1);
+    RCLCPP_INFO(get_logger(), "v2: %f, th2: %f, rpm2: %d", v2, th2, rpm2);
+    RCLCPP_INFO(get_logger(), "v3: %f, th3: %f, rpm3: %d", v3, th3, rpm3);
+    RCLCPP_INFO(get_logger(), "v4: %f, th4: %f, rpm4: %d", v4, th4, rpm4);
 
 }
 
