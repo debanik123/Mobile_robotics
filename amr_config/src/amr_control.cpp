@@ -1,4 +1,4 @@
-#include "amr_control/amr_control.hpp"
+#include "amr_config/amr_control.hpp"
 
 amr_control::amr_control()
 : Node("amr_control_node")
