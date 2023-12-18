@@ -23,7 +23,7 @@ private:
         //     /\   
         //    /  \  
         //   /    \ //
-    float L = 0.5; 
+    double L = 0.5; 
 
     // Other config
     // \-----------\
@@ -35,33 +35,33 @@ private:
     // |-----------| 
     //       Wt       
 
-    float Wb = 1.1; // m
-    float Wt = 0.8; // m
-    float wheel_radius = 0.207;  //r Replace with your robot's wheel radius in meters
+    double Wb = 1.1; // m
+    double Wt = 0.8; // m
+    double wheel_radius = 0.207;  //r Replace with your robot's wheel radius in meters
 
-    float steering_angle;
-    float drive_velocity;
+    double steering_angle;
+    double drive_velocity;
 
-    float drive_velocity_left;
-    float drive_velocity_right;
-    float angular_velocity;
+    double drive_velocity_left;
+    double drive_velocity_right;
+    double angular_velocity;
 
-    float steering_angle_r;
-    float steering_angle_l;
+    double steering_angle_r;
+    double steering_angle_l;
 
-    float R; // turning radius
+    double R; // turning radius
 
-    int getRpm(float linear_vel);
-    std::tuple<bool, float, float, int> polar_from_cart(float x,float y, float angular_z);
-    int diffDrive(float linear_x, float angular_z);
-    int ackermannDrive(float linear_x, float angular_z);
-    int tricycleDrive_type1(float linear_x, float angular_z);
-    int tricycleDrive_type2_bicycle(float linear_x, float angular_z);
-    int four_wheel_drive(float linear_x, float angular_z);
-    int omniDrive(float linear_x, float linear_y, float angular_z);
-    int mechDrive(float linear_x, float linear_y, float angular_z);
-    int four_steer_drive(float linear_x, float linear_y, float angular_z);
-    int two_steer_drive(float linear_x, float linear_y, float angular_z);
+    int getRpm(double linear_vel);
+    std::tuple<bool, double, double, int> polar_from_cart(double x,double y, double angular_z);
+    int diffDrive(double linear_x, double angular_z);
+    int ackermannDrive(double linear_x, double angular_z);
+    int tricycleDrive_type1(double linear_x, double angular_z);
+    int tricycleDrive_type2_bicycle(double linear_x, double angular_z);
+    int four_wheel_drive(double linear_x, double angular_z);
+    int omniDrive(double linear_x, double linear_y, double angular_z);
+    int mechDrive(double linear_x, double linear_y, double angular_z);
+    int four_steer_drive(double linear_x, double linear_y, double angular_z);
+    int two_steer_drive(double linear_x, double linear_y, double angular_z);
 
 
 };

@@ -10,9 +10,9 @@ amr_control::amr_control()
 
 void amr_control::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
 {
-    float linear_x = msg->linear.x;
-    float linear_y = msg->linear.x;
-    float angular_z = msg->angular.z;
+    double linear_x = msg->linear.x;
+    double linear_y = msg->linear.x;
+    double angular_z = msg->angular.z;
 
     // int diff_ = diffDrive(linear_x, angular_z);
     int ackerDrive_ = ackermannDrive(linear_x, angular_z);
@@ -28,16 +28,16 @@ void amr_control::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
     // RCLCPP_INFO(get_logger(), "Received Twist message: linear_x = %f, angular_z = %f", linear_x, angular_z);
 }
 
-int amr_control::ackermannDrive(float linear_x, float angular_z)
+int amr_control::ackermannDrive(double linear_x, double angular_z)
 {
     RCLCPP_INFO(get_logger(), "Ackermann Config");
 
-    std::vector<float> traction_commands;
-    std::vector<float> steering_commands;
+    std::vector<double> traction_commands;
+    std::vector<double> steering_commands;
     std::vector<int> traction_commands_rpm;
 
-    float v_x = linear_x;
-    float v_y = angular_z*Wb;
+    double v_x = linear_x;
+    double v_y = angular_z*Wb;
 
     auto [is_xy, drive_velocity, steering_angle, rpm] = polar_from_cart(v_x, v_y, angular_z);
 
@@ -81,15 +81,15 @@ int amr_control::ackermannDrive(float linear_x, float angular_z)
 
 }
 
-int amr_control::tricycleDrive_type1(float linear_x, float angular_z) // three wheel (2 drive power wheel and one steer)
+int amr_control::tricycleDrive_type1(double linear_x, double angular_z) // three wheel (2 drive power wheel and one steer)
 {
     RCLCPP_INFO(get_logger(), "TricycleDrive_type1 Config");
-    std::vector<float> traction_commands;
-    std::vector<float> steering_commands;
+    std::vector<double> traction_commands;
+    std::vector<double> steering_commands;
     std::vector<int> traction_commands_rpm;
     
-    float v_x = linear_x;
-    float v_y = angular_z*Wb;
+    double v_x = linear_x;
+    double v_y = angular_z*Wb;
 
     auto [is_xy, drive_velocity, steering_angle, rpm] = polar_from_cart(v_x, v_y, angular_z);
 
@@ -125,16 +125,16 @@ int amr_control::tricycleDrive_type1(float linear_x, float angular_z) // three w
     return 0;
 }
 
-int amr_control::tricycleDrive_type2_bicycle(float linear_x, float angular_z) // three wheel (2 drive wheel two power)
+int amr_control::tricycleDrive_type2_bicycle(double linear_x, double angular_z) // three wheel (2 drive wheel two power)
 {
     RCLCPP_INFO(get_logger(), "TricycleDrive_type2_bicycle Config");
 
-    std::vector<float> traction_commands;
-    std::vector<float> steering_commands;
+    std::vector<double> traction_commands;
+    std::vector<double> steering_commands;
     std::vector<int> traction_commands_rpm;
 
-    float v_x = linear_x;
-    float v_y = angular_z*Wb;
+    double v_x = linear_x;
+    double v_y = angular_z*Wb;
 
     auto [is_xy, drive_velocity, steering_angle, rpm] = polar_from_cart(v_x, v_y, angular_z);
 
@@ -145,18 +145,18 @@ int amr_control::tricycleDrive_type2_bicycle(float linear_x, float angular_z) //
 }
 
 
-int amr_control::four_wheel_drive(float linear_x, float angular_z)
+int amr_control::four_wheel_drive(double linear_x, double angular_z)
 {
     RCLCPP_INFO(get_logger(), "Four_wheel_drive Config");
-    float left_FW_wheel_vel = linear_x - (angular_z * Wt / 2.0);
-    float left_BW_wheel_vel = linear_x - (angular_z * Wt / 2.0);
-    float right_FW_wheel_vel = linear_x + (angular_z * Wt / 2.0);
-    float right_BW_wheel_vel = linear_x + (angular_z * Wt / 2.0);
+    double left_FW_wheel_vel = linear_x - (angular_z * Wt / 2.0);
+    double left_BW_wheel_vel = linear_x - (angular_z * Wt / 2.0);
+    double right_FW_wheel_vel = linear_x + (angular_z * Wt / 2.0);
+    double right_BW_wheel_vel = linear_x + (angular_z * Wt / 2.0);
 
-    float left_FW_wheel_rpm = getRpm(left_FW_wheel_vel);
-    float left_BW_wheel_rpm = getRpm(left_BW_wheel_vel);
-    float right_FW_wheel_rpm = getRpm(right_FW_wheel_vel);
-    float right_BW_wheel_rpm = getRpm(right_BW_wheel_vel);
+    double left_FW_wheel_rpm = getRpm(left_FW_wheel_vel);
+    double left_BW_wheel_rpm = getRpm(left_BW_wheel_vel);
+    double right_FW_wheel_rpm = getRpm(right_FW_wheel_vel);
+    double right_BW_wheel_rpm = getRpm(right_BW_wheel_vel);
 
     RCLCPP_INFO(get_logger(), "Left Front Wheel Velocity: %f m/s", left_FW_wheel_vel);
     RCLCPP_INFO(get_logger(), "Left Back Wheel Velocity: %f m/s", left_BW_wheel_vel);
@@ -171,11 +171,11 @@ int amr_control::four_wheel_drive(float linear_x, float angular_z)
     return 0;
 }
 
-int amr_control::diffDrive(float linear_x, float angular_z)
+int amr_control::diffDrive(double linear_x, double angular_z)
 {
     RCLCPP_INFO(get_logger(), "DiffDrive Config");
-    float left_wheel_vel = linear_x - (angular_z * Wt / 2.0);
-    float right_wheel_vel = linear_x + (angular_z * Wt / 2.0);
+    double left_wheel_vel = linear_x - (angular_z * Wt / 2.0);
+    double right_wheel_vel = linear_x + (angular_z * Wt / 2.0);
 
     int left_wheel_rpm = getRpm(left_wheel_vel);
     int right_wheel_rpm = getRpm(right_wheel_vel);
@@ -184,14 +184,14 @@ int amr_control::diffDrive(float linear_x, float angular_z)
     return 0;
 }
 
-int amr_control::omniDrive(float linear_x, float linear_y, float angular_z)
+int amr_control::omniDrive(double linear_x, double linear_y, double angular_z)
 {
     RCLCPP_INFO(get_logger(), "OmniDrive Config");
-    float rot = L*angular_z;
+    double rot = L*angular_z;
 
-    float FO_wheel_vel = linear_y + rot;
-    float LO_wheel_vel = -linear_x*sin(M_PI/3.0)-linear_y*cos(M_PI/3.0)+ rot;
-    float RO_wheel_vel = linear_x*sin(M_PI/3.0)-linear_y*cos(M_PI/3.0)+ rot;
+    double FO_wheel_vel = linear_y + rot;
+    double LO_wheel_vel = -linear_x*sin(M_PI/3.0)-linear_y*cos(M_PI/3.0)+ rot;
+    double RO_wheel_vel = linear_x*sin(M_PI/3.0)-linear_y*cos(M_PI/3.0)+ rot;
 
     int FO_wheel_rpm = getRpm(FO_wheel_vel);
     int LO_wheel_rpm = getRpm(LO_wheel_vel);
@@ -207,15 +207,15 @@ int amr_control::omniDrive(float linear_x, float linear_y, float angular_z)
 
 }
 
-int amr_control::mechDrive(float linear_x, float linear_y, float angular_z)
+int amr_control::mechDrive(double linear_x, double linear_y, double angular_z)
 {
     RCLCPP_INFO(get_logger(), "MechDrive Config");
-    float rot = Wt/2.0 + Wb/2.0; // [lx, ly]
+    double rot = Wt/2.0 + Wb/2.0; // [lx, ly]
     // velocity
-    float front_left_vel = (linear_x - linear_y - rot * angular_z);
-    float front_right_vel = (linear_x + linear_y + rot * angular_z);
-    float back_left_vel = (linear_x + linear_y - rot * angular_z);
-    float back_right_vel = (linear_x - linear_y + rot * angular_z);
+    double front_left_vel = (linear_x - linear_y - rot * angular_z);
+    double front_right_vel = (linear_x + linear_y + rot * angular_z);
+    double back_left_vel = (linear_x + linear_y - rot * angular_z);
+    double back_right_vel = (linear_x - linear_y + rot * angular_z);
 
     int front_left_rpm = getRpm(front_left_vel);
     int front_right_rpm = getRpm(front_right_vel);
@@ -233,23 +233,23 @@ int amr_control::mechDrive(float linear_x, float linear_y, float angular_z)
     RCLCPP_INFO(get_logger(), "Back Right RPM: %d", back_right_rpm);
     return 0;
 }
-int amr_control::four_steer_drive(float linear_x, float linear_y, float angular_z)
+int amr_control::four_steer_drive(double linear_x, double linear_y, double angular_z)
 {
     RCLCPP_INFO(get_logger(), "Four_steer_drive Config");
-    float d = Wt/2.0;
-    float l = Wb/2.0;
+    double d = Wt/2.0;
+    double l = Wb/2.0;
     
-    float v_x1 = linear_x - d*angular_z;
-    float v_y1 = linear_y + l*angular_z;
+    double v_x1 = linear_x - d*angular_z;
+    double v_y1 = linear_y + l*angular_z;
 
-    float v_x2 = linear_x - d*angular_z;
-    float v_y2 = linear_y - l*angular_z;
+    double v_x2 = linear_x - d*angular_z;
+    double v_y2 = linear_y - l*angular_z;
 
-    float v_x3 = linear_x + d*angular_z;
-    float v_y3 = linear_y - l*angular_z;
+    double v_x3 = linear_x + d*angular_z;
+    double v_y3 = linear_y - l*angular_z;
 
-    float v_x4 = linear_x + d*angular_z;
-    float v_y4 = linear_y + l*angular_z;
+    double v_x4 = linear_x + d*angular_z;
+    double v_y4 = linear_y + l*angular_z;
 
     // 8x1 states vectors
     auto [is_xy1, v1, th1, rpm1] = polar_from_cart(v_x1, v_y1, angular_z);
@@ -265,17 +265,17 @@ int amr_control::four_steer_drive(float linear_x, float linear_y, float angular_
 
 }
 
-int amr_control::two_steer_drive(float linear_x, float linear_y, float angular_z)
+int amr_control::two_steer_drive(double linear_x, double linear_y, double angular_z)
 {
     RCLCPP_INFO(get_logger(), "Two_steer_drive Config");
-    float d = 0.0; // no track distance 
-    float l = Wb/2.0;
+    double d = 0.0; // no track distance 
+    double l = Wb/2.0;
 
-    float v_x1 = linear_x;
-    float v_y1 = linear_y + l*angular_z;
+    double v_x1 = linear_x;
+    double v_y1 = linear_y + l*angular_z;
 
-    float v_x2 = linear_x;
-    float v_y2 = linear_y - l*angular_z;
+    double v_x2 = linear_x;
+    double v_y2 = linear_y - l*angular_z;
 
     // 8x1 states vectors
     auto [is_xy1, v1, th1, rpm1] = polar_from_cart(v_x1, v_y1, angular_z);
@@ -286,10 +286,10 @@ int amr_control::two_steer_drive(float linear_x, float linear_y, float angular_z
     RCLCPP_INFO(get_logger(), "v2: %f, th2: %f, rpm2: %d", v2, th2, rpm2);
 }
 
-std::tuple<bool, float, float, int> amr_control::polar_from_cart(float x,float y, float angular_z)
+std::tuple<bool, double, double, int> amr_control::polar_from_cart(double x,double y, double angular_z)
 {
-    float steering_angle;
-    float drive_velocity;
+    double steering_angle;
+    double drive_velocity;
     int drive_rpm;
     bool is_xy;
 
@@ -331,7 +331,7 @@ std::tuple<bool, float, float, int> amr_control::polar_from_cart(float x,float y
 
 }
 
-int amr_control::getRpm(float linear_vel)
+int amr_control::getRpm(double linear_vel)
 {
     int rpm = static_cast<int>((linear_vel * 60) / (2 * M_PI * wheel_radius));
     rpm = std::min(255, std::max(-255, rpm));
