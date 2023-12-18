@@ -10,7 +10,7 @@ class amr_odom : public rclcpp::Node
 public:
     amr_odom();
     ~amr_odom();
-    
+
 public:
     double get_x() const { return x_; }  // return x position [m]
     double get_y() const { return y_; }  // return y position [m]
@@ -19,6 +19,8 @@ public:
     double get_linear_x() const { return linear_x_; }  // return linear velocity x [m/s]
     double get_linear_y() const { return linear_y_; }  // return linear velocity y [m/s]
     double get_angular() const { return angular_; }  // angular velocity [rad/s]
+
+    int odom_update();
 
 private:
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_;

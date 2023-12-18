@@ -7,6 +7,16 @@ amr_odom::amr_odom()
     odom_pub_ = this->create_publisher<nav_msgs::msg::Odometry>("odom", rclcpp::SystemDefaultsQoS());
 }
 
+int amr_odom::odom_update()
+{
+    rclcpp::Time now = this->get_clock()->now();
+    nav_msgs::msg::Odometry odom;
+    odom.header.stamp = now;
+    odom.header.frame_id = "odom";
+    odom.pose.pose.position.x = get_x();
+    odom.pose.pose.position.y = get_y();
+    odom.pose.pose.position.z = 0.0;
+}
 
 amr_odom::~amr_odom()
 {
