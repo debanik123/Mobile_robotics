@@ -3,16 +3,14 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp/logging.hpp>
-#include <geometry_msgs/msg/twist.hpp>
+#include <nav_msgs/msg/odometry.hpp>
 #include <cmath>
 class amr_odom : public rclcpp::Node
 {
 public:
     amr_odom();
     ~amr_odom();
-
-    void CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg);
-
+    
 public:
     double get_x() const { return x_; }  // return x position [m]
     double get_y() const { return y_; }  // return y position [m]
@@ -23,7 +21,7 @@ public:
     double get_angular() const { return angular_; }  // angular velocity [rad/s]
 
 private:
-    rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr CmdVelSub;
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
     
      // Omni config
         //     | ^

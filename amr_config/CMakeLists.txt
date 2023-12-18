@@ -9,11 +9,13 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 
 set(dependencies
 ament_cmake
 rclcpp
 geometry_msgs
+nav_msgs
 )
 
 # Add include directories
@@ -45,7 +47,10 @@ ament_package()
 add_executable(amr_control src/amr_control.cpp)
 ament_target_dependencies(amr_control ${dependencies})
 
+add_executable(amr_odom src/amr_odom.cpp)
+ament_target_dependencies(amr_odom ${dependencies})
 
 install(TARGETS
   amr_control
+  amr_odom
   DESTINATION lib/${PROJECT_NAME})
