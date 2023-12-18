@@ -4,6 +4,8 @@
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp/logging.hpp>
 #include <nav_msgs/msg/odometry.hpp>
+
+#include "tf2/LinearMath/Quaternion.h"
 #include <cmath>
 class amr_odom : public rclcpp::Node
 {
@@ -18,7 +20,7 @@ public:
 
     double get_linear_x() const { return linear_x_; }  // return linear velocity x [m/s]
     double get_linear_y() const { return linear_y_; }  // return linear velocity y [m/s]
-    double get_angular() const { return angular_; }  // angular velocity [rad/s]
+    double get_angular_z() const { return angular_z_; }  // angular velocity [rad/s]
 
     int odom_update();
 
@@ -53,7 +55,7 @@ private:
     // pose_state = [pose_x, pose_y, orien_z]; || [pose_x, pose_y, steer_angle];
     // vel_state = [linear_x, linear_y, angular_z];
 
-    double x_, y_, heading_, linear_x_, linear_y_, angular_;
+    double x_, y_, heading_, linear_x_, linear_y_, angular_z_;
 
     double steering_angle;
     double drive_velocity;
@@ -65,6 +67,7 @@ private:
     double steering_angle_r;
     double steering_angle_l;
 
+    std::vector<double> pose_covarience{};
     
 
 
