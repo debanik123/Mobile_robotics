@@ -22,30 +22,37 @@ public:
     double get_linear_y() const { return linear_y_; }  // return linear velocity y [m/s]
     double get_angular_z() const { return angular_z_; }  // angular velocity [rad/s]
 
+    void integrateRungeKutta2(double linear, double angular);
+    void integrateExact(double linear, double angular);
+    
     int odom_update();
 
 private:
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
     
-     // Omni config
-        //     | ^
-        //     | L
-        //     | ~
-        //     /\   
-        //    /  \  
-        //   /    \ //
+    /*
+        Omni config
+            | ^
+            | L
+            | ~
+            /\   
+           /  \  
+          /    \ 
+    
+
+        Other config
+        \----------\
+            |         
+            |
+            |  Wb
+            |
+            |
+        |-----------| 
+            Wt       
+
+    */
+    
     double L = 0.5; 
-
-    // Other config
-    // \-----------\
-    //       |         
-    //       |
-    //       |  Wb
-    //       |
-    //       |
-    // |-----------| 
-    //       Wt       
-
     double Wb = 1.1; // m
     double Wt = 0.8; // m
     double wheel_radius = 0.207;  //r Replace with your robot's wheel radius in meters
@@ -62,7 +69,7 @@ private:
     double linear_x_ = 0.0;
     double linear_y_ = 0.0;
     double angular_z_ = 0.0;
-    
+
 
     double steering_angle;
     double drive_velocity;
@@ -75,6 +82,8 @@ private:
     double steering_angle_l;
 
     std::vector<double> pose_covarience{};
+
+    
     
 
 

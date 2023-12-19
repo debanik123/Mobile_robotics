@@ -36,6 +36,33 @@ int amr_odom::odom_update()
     return 0;
 }
 
+void amr_odom::integrateRungeKutta2(double linear, double angular)
+  {
+    const double direction = heading_ + angular * 0.5;
+
+    /// Runge-Kutta 2nd order integration:
+    x_       += linear * cos(direction);
+    y_       += linear * sin(direction);
+    heading_ += angular;
+  }
+
+
+  void amr_odom::integrateExact(double linear, double angular)
+  {
+    if (fabs(angular) < 1e-6)
+      integrateRungeKutta2(linear, angular);
+    else
+    {
+      /// Exact integration (should solve problems when angular is zero):
+      const double heading_old = heading_;
+      const double r = linear/angular;
+      heading_ += angular;
+      x_       +=  r * (sin(heading_) - sin(heading_old));
+      y_       += -r * (cos(heading_) - cos(heading_old));
+    }
+  }
+
+
 amr_odom::~amr_odom()
 {
     // Cleanup, if needed
