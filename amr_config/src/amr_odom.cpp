@@ -43,6 +43,15 @@ int amr_odom::odom_update()
     return 0;
 }
 
+std::tuple<double, double> amr_odom::getVel_from_rpm(double rpm)
+{
+  double linear_vel = (2 * M_PI * wheel_radius* rpm)/60.0;
+  double angular_vel = (2 * M_PI * rpm)/60.0;
+  return std::make_tuple(linear_vel, angular_vel);
+}
+
+
+
 
 void amr_odom::updateOpenLoop(double linear, double angular, const rclcpp::Time & time)
 {
