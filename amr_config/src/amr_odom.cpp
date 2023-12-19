@@ -46,8 +46,8 @@ int amr_odom::odom_update()
 bool amr_odom::from_rpm_fW_drive_odom(double rpm_fl, double rpm_bl, double rpm_fr, double rpm_br, rclcpp::Time & time)
 {
   double d = Wt/2.0;
-  double linear_rpm = (rpm_fl+rpm_bl+rpm_fr+rpm_br)/4.0;
-  double angular_rpm = (-rpm_fl-rpm_bl+rpm_fr+rpm_br)/(4.0*d);
+  double linear_rpm = (rpm_fr+rpm_br+rpm_fl+rpm_bl)/4.0;
+  double angular_rpm = (rpm_fr+rpm_br-rpm_fl-rpm_bl)/(4.0*d);
 
   double body_linear_vel =  getVel_from_rpm(linear_rpm);
   double body_angular_vel  = getVel_from_rpm(angular_rpm);
@@ -63,7 +63,6 @@ bool amr_odom::from_rpm_fW_drive_odom(double rpm_fl, double rpm_bl, double rpm_f
 
   integrateExact(linear_*dt, angular_*dt);
   return true;
-
 }
 
 double amr_odom::getVel_from_rpm(double rpm)
