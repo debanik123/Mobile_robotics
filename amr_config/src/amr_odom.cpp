@@ -47,7 +47,7 @@ bool amr_odom::from_rpm_fW_drive_odom(double rpm_fl, double rpm_bl, double rpm_f
 {
   double d = Wt/2.0;
   double linear_rpm = (rpm_fl+rpm_bl+rpm_fr+rpm_br)/4.0;
-  double angular_rpm = (-rpm_fl-rpm_bl+rpm_fr+rpm_br)/4.0*d;
+  double angular_rpm = (-rpm_fl-rpm_bl+rpm_fr+rpm_br)/(4.0*d);
 
   double body_linear_vel =  getVel_from_rpm(linear_rpm);
   double body_angular_vel  = getVel_from_rpm(angular_rpm);
