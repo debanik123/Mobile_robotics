@@ -55,7 +55,14 @@ private:
     // pose_state = [pose_x, pose_y, orien_z]; || [pose_x, pose_y, steer_angle];
     // vel_state = [linear_x, linear_y, angular_z];
 
-    double x_, y_, heading_, linear_x_, linear_y_, angular_z_;
+    double x_ = 0.0;
+    double y_ = 0.0;
+    double heading_ = 0.0;
+
+    double linear_x_ = 0.0;
+    double linear_y_ = 0.0;
+    double angular_z_ = 0.0;
+    
 
     double steering_angle;
     double drive_velocity;
