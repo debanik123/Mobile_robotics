@@ -45,19 +45,24 @@ int amr_odom::odom_update()
 
 void amr_odom::from_rpm_fW_drive_odom(double rpm_fl, double rpm_bl, double rpm_fr, double rpm_br)
 {
-  double d = Wb/2.0;
+  double d = Wt/2.0;
   double linear_rpm = (rpm_fl+rpm_bl+rpm_fr+rpm_br)/4.0;
   double angular_rpm = (-rpm_fl-rpm_bl+rpm_fr+rpm_br)/4.0*d;
 
-  auto [body_linear_vel, body_angular_vel] =  getVel_from_rpm(linear_rpm);
+  double body_linear_vel =  getVel_from_rpm(linear_rpm);
+  double body_angular_vel  = getVel_from_rpm(angular_rpm);
+
+  linear_ = body_linear_vel;
+  angular_ = body_angular_vel;
+
+  
 
 }
 
-std::tuple<double, double> amr_odom::getVel_from_rpm(double rpm)
+double amr_odom::getVel_from_rpm(double rpm)
 {
   double linear_vel = (2 * M_PI * wheel_radius* rpm)/60.0;
-  double angular_vel = (2 * M_PI * rpm)/60.0;
-  return std::make_tuple(linear_vel, angular_vel);
+  return linear_vel;
 }
 
 

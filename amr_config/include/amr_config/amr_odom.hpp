@@ -29,7 +29,7 @@ public:
     void integrateExact(double linear, double angular);
     void from_rpm_fW_drive_odom(double rpm_fl, double rpm_bl, double rpm_fr, double rpm_br);
 
-    std::tuple<double, double> getVel_from_rpm(double rpm);
+    double getVel_from_rpm(double rpm);
     int odom_update();
 
 private:
