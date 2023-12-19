@@ -7,6 +7,13 @@ amr_odom::amr_odom()
     odom_pub_ = this->create_publisher<nav_msgs::msg::Odometry>("odom", rclcpp::SystemDefaultsQoS());
 }
 
+void amr_odom::resetOdometry()
+{
+  x_ = 0.0;
+  y_ = 0.0;
+  heading_ = 0.0;
+}
+
 int amr_odom::odom_update()
 {
     rclcpp::Time now = this->get_clock()->now();
@@ -36,31 +43,45 @@ int amr_odom::odom_update()
     return 0;
 }
 
+
+void amr_odom::updateOpenLoop(double linear, double angular, const rclcpp::Time & time)
+{
+  /// Save last linear and angular velocity:
+  linear_ = linear;
+  angular_ = angular;
+
+  /// Integrate odometry:
+  const double dt = time.seconds() - timestamp_.seconds();
+  timestamp_ = time;
+  integrateExact(linear * dt, angular * dt);
+}
+
 void amr_odom::integrateRungeKutta2(double linear, double angular)
-  {
-    const double direction = heading_ + angular * 0.5;
+{
+  const double direction = heading_ + angular * 0.5;
 
-    /// Runge-Kutta 2nd order integration:
-    x_       += linear * cos(direction);
-    y_       += linear * sin(direction);
+  /// Runge-Kutta 2nd order integration:
+  x_ += linear * cos(direction);
+  y_ += linear * sin(direction);
+  heading_ += angular;
+}
+
+void amr_odom::integrateExact(double linear, double angular)
+{
+  if (fabs(angular) < 1e-6)
+  {
+    integrateRungeKutta2(linear, angular);
+  }
+  else
+  {
+    /// Exact integration (should solve problems when angular is zero):
+    const double heading_old = heading_;
+    const double r = linear / angular;
     heading_ += angular;
+    x_ += r * (sin(heading_) - sin(heading_old));
+    y_ += -r * (cos(heading_) - cos(heading_old));
   }
-
-
-  void amr_odom::integrateExact(double linear, double angular)
-  {
-    if (fabs(angular) < 1e-6)
-      integrateRungeKutta2(linear, angular);
-    else
-    {
-      /// Exact integration (should solve problems when angular is zero):
-      const double heading_old = heading_;
-      const double r = linear/angular;
-      heading_ += angular;
-      x_       +=  r * (sin(heading_) - sin(heading_old));
-      y_       += -r * (cos(heading_) - cos(heading_old));
-    }
-  }
+}
 
 
 amr_odom::~amr_odom()

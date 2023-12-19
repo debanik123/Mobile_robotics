@@ -18,17 +18,24 @@ public:
     double get_y() const { return y_; }  // return y position [m]
     double get_heading() const { return heading_; } // return heading angle [rad]
 
-    double get_linear_x() const { return linear_x_; }  // return linear velocity x [m/s]
+    double get_linear_x() const { return linear_; }  // return linear velocity x [m/s]
     double get_linear_y() const { return linear_y_; }  // return linear velocity y [m/s]
-    double get_angular_z() const { return angular_z_; }  // angular velocity [rad/s]
+    double get_angular_z() const { return angular_; }  // angular velocity [rad/s]
 
+    void resetOdometry();
+    
+    void updateOpenLoop(double linear, double angular, const rclcpp::Time & time);
     void integrateRungeKutta2(double linear, double angular);
     void integrateExact(double linear, double angular);
+    
     
     int odom_update();
 
 private:
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
+
+    // Current timestamp:
+    rclcpp::Time timestamp_;
     
     /*
         Omni config
@@ -66,9 +73,9 @@ private:
     double y_ = 0.0;
     double heading_ = 0.0;
 
-    double linear_x_ = 0.0;
+    double linear_ = 0.0;
     double linear_y_ = 0.0;
-    double angular_z_ = 0.0;
+    double angular_ = 0.0;
 
 
     double steering_angle;
@@ -82,6 +89,7 @@ private:
     double steering_angle_l;
 
     std::vector<double> pose_covarience{};
+
 
     
     
