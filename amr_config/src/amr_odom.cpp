@@ -65,6 +65,29 @@ bool amr_odom::from_rpm_fW_drive_odom(double rpm_fl, double rpm_bl, double rpm_f
   return true;
 }
 
+bool amr_odom::from_rpm_diff_drive_odom(double rpm_l, double rpm_r, rclcpp::Time & time)
+{
+  double d = Wt/2.0;
+  double linear_rpm = (rpm_r + rpm_l)/2.0;
+  double angular_rpm = (rpm_r - rpm_l)/(2.0*d);
+
+  double body_linear_vel =  getVel_from_rpm(linear_rpm);
+  double body_angular_vel  = getVel_from_rpm(angular_rpm);
+
+  linear_ = body_linear_vel;
+  angular_ = body_angular_vel;
+
+  const double dt = time.seconds() - timestamp_.seconds();
+  if (dt < 0.0001)
+  {
+    return false;  // Interval too small to integrate with
+  }
+
+  integrateExact(linear_*dt, angular_*dt);
+  return true;
+}
+
+
 double amr_odom::getVel_from_rpm(double rpm)
 {
   double linear_vel = (2 * M_PI * wheel_radius* rpm)/60.0;
