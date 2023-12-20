@@ -27,8 +27,8 @@ public:
     void updateOpenLoop(double linear, double angular, const rclcpp::Time & time);
     void integrateRungeKutta2(double linear, double angular);
     void integrateExact(double linear, double angular);
-    void from_rpm_fW_drive_odom(double rpm_fl, double rpm_bl, double rpm_fr, double rpm_br, rclcpp::Time & time);
-    void from_rpm_diff_drive_odom(double rpm_l, double rpm_r, rclcpp::Time & time);
+    void from_rpm_fWDrive(double rpm_fl, double rpm_bl, double rpm_fr, double rpm_br, rclcpp::Time & time);
+    void from_rpm_diffDrive(double rpm_l, double rpm_r, rclcpp::Time & time);
 
     double getVel_from_rpm(double rpm);
     int odom_update();

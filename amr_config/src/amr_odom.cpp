@@ -43,7 +43,7 @@ int amr_odom::odom_update()
     return 0;
 }
 
-void amr_odom::from_rpm_fW_drive_odom(double rpm_fl, double rpm_bl, double rpm_fr, double rpm_br, rclcpp::Time & time)
+void amr_odom::from_rpm_fWDrive(double rpm_fl, double rpm_bl, double rpm_fr, double rpm_br, rclcpp::Time & time)
 {
   double d = Wt/2.0;
   double linear_rpm = (rpm_fr+rpm_br+rpm_fl+rpm_bl)/4.0;
@@ -59,7 +59,7 @@ void amr_odom::from_rpm_fW_drive_odom(double rpm_fl, double rpm_bl, double rpm_f
 
 }
 
-void amr_odom::from_rpm_diff_drive_odom(double rpm_l, double rpm_r, rclcpp::Time & time)
+void amr_odom::from_rpm_diffDrive(double rpm_l, double rpm_r, rclcpp::Time & time)
 {
   double d = Wt/2.0;
   double linear_rpm = (rpm_r + rpm_l)/2.0;
