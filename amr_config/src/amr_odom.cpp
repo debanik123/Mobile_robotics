@@ -58,22 +58,6 @@ void amr_odom::getVelocities(double steering_angle, double rpm_l, double rpm_r, 
 
 }
 
-void amr_odom::getVelocities(double rpm_fl, double rpm_bl, double rpm_fr, double rpm_br, rclcpp::Time & time)
-{
-  double d = Wt/2.0;
-  double linear_rpm = (rpm_fr+rpm_br+rpm_fl+rpm_bl)/4.0;
-  double angular_rpm = (rpm_fr+rpm_br-rpm_fl-rpm_bl)/(4.0*d);
-
-  double body_linear_vel =  getVel_from_rpm(linear_rpm);
-  double body_angular_vel  = getVel_from_rpm(angular_rpm);
-
-  linear_ = body_linear_vel;
-  angular_ = body_angular_vel;
-
-  updateOpenLoop(linear_, angular_, time);
-
-}
-
 void amr_odom::getVelocities_ACKtype2(double steering_angle_l, double steering_angle_r, double rpm_l, double rpm_r, rclcpp::Time & time)
 {
   double steering_angle = (steering_angle_l + steering_angle_r)/2.0;
@@ -104,6 +88,21 @@ void amr_odom::getVelocities(double rpm_l, double rpm_r, rclcpp::Time & time)
 
 }
 
+void amr_odom::getVelocities(double rpm_fl, double rpm_bl, double rpm_fr, double rpm_br, rclcpp::Time & time)
+{
+  double d = Wt/2.0;
+  double linear_rpm = (rpm_fr+rpm_br+rpm_fl+rpm_bl)/4.0;
+  double angular_rpm = (rpm_fr+rpm_br-rpm_fl-rpm_bl)/(4.0*d);
+
+  double body_linear_vel =  getVel_from_rpm(linear_rpm);
+  double body_angular_vel  = getVel_from_rpm(angular_rpm);
+
+  linear_ = body_linear_vel;
+  angular_ = body_angular_vel;
+
+  updateOpenLoop(linear_, angular_, time);
+
+}
 
 double amr_odom::getVel_from_rpm(double rpm)
 {
