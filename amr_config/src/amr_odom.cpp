@@ -44,6 +44,18 @@ int amr_odom::odom_update()
 }
 
 
+void amr_odom::getVelocities_Tri(double steering_angle, double rpm, rclcpp::Time & time)
+{
+  double linear_rpm = rpm;
+  double body_linear_vel =  getVel_from_rpm(linear_rpm);
+  double body_angular_vel =  (body_linear_vel * tan(steering_angle)) / Wb;
+
+  linear_ = body_linear_vel;
+  angular_ = body_angular_vel;
+
+  updateOpenLoop(linear_, angular_, time);
+
+}
 
 void amr_odom::getVelocities(double steering_angle, double rpm_l, double rpm_r, rclcpp::Time & time)
 {

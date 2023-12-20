@@ -28,6 +28,7 @@ public:
     void integrateRungeKutta2(double linear, double angular);
     void integrateExact(double linear, double angular);
 
+    void getVelocities_Tri(double steering_angle, double rpm, rclcpp::Time & time);
     void getVelocities_ACKtype2(double steering_angle_l, double steering_angle_r, double rpm_l, double rpm_r, rclcpp::Time & time);
     void getVelocities(double steering_angle, double rpm_l, double rpm_r, rclcpp::Time & time);
     void getVelocities(double rpm_l, double rpm_r, rclcpp::Time & time);
