@@ -18,9 +18,9 @@ void amr_control::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
     // int ackerDrive_ = ackermannDrive(linear_x, angular_z);
     // int triDrive_ty1 = tricycleDrive_type1(linear_x, angular_z);
     // int triDrive_ty2 = tricycleDrive_type2_bicycle(linear_x, angular_z);
-    int forDrive_ = four_wheel_drive(linear_x, angular_z);
+    // int forDrive_ = four_wheel_drive(linear_x, angular_z);
     // int mechDrive_ = mechDrive(linear_x, linear_y, angular_z);
-    // int omniDrive_ = omniDrive(linear_x, linear_y, angular_z);
+    int omniDrive_ = omniDrive(linear_x, linear_y, angular_z);
     // int four_steer_drive_ = four_steer_drive(linear_x, linear_y, angular_z);
     // int two_steer_drive_ = two_steer_drive(linear_x, linear_y, angular_z);
     

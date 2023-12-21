@@ -43,6 +43,12 @@ int amr_odom::odom_update()
     return 0;
 }
 
+void amr_odom::getVelocities_Mecanum(double rpm_fl, double rpm_bl, double rpm_fr, double rpm_br, rclcpp::Time & time)
+{
+  double linear_rpm = (rpm_fr+rpm_br+rpm_fl+rpm_bl)/4.0;
+  // double angular_rpm = (-rpm_fr+rpm_br+rpm_fl-rpm_bl)/(4.0*d);
+
+}
 
 void amr_odom::getVelocities_Tri(double steering_angle, double rpm, rclcpp::Time & time)
 {
