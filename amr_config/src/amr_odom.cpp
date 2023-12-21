@@ -43,10 +43,18 @@ int amr_odom::odom_update()
     return 0;
 }
 
-void amr_odom::getVelocities_Mecanum(double rpm_fl, double rpm_bl, double rpm_fr, double rpm_br, rclcpp::Time & time)
+void amr_odom::getVelocities_Mecanum(double rpm1, double rpm2, double rpm3, double rpm4, rclcpp::Time & time)
 {
-  double linear_rpm = (rpm_fr+rpm_br+rpm_fl+rpm_bl)/4.0;
-  // double angular_rpm = (-rpm_fr+rpm_br+rpm_fl-rpm_bl)/(4.0*d);
+  double rot = (Wt + Wb)/2.0; // [lx, ly]
+
+  double linear_x_rpm = (rpm1+rpm2+rpm3+rpm4)/4.0;
+  double linear_y_rpm = (-rpm1+rpm2+rpm3-rpm4)/(4.0);
+  double angular_rpm = (-rpm1+rpm2-rpm3+rpm4)/(4.0*rot);
+
+  double linear_x_vel =  getVel_from_rpm(linear_x_rpm);
+  double linear_y_vel =  getVel_from_rpm(linear_y_rpm);
+  double angular_vel = getVel_from_rpm(angular_rpm);
+
 
 }
 
