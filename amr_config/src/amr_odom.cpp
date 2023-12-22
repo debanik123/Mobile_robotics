@@ -42,6 +42,38 @@ int amr_odom::odom_update()
 
     return 0;
 }
+
+void amr_odom::getVelocities(double rpm1, double th1, double rpm2, double th2, double rpm3, double th3, double rpm4, double th4, rclcpp::Time & time)
+{
+
+  double d = Wt/2.0;
+  double l = Wb/2.0;
+  double t = 4*(d*d + l*l);
+
+  double sig1 = l/t;
+  double sig2 = d/t;
+
+  double v1 = getVel_from_rpm(rpm1);
+  double v2 = getVel_from_rpm(rpm2);
+  double v3 = getVel_from_rpm(rpm3);
+  double v4 = getVel_from_rpm(rpm4);
+
+  auto [v1x, v1y] = Cartesian_from_polar(v1, th1);
+  auto [v2x, v2y] = Cartesian_from_polar(v2, th2);
+  auto [v3x, v3y] = Cartesian_from_polar(v3, th3);
+  auto [v4x, v4y] = Cartesian_from_polar(v4, th4);
+
+  double linear_vel_x = (v1x+v2x+v3x+v4x);
+  double linear_vel_y = (v1y+v2y+v3y+v4y);
+  double angular_z = -sig2*v1x + sig1*v1y - sig2*v2x - sig1*v2y + sig2*v3x - sig1*v3y + sig2*v4x + sig1*v4y;
+
+  // linear_ = body_linear_vel;
+  // angular_ = body_angular_vel;
+
+  // updateOpenLoop(linear_, angular_, time);
+
+}
+
 void amr_odom::getVelocities_Omni(double rpm1, double rpm2, double rpm3, rclcpp::Time & time)
 {
 
@@ -146,6 +178,14 @@ double amr_odom::getVel_from_rpm(double rpm)
   double linear_vel = (2 * M_PI * wheel_radius* rpm)/60.0;
   return linear_vel;
 }
+
+std::tuple<double, double> amr_odom::Cartesian_from_polar(double ro, double th)
+{
+  double x = ro*cos(th);
+  double y = ro*sin(th);
+  return std::make_tuple(x,y);
+}
+
 
 
 void amr_odom::updateOpenLoop(double linear, double angular, const rclcpp::Time & time)
