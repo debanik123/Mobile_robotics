@@ -28,6 +28,7 @@ public:
     void integrateRungeKutta2(double linear, double angular);
     void integrateExact(double linear, double angular);
 
+    void getVelocities_hex_mechDrive(double rpm1, double rpm2, double rpm3, double rpm4, double rpm5, double rpm6, rclcpp::Time & time);
     void getVelocities_two_steer_drive(double rpm1, double th1, double rpm2, double th2, rclcpp::Time & time);
     void getVelocities(double rpm1, double th1, double rpm2, double th2, double rpm3, double th3, double rpm4, double th4, rclcpp::Time & time);
     void getVelocities_Omni(double rpm1, double rpm2, double rpm3, rclcpp::Time & time);
@@ -79,7 +80,7 @@ Other config
 |-----------| 
           Wt       
 */
-    
+    double R_hex = 0.5;
     double L = 0.5; 
     double Wb = 1.1; // m
     double Wt = 0.8; // m

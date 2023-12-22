@@ -43,6 +43,22 @@ int amr_odom::odom_update()
     return 0;
 }
 
+void amr_odom::getVelocities_hex_mechDrive(double rpm1, double rpm2, double rpm3, double rpm4, double rpm5, double rpm6, rclcpp::Time & time)
+{
+  double phi = (sqrt(3)+1);
+  double phi2 = (1.0/(4*R_hex*(sqrt(3)+3)));
+
+  double linear_x_rpm = (rpm1/4.0)+(rpm2/8.0)+(rpm3/8.0)+(rpm4/4.0)+(rpm5/8.0)+(rpm6/8.0);
+  double linear_y_rpm = -(rpm1/4.0)+(rpm2/8.0)+(rpm3/8.0)-(rpm4/4.0)+(rpm5/8.0)+(rpm6/8.0);
+  double angular_rpm = phi2*(-phi*rpm1 + phi*rpm2 - phi*rpm3 + phi*rpm4 - 2.0*rpm5 + 2.0*rpm6);
+
+  double linear_x_vel = getVel_from_rpm(linear_x_rpm);
+  double linear_y_vel = getVel_from_rpm(linear_y_rpm);
+  double angular_vel = getVel_from_rpm(angular_rpm);
+
+
+
+}
 void amr_odom::getVelocities_two_steer_drive(double rpm1, double th1, double rpm2, double th2, rclcpp::Time & time)
 {
   double l = Wb/2.0;
