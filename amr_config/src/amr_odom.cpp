@@ -43,6 +43,22 @@ int amr_odom::odom_update()
     return 0;
 }
 
+void amr_odom::getVelocities_two_steer_drive(double rpm1, double th1, double rpm2, double th2, rclcpp::Time & time)
+{
+  double l = Wb/2.0;
+  double v1 = getVel_from_rpm(rpm1);
+  double v2 = getVel_from_rpm(rpm2);
+
+  auto [v1x, v1y] = Cartesian_from_polar(v1, th1);
+  auto [v2x, v2y] = Cartesian_from_polar(v2, th2);
+
+  double linear_vel_x = (v1x+v2x)/2.0;
+  double linear_vel_y = (v1y+v2y)/2.0;
+  double angular_z = (v1y-v2y)/(2.0*l);
+
+
+}
+
 void amr_odom::getVelocities(double rpm1, double th1, double rpm2, double th2, double rpm3, double th3, double rpm4, double th4, rclcpp::Time & time)
 {
 
