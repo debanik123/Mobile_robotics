@@ -60,6 +60,7 @@ void amr_odom::getVelocities_hex_mechDrive(double rpm1, double rpm2, double rpm3
 }
 void amr_odom::getVelocities_two_steer_drive(double rpm1, double th1, double rpm2, double th2, rclcpp::Time & time)
 {
+  // RCLCPP_INFO(get_logger(), "Two_steer_drive Config");
   double l = Wb/2.0;
   double v1 = getVel_from_rpm(rpm1);
   double v2 = getVel_from_rpm(rpm2);
@@ -76,7 +77,7 @@ void amr_odom::getVelocities_two_steer_drive(double rpm1, double th1, double rpm
 
 void amr_odom::getVelocities(double rpm1, double th1, double rpm2, double th2, double rpm3, double th3, double rpm4, double th4, rclcpp::Time & time)
 {
-
+  // RCLCPP_INFO(get_logger(), "Four_steer_drive Config");
   double d = Wt/2.0;
   double l = Wb/2.0;
   double t = 4*(d*d + l*l);
@@ -107,7 +108,7 @@ void amr_odom::getVelocities(double rpm1, double th1, double rpm2, double th2, d
 
 void amr_odom::getVelocities_Omni(double rpm1, double rpm2, double rpm3, rclcpp::Time & time)
 {
-
+  // RCLCPP_INFO(get_logger(), "OmniDrive Config");
   double linear_x_rpm = (0.0*rpm1-rpm2+rpm3)/sqrt(3);
   double linear_y_rpm = (2.0*rpm1-rpm2-rpm3)/3.0;
   double angular_rpm =  (rpm1+rpm2+rpm3)/(3*L);
@@ -119,6 +120,7 @@ void amr_odom::getVelocities_Omni(double rpm1, double rpm2, double rpm3, rclcpp:
 }
 void amr_odom::getVelocities_Mecanum(double rpm1, double rpm2, double rpm3, double rpm4, rclcpp::Time & time)
 {
+  // RCLCPP_INFO(get_logger(), "MechDrive Config");
   double rot = (Wt + Wb)/2.0; // [lx, ly]
 
   double linear_x_rpm = (rpm1+rpm2+rpm3+rpm4)/4.0;
@@ -134,6 +136,7 @@ void amr_odom::getVelocities_Mecanum(double rpm1, double rpm2, double rpm3, doub
 
 void amr_odom::getVelocities_Tri(double steering_angle, double rpm, rclcpp::Time & time)
 {
+  // RCLCPP_INFO(get_logger(), "TricycleDrive_type2_bicycle Config");
   double linear_rpm = rpm;
   double body_linear_vel =  getVel_from_rpm(linear_rpm);
   double body_angular_vel =  (body_linear_vel * tan(steering_angle)) / Wb;
@@ -147,6 +150,7 @@ void amr_odom::getVelocities_Tri(double steering_angle, double rpm, rclcpp::Time
 
 void amr_odom::getVelocities(double steering_angle, double rpm_l, double rpm_r, rclcpp::Time & time)
 {
+  // RCLCPP_INFO(get_logger(), "TricycleDrive Config with diff");
   double linear_rpm = (rpm_r + rpm_l)/2.0;
   double body_linear_vel =  getVel_from_rpm(linear_rpm);
   double body_angular_vel =  (body_linear_vel * tan(steering_angle)) / Wb;
@@ -160,6 +164,7 @@ void amr_odom::getVelocities(double steering_angle, double rpm_l, double rpm_r, 
 
 void amr_odom::getVelocities_ACKtype2(double steering_angle_l, double steering_angle_r, double rpm_l, double rpm_r, rclcpp::Time & time)
 {
+  // RCLCPP_INFO(get_logger(), "Ackermann Config");
   double steering_angle = (steering_angle_l + steering_angle_r)/2.0;
   double linear_rpm = (rpm_r + rpm_l)/2.0;
   double body_linear_vel =  getVel_from_rpm(linear_rpm);
@@ -174,6 +179,7 @@ void amr_odom::getVelocities_ACKtype2(double steering_angle_l, double steering_a
 
 void amr_odom::getVelocities(double rpm_l, double rpm_r, rclcpp::Time & time)
 {
+  // RCLCPP_INFO(get_logger(), "DiffDrive Config");
   double d = Wt/2.0;
   double linear_rpm = (rpm_r + rpm_l)/2.0;
   double angular_rpm = (rpm_r - rpm_l)/(2.0*d);
@@ -190,6 +196,7 @@ void amr_odom::getVelocities(double rpm_l, double rpm_r, rclcpp::Time & time)
 
 void amr_odom::getVelocities(double rpm_fl, double rpm_bl, double rpm_fr, double rpm_br, rclcpp::Time & time)
 {
+  // RCLCPP_INFO(get_logger(), "Four_wheel_drive Config");
   double d = Wt/2.0;
   double linear_rpm = (rpm_fr+rpm_br+rpm_fl+rpm_bl)/4.0;
   double angular_rpm = (rpm_fr+rpm_br-rpm_fl-rpm_bl)/(4.0*d);
