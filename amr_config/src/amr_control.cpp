@@ -28,6 +28,13 @@ void amr_control::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
     // RCLCPP_INFO(get_logger(), "Received Twist message: linear_x = %f, angular_z = %f", linear_x, angular_z);
 }
 
+
+int amr_control::hex_mechDrive(double linear_x, double linear_y, double angular_z)
+{
+    RCLCPP_INFO(get_logger(), "Hex MechDrive Config");
+    
+
+}
 int amr_control::ackermannDrive(double linear_x, double angular_z)
 {
     RCLCPP_INFO(get_logger(), "Ackermann Config");

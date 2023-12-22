@@ -15,26 +15,40 @@ public:
 
 private:
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr CmdVelSub;
+
+/* 
+
+Omni config
+    | ^
+    | L
+    | ~
+    /\   
+   /  \  
+  /    \ 
     
-     // Omni config
-        //     | ^
-        //     | L
-        //     | ~
-        //     /\   
-        //    /  \  
-        //   /    \ //
+Hex Omni
+  \   |   /
+   \  |  / -
+    \ | /  R
+     \|/   ~
+--------------
+     /|\
+    / | \
+   /  |  \
+  /   |   \
+ 
+Other config
+\-----------\
+     |         
+     |
+     |  Wb
+     |
+     |
+|-----------| 
+          Wt       
+*/
+    double R_hex = 0.5;
     double L = 0.5; 
-
-    // Other config
-    // \-----------\
-    //       |         
-    //       |
-    //       |  Wb
-    //       |
-    //       |
-    // |-----------| 
-    //       Wt       
-
     double Wb = 1.1; // m
     double Wt = 0.8; // m
     double wheel_radius = 0.207;  //r Replace with your robot's wheel radius in meters
@@ -62,6 +76,7 @@ private:
     int mechDrive(double linear_x, double linear_y, double angular_z);
     int four_steer_drive(double linear_x, double linear_y, double angular_z);
     int two_steer_drive(double linear_x, double linear_y, double angular_z);
+    int hex_mechDrive(double linear_x, double linear_y, double angular_z);
 
 
 };

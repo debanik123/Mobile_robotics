@@ -48,27 +48,37 @@ private:
     // Current timestamp:
     rclcpp::Time timestamp_;
     
-    /*
-        Omni config
-            | ^
-            | L
-            | ~
-            /\   
-           /  \  
-          /    \ 
+/* 
+
+Omni config
+    | ^
+    | L
+    | ~
+    /\   
+   /  \  
+  /    \ 
     
-
-        Other config
-        \----------\
-            |         
-            |
-            |  Wb
-            |
-            |
-        |-----------| 
-            Wt       
-
-    */
+Hex Omni
+  \   |   /
+   \  |  / -
+    \ | /  R_hex
+     \|/   ~
+--------------
+     /|\
+    / | \
+   /  |  \
+  /   |   \
+ 
+Other config
+\-----------\
+     |         
+     |
+     |  Wb
+     |
+     |
+|-----------| 
+          Wt       
+*/
     
     double L = 0.5; 
     double Wb = 1.1; // m
