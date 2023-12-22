@@ -2,4 +2,4 @@
 Design algorithm for Mobile Robots
 
 <!-- $\sqrt{3x-1}+(1+x)^2$ -->
-$\frac{V*60}{2*pi* r}$
+$\frac{v*60}{2*\pi*r}$
