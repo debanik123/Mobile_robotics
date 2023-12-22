@@ -28,19 +28,25 @@ public:
     void integrateRungeKutta2(double linear, double angular);
     void integrateExact(double linear, double angular);
 
-    void getVelocities_hex_mechDrive(double rpm1, double rpm2, double rpm3, double rpm4, double rpm5, double rpm6, rclcpp::Time & time);
+    
     void getVelocities_two_steer_drive(double rpm1, double th1, double rpm2, double th2, rclcpp::Time & time);
-    void getVelocities(double rpm1, double th1, double rpm2, double th2, double rpm3, double th3, double rpm4, double th4, rclcpp::Time & time);
+    void getVelocities_four_steer_drive(double rpm1, double th1, double rpm2, double th2, double rpm3, double th3, double rpm4, double th4, rclcpp::Time & time);
+    
     void getVelocities_Omni(double rpm1, double rpm2, double rpm3, rclcpp::Time & time);
     void getVelocities_Mecanum(double rpm1, double rpm2, double rpm3, double rpm4, rclcpp::Time & time);
-    void getVelocities_Tri(double steering_angle, double rpm, rclcpp::Time & time);
+    void getVelocities_hex_mechDrive(double rpm1, double rpm2, double rpm3, double rpm4, double rpm5, double rpm6, rclcpp::Time & time);
+
+
+    void getVelocities_ACKtype1(double steering_angle, double rpm_l, double rpm_r, rclcpp::Time & time);
     void getVelocities_ACKtype2(double steering_angle_l, double steering_angle_r, double rpm_l, double rpm_r, rclcpp::Time & time);
-    void getVelocities(double steering_angle, double rpm_l, double rpm_r, rclcpp::Time & time);
-    void getVelocities(double rpm_l, double rpm_r, rclcpp::Time & time);
-    void getVelocities(double rpm_fl, double rpm_bl, double rpm_fr, double rpm_br, rclcpp::Time & time);
+    void getVelocities_Tri(double steering_angle, double rpm, rclcpp::Time & time);
+
+    void getVelocities_DiffDrive(double rpm_l, double rpm_r, rclcpp::Time & time);
+    void getVelocities_Four_wheel_drive(double rpm_fl, double rpm_bl, double rpm_fr, double rpm_br, rclcpp::Time & time);
 
     double getVel_from_rpm(double rpm);
     std::tuple<double, double> Cartesian_from_polar(double ro, double th);
+    
     int odom_update();
 
 private:
