@@ -37,8 +37,8 @@ public:
     void getVelocities_hex_mechDrive(double rpm1, double rpm2, double rpm3, double rpm4, double rpm5, double rpm6, rclcpp::Time & time);
 
     void getVelocities_Tri(double steering_angle, double rpm, rclcpp::Time & time);
-    void getVelocities_ACKtype1(double steering_angle, double rpm_l, double rpm_r, rclcpp::Time & time);
-    void getVelocities_ACKtype2(double steering_angle_l, double steering_angle_r, double rpm_l, double rpm_r, rclcpp::Time & time);
+    void getVelocities_tricycleDrive_type1(double steering_angle, double rpm_l, double rpm_r, rclcpp::Time & time);
+    void getVelocities_ACKtype(double steering_angle_l, double steering_angle_r, double rpm_l, double rpm_r, rclcpp::Time & time);
     
 
     void getVelocities_DiffDrive(double rpm_l, double rpm_r, rclcpp::Time & time);

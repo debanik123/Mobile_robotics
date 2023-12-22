@@ -147,7 +147,7 @@ void amr_odom::getVelocities_Tri(double steering_angle, double rpm, rclcpp::Time
 
 }
 
-void amr_odom::getVelocities_ACKtype1(double steering_angle, double rpm_l, double rpm_r, rclcpp::Time & time)
+void amr_odom::getVelocities_tricycleDrive_type1(double steering_angle, double rpm_l, double rpm_r, rclcpp::Time & time)
 {
   // RCLCPP_INFO(get_logger(), "TricycleDrive Config with diff");
   double linear_rpm = (rpm_r + rpm_l)/2.0;
@@ -160,7 +160,7 @@ void amr_odom::getVelocities_ACKtype1(double steering_angle, double rpm_l, doubl
   updateOpenLoop(linear_, angular_, time);
 }
 
-void amr_odom::getVelocities_ACKtype2(double steering_angle_l, double steering_angle_r, double rpm_l, double rpm_r, rclcpp::Time & time)
+void amr_odom::getVelocities_ACKtype(double steering_angle_l, double steering_angle_r, double rpm_l, double rpm_r, rclcpp::Time & time)
 {
   // RCLCPP_INFO(get_logger(), "Ackermann Config");
   double steering_angle = (steering_angle_l + steering_angle_r)/2.0;
