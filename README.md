@@ -3,7 +3,7 @@ Design algorithm for Mobile Robots
 
 $$v = r \omega$$
 
-$$rpm = \frac{V \cdot 60}{2 \pi r}$$
+$$rpm = \frac{v \cdot 60}{2 \pi r}$$
 
 where:
 - `v` is the velocity of the wheel
