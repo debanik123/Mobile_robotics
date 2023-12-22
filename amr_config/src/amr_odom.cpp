@@ -42,7 +42,7 @@ int amr_odom::odom_update()
 
     return 0;
 }
-void amr_odom::getVelocities_Omni(double rpm1, double rpm2, double rpm3 rclcpp::Time & time)
+void amr_odom::getVelocities_Omni(double rpm1, double rpm2, double rpm3, rclcpp::Time & time)
 {
 
   double linear_x_rpm = (0.0*rpm1-rpm2+rpm3)/sqrt(3);
@@ -52,7 +52,7 @@ void amr_odom::getVelocities_Omni(double rpm1, double rpm2, double rpm3 rclcpp::
   double linear_x_vel =  getVel_from_rpm(linear_x_rpm);
   double linear_y_vel =  getVel_from_rpm(linear_y_rpm);
   double angular_vel = getVel_from_rpm(angular_rpm);
-  
+
 }
 void amr_odom::getVelocities_Mecanum(double rpm1, double rpm2, double rpm3, double rpm4, rclcpp::Time & time)
 {
