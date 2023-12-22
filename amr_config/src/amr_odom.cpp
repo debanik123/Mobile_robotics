@@ -45,6 +45,7 @@ int amr_odom::odom_update()
 
 void amr_odom::getVelocities_hex_mechDrive(double rpm1, double rpm2, double rpm3, double rpm4, double rpm5, double rpm6, rclcpp::Time & time)
 {
+  // RCLCPP_INFO(get_logger(), "Hex MechDrive Config");
   double phi = (sqrt(3)+1);
   double phi2 = (1.0/(4*R_hex*(sqrt(3)+3)));
 
@@ -55,8 +56,6 @@ void amr_odom::getVelocities_hex_mechDrive(double rpm1, double rpm2, double rpm3
   double linear_x_vel = getVel_from_rpm(linear_x_rpm);
   double linear_y_vel = getVel_from_rpm(linear_y_rpm);
   double angular_vel = getVel_from_rpm(angular_rpm);
-
-
 
 }
 void amr_odom::getVelocities_two_steer_drive(double rpm1, double th1, double rpm2, double th2, rclcpp::Time & time)
