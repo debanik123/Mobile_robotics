@@ -14,13 +14,14 @@ void amr_control::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
     double linear_y = msg->linear.x;
     double angular_z = msg->angular.z;
 
+    int hex_mechDrive_ = hex_mechDrive(linear_x, linear_y, angular_z);
     // int diff_ = diffDrive(linear_x, angular_z);
     // int ackerDrive_ = ackermannDrive(linear_x, angular_z);
     // int triDrive_ty1 = tricycleDrive_type1(linear_x, angular_z);
     // int triDrive_ty2 = tricycleDrive_type2_bicycle(linear_x, angular_z);
     // int forDrive_ = four_wheel_drive(linear_x, angular_z);
     // int mechDrive_ = mechDrive(linear_x, linear_y, angular_z);
-    int omniDrive_ = omniDrive(linear_x, linear_y, angular_z);
+    // int omniDrive_ = omniDrive(linear_x, linear_y, angular_z);
     // int four_steer_drive_ = four_steer_drive(linear_x, linear_y, angular_z);
     // int two_steer_drive_ = two_steer_drive(linear_x, linear_y, angular_z);
     
@@ -32,7 +33,29 @@ void amr_control::CmdVelCb(const geometry_msgs::msg::Twist::SharedPtr msg)
 int amr_control::hex_mechDrive(double linear_x, double linear_y, double angular_z)
 {
     RCLCPP_INFO(get_logger(), "Hex MechDrive Config");
-    
+
+    double phi = (R_hex*(sqrt(3)+1))/2.0;
+
+    double v1 = linear_x-linear_y-(angular_z*phi);
+    double v2 = linear_x+linear_y+(angular_z*phi);
+    double v3 = linear_x+linear_y-(angular_z*phi);
+    double v4 = linear_x-linear_y+(angular_z*phi);
+    double v5 = linear_x+linear_y-(angular_z*R_hex);
+    double v6 = linear_x+linear_y+(angular_z*R_hex);
+
+    int rpm1 = getRpm(v1);
+    int rpm2 = getRpm(v2);
+    int rpm3 = getRpm(v3);
+    int rpm4 = getRpm(v4);
+    int rpm5 = getRpm(v5);
+    int rpm6 = getRpm(v6);
+
+    RCLCPP_INFO(get_logger(), "v1: %f, rpm1: %d", v1, rpm1);
+    RCLCPP_INFO(get_logger(), "v2: %f, rpm2: %d", v2, rpm2);
+    RCLCPP_INFO(get_logger(), "v3: %f, rpm3: %d", v3, rpm3);
+    RCLCPP_INFO(get_logger(), "v4: %f, rpm4: %d", v4, rpm4);
+    RCLCPP_INFO(get_logger(), "v5: %f, rpm5: %d", v5, rpm5);
+    RCLCPP_INFO(get_logger(), "v6: %f, rpm6: %d", v6, rpm6);
 
 }
 int amr_control::ackermannDrive(double linear_x, double angular_z)
