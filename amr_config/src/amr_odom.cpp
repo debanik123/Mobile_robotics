@@ -43,21 +43,7 @@ int amr_odom::odom_update()
     return 0;
 }
 
-void amr_odom::getVelocities_hex_mechDrive(double rpm1, double rpm2, double rpm3, double rpm4, double rpm5, double rpm6, rclcpp::Time & time)
-{
-  // RCLCPP_INFO(get_logger(), "Hex MechDrive Config");
-  double phi = (sqrt(3)+1);
-  double phi2 = (1.0/(4*R_hex*(sqrt(3)+3)));
 
-  double linear_x_rpm = (rpm1/4.0)+(rpm2/8.0)+(rpm3/8.0)+(rpm4/4.0)+(rpm5/8.0)+(rpm6/8.0);
-  double linear_y_rpm = -(rpm1/4.0)+(rpm2/8.0)+(rpm3/8.0)-(rpm4/4.0)+(rpm5/8.0)+(rpm6/8.0);
-  double angular_rpm = phi2*(-phi*rpm1 + phi*rpm2 - phi*rpm3 + phi*rpm4 - 2.0*rpm5 + 2.0*rpm6);
-
-  double linear_x_vel = getVel_from_rpm(linear_x_rpm);
-  double linear_y_vel = getVel_from_rpm(linear_y_rpm);
-  double angular_vel = getVel_from_rpm(angular_rpm);
-
-}
 void amr_odom::getVelocities_two_steer_drive(double rpm1, double th1, double rpm2, double th2, rclcpp::Time & time)
 {
   // RCLCPP_INFO(get_logger(), "Two_steer_drive Config");
@@ -71,8 +57,6 @@ void amr_odom::getVelocities_two_steer_drive(double rpm1, double th1, double rpm
   double linear_vel_x = (v1x+v2x)/2.0;
   double linear_vel_y = (v1y+v2y)/2.0;
   double angular_z = (v1y-v2y)/(2.0*l);
-
-
 }
 
 void amr_odom::getVelocities_four_steer_drive(double rpm1, double th1, double rpm2, double th2, double rpm3, double th3, double rpm4, double th4, rclcpp::Time & time)
@@ -103,8 +87,8 @@ void amr_odom::getVelocities_four_steer_drive(double rpm1, double th1, double rp
   // angular_ = body_angular_vel;
 
   // updateOpenLoop(linear_, angular_, time);
-
 }
+
 
 void amr_odom::getVelocities_Omni(double rpm1, double rpm2, double rpm3, rclcpp::Time & time)
 {
@@ -118,6 +102,7 @@ void amr_odom::getVelocities_Omni(double rpm1, double rpm2, double rpm3, rclcpp:
   double angular_vel = getVel_from_rpm(angular_rpm);
 
 }
+
 void amr_odom::getVelocities_Mecanum(double rpm1, double rpm2, double rpm3, double rpm4, rclcpp::Time & time)
 {
   // RCLCPP_INFO(get_logger(), "MechDrive Config");
@@ -130,9 +115,23 @@ void amr_odom::getVelocities_Mecanum(double rpm1, double rpm2, double rpm3, doub
   double linear_x_vel =  getVel_from_rpm(linear_x_rpm);
   double linear_y_vel =  getVel_from_rpm(linear_y_rpm);
   double angular_vel = getVel_from_rpm(angular_rpm);
-
-
 }
+
+void amr_odom::getVelocities_hex_mechDrive(double rpm1, double rpm2, double rpm3, double rpm4, double rpm5, double rpm6, rclcpp::Time & time)
+{
+  // RCLCPP_INFO(get_logger(), "Hex MechDrive Config");
+  double phi = (sqrt(3)+1);
+  double phi2 = (1.0/(4*R_hex*(sqrt(3)+3)));
+
+  double linear_x_rpm = (rpm1/4.0)+(rpm2/8.0)+(rpm3/8.0)+(rpm4/4.0)+(rpm5/8.0)+(rpm6/8.0);
+  double linear_y_rpm = -(rpm1/4.0)+(rpm2/8.0)+(rpm3/8.0)-(rpm4/4.0)+(rpm5/8.0)+(rpm6/8.0);
+  double angular_rpm = phi2*(-phi*rpm1 + phi*rpm2 - phi*rpm3 + phi*rpm4 - 2.0*rpm5 + 2.0*rpm6);
+
+  double linear_x_vel = getVel_from_rpm(linear_x_rpm);
+  double linear_y_vel = getVel_from_rpm(linear_y_rpm);
+  double angular_vel = getVel_from_rpm(angular_rpm);
+}
+
 
 void amr_odom::getVelocities_Tri(double steering_angle, double rpm, rclcpp::Time & time)
 {
@@ -159,7 +158,6 @@ void amr_odom::getVelocities_ACKtype1(double steering_angle, double rpm_l, doubl
   angular_ = body_angular_vel;
 
   updateOpenLoop(linear_, angular_, time);
-
 }
 
 void amr_odom::getVelocities_ACKtype2(double steering_angle_l, double steering_angle_r, double rpm_l, double rpm_r, rclcpp::Time & time)
