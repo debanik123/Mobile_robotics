@@ -187,11 +187,10 @@ int amr_control::diffDrive(double linear_x, double angular_z)
 int amr_control::omniDrive(double linear_x, double linear_y, double angular_z)
 {
     RCLCPP_INFO(get_logger(), "OmniDrive Config");
-    double rot = L*angular_z;
 
-    double FO_wheel_vel = linear_y + rot;
-    double LO_wheel_vel = -linear_x*sin(M_PI/3.0)-linear_y*cos(M_PI/3.0)+ rot;
-    double RO_wheel_vel = linear_x*sin(M_PI/3.0)-linear_y*cos(M_PI/3.0)+ rot;
+    double FO_wheel_vel = linear_y + L*angular_z;
+    double LO_wheel_vel = -linear_x*(sqrt(3)/2.0)-linear_y*(1/2.0)+ L*angular_z;
+    double RO_wheel_vel = linear_x*(sqrt(3)/2.0)-linear_y*(1/2.0)+ L*angular_z;
 
     int FO_wheel_rpm = getRpm(FO_wheel_vel);
     int LO_wheel_rpm = getRpm(LO_wheel_vel);
