@@ -54,9 +54,11 @@ void amr_odom::getVelocities_two_steer_drive(double rpm1, double th1, double rpm
   auto [v1x, v1y] = Cartesian_from_polar(v1, th1);
   auto [v2x, v2y] = Cartesian_from_polar(v2, th2);
 
-  double linear_vel_x = (v1x+v2x)/2.0;
-  double linear_vel_y = (v1y+v2y)/2.0;
-  double angular_z = (v1y-v2y)/(2.0*l);
+  double linear_x_vel = (v1x+v2x)/2.0;
+  double linear_y_vel = (v1y+v2y)/2.0;
+  double angular_vel = (v1y-v2y)/(2.0*l);
+
+  integrateXY(linear_x_vel, linear_y_vel, angular_vel);
 }
 
 void amr_odom::getVelocities_four_steer_drive(double rpm1, double th1, double rpm2, double th2, double rpm3, double th3, double rpm4, double th4, rclcpp::Time & time)
@@ -79,9 +81,11 @@ void amr_odom::getVelocities_four_steer_drive(double rpm1, double th1, double rp
   auto [v3x, v3y] = Cartesian_from_polar(v3, th3);
   auto [v4x, v4y] = Cartesian_from_polar(v4, th4);
 
-  double linear_vel_x = (v1x+v2x+v3x+v4x);
-  double linear_vel_y = (v1y+v2y+v3y+v4y);
-  double angular_z = -sig2*v1x + sig1*v1y - sig2*v2x - sig1*v2y + sig2*v3x - sig1*v3y + sig2*v4x + sig1*v4y;
+  double linear_x_vel = (v1x+v2x+v3x+v4x);
+  double linear_y_vel = (v1y+v2y+v3y+v4y);
+  double angular_vel = -sig2*v1x + sig1*v1y - sig2*v2x - sig1*v2y + sig2*v3x - sig1*v3y + sig2*v4x + sig1*v4y;
+
+  integrateXY(linear_x_vel, linear_y_vel, angular_vel);
 
   // linear_ = body_linear_vel;
   // angular_ = body_angular_vel;
@@ -101,6 +105,8 @@ void amr_odom::getVelocities_Omni(double rpm1, double rpm2, double rpm3, rclcpp:
   double linear_y_vel =  getVel_from_rpm(linear_y_rpm);
   double angular_vel = getVel_from_rpm(angular_rpm);
 
+  integrateXY(linear_x_vel, linear_y_vel, angular_vel);
+
 }
 
 void amr_odom::getVelocities_Mecanum(double rpm1, double rpm2, double rpm3, double rpm4, rclcpp::Time & time)
@@ -115,6 +121,8 @@ void amr_odom::getVelocities_Mecanum(double rpm1, double rpm2, double rpm3, doub
   double linear_x_vel =  getVel_from_rpm(linear_x_rpm);
   double linear_y_vel =  getVel_from_rpm(linear_y_rpm);
   double angular_vel = getVel_from_rpm(angular_rpm);
+
+  integrateXY(linear_x_vel, linear_y_vel, angular_vel);
 }
 
 void amr_odom::getVelocities_hex_mechDrive(double rpm1, double rpm2, double rpm3, double rpm4, double rpm5, double rpm6, rclcpp::Time & time)
@@ -130,6 +138,8 @@ void amr_odom::getVelocities_hex_mechDrive(double rpm1, double rpm2, double rpm3
   double linear_x_vel = getVel_from_rpm(linear_x_rpm);
   double linear_y_vel = getVel_from_rpm(linear_y_rpm);
   double angular_vel = getVel_from_rpm(angular_rpm);
+
+  integrateXY(linear_x_vel, linear_y_vel, angular_vel);
 }
 
 
@@ -233,6 +243,16 @@ void amr_odom::updateOpenLoop(double linear, double angular, const rclcpp::Time 
   const double dt = time.seconds() - timestamp_.seconds();
   timestamp_ = time;
   integrateExact(linear * dt, angular * dt);
+}
+
+void amr_odom::integrateXY(double linear_x, double linear_y, double angular)
+{
+  const double delta_x = linear_x*cos(heading_) - linear_y*sin(heading_);
+  const double delta_y = linear_x*sin(heading_) + linear_y*cos(heading_);
+
+  x_ += delta_x;
+  y_ += delta_y;
+  heading_ += angular;
 }
 
 void amr_odom::integrateRungeKutta2(double linear, double angular)

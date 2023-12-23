@@ -25,6 +25,7 @@ public:
     void resetOdometry();
     
     void updateOpenLoop(double linear, double angular, const rclcpp::Time & time);
+    void integrateXY(double linear_x, double linear_y, double angular);
     void integrateRungeKutta2(double linear, double angular);
     void integrateExact(double linear, double angular);
 
