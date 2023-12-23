@@ -58,7 +58,10 @@ void amr_odom::getVelocities_two_steer_drive(double rpm1, double th1, double rpm
   double linear_y_vel = (v1y+v2y)/2.0;
   double angular_vel = (v1y-v2y)/(2.0*l);
 
-  integrateXY(linear_x_vel, linear_y_vel, angular_vel);
+  const double dt = time.seconds() - timestamp_.seconds();
+  timestamp_ = time;
+
+  integrateXY(linear_x_vel*dt, linear_y_vel*dt, angular_vel*dt);
 }
 
 void amr_odom::getVelocities_four_steer_drive(double rpm1, double th1, double rpm2, double th2, double rpm3, double th3, double rpm4, double th4, rclcpp::Time & time)
@@ -85,7 +88,10 @@ void amr_odom::getVelocities_four_steer_drive(double rpm1, double th1, double rp
   double linear_y_vel = (v1y+v2y+v3y+v4y);
   double angular_vel = -sig2*v1x + sig1*v1y - sig2*v2x - sig1*v2y + sig2*v3x - sig1*v3y + sig2*v4x + sig1*v4y;
 
-  integrateXY(linear_x_vel, linear_y_vel, angular_vel);
+  const double dt = time.seconds() - timestamp_.seconds();
+  timestamp_ = time;
+
+  integrateXY(linear_x_vel*dt, linear_y_vel*dt, angular_vel*dt);
 
   // linear_ = body_linear_vel;
   // angular_ = body_angular_vel;
@@ -105,7 +111,10 @@ void amr_odom::getVelocities_Omni(double rpm1, double rpm2, double rpm3, rclcpp:
   double linear_y_vel =  getVel_from_rpm(linear_y_rpm);
   double angular_vel = getVel_from_rpm(angular_rpm);
 
-  integrateXY(linear_x_vel, linear_y_vel, angular_vel);
+  const double dt = time.seconds() - timestamp_.seconds();
+  timestamp_ = time;
+
+  integrateXY(linear_x_vel*dt, linear_y_vel*dt, angular_vel*dt);
 
 }
 
@@ -121,8 +130,12 @@ void amr_odom::getVelocities_Mecanum(double rpm1, double rpm2, double rpm3, doub
   double linear_x_vel =  getVel_from_rpm(linear_x_rpm);
   double linear_y_vel =  getVel_from_rpm(linear_y_rpm);
   double angular_vel = getVel_from_rpm(angular_rpm);
+  
+  const double dt = time.seconds() - timestamp_.seconds();
+  timestamp_ = time;
 
-  integrateXY(linear_x_vel, linear_y_vel, angular_vel);
+  integrateXY(linear_x_vel*dt, linear_y_vel*dt, angular_vel*dt);
+
 }
 
 void amr_odom::getVelocities_hex_mechDrive(double rpm1, double rpm2, double rpm3, double rpm4, double rpm5, double rpm6, rclcpp::Time & time)
@@ -139,7 +152,10 @@ void amr_odom::getVelocities_hex_mechDrive(double rpm1, double rpm2, double rpm3
   double linear_y_vel = getVel_from_rpm(linear_y_rpm);
   double angular_vel = getVel_from_rpm(angular_rpm);
 
-  integrateXY(linear_x_vel, linear_y_vel, angular_vel);
+  const double dt = time.seconds() - timestamp_.seconds();
+  timestamp_ = time;
+
+  integrateXY(linear_x_vel*dt, linear_y_vel*dt, angular_vel*dt);
 }
 
 
