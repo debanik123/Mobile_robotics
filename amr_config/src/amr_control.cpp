@@ -1,5 +1,5 @@
 #include "amr_config/amr_control.hpp"
-
+// Inverse Kinematics (IK) control
 amr_control::amr_control()
 : Node("amr_control_node")
 {

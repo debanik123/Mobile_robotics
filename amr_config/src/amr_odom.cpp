@@ -1,5 +1,5 @@
 #include "amr_config/amr_odom.hpp"
-
+// Forward Kinematics (IK) control
 amr_odom::amr_odom()
 : Node("amr_odom")
 {
