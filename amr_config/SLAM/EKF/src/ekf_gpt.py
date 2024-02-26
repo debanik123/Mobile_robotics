@@ -110,10 +110,14 @@ class EKFRos2Node(Node):
         self.ekf.predict(dt, linear_velocity, angular_velocity)
 
         # Save the current state for plotting
-        # self.true_trajectory.append(self.ekf.x.copy())
-        self.publish_estimated_trajectory()
-        
+        self.true_trajectory.append(self.ekf.x.copy())
+        # self.publish_estimated_trajectory()
+
         self.ekf_last_update_time = msg.header.stamp.sec
+    
+    def save_trajectory_data(self, true_filename='true_trajectory.csv', estimated_filename='estimated_trajectory.csv'):
+        np.savetxt(true_filename, np.array(self.true_trajectory), delimiter=',')
+        np.savetxt(estimated_filename, np.array(self.estimated_trajectory), delimiter=',')
 
     def publish_estimated_trajectory(self):
         if self.estimated_trajectory:
@@ -127,18 +131,34 @@ class EKFRos2Node(Node):
             odom_msg.pose.pose.orientation.w = np.cos(self.ekf.x[2] / 2.0)
 
             self.estimated_trajectory_publisher.publish(odom_msg)
+    
+    def plot_trajectory(self):
+        true_trajectory = np.array(self.true_trajectory)
+        estimated_trajectory = np.array(self.estimated_trajectory)
 
+        plt.figure(figsize=(10, 6))
+        plt.plot(true_trajectory[:, 0], true_trajectory[:, 1], label='True trajectory', marker='.')
+        plt.plot(estimated_trajectory[:, 0], estimated_trajectory[:, 1], label='Estimated trajectory', marker='x')
+        plt.legend()
+        plt.title('Extended Kalman Filter for 2D Localization with Lidar and Odometry')
+        plt.xlabel('X-axis')
+        plt.ylabel('Y-axis')
+        plt.show()
+        
 def main(args=None):
     rclpy.init(args=args)
     ekf_ros2_node = EKFRos2Node()
-    rclpy.spin(ekf_ros2_node)
 
-    # Plot trajectory when the node is shutting down
-    # ekf_ros2_node.plot_trajectory()
-
-    ekf_ros2_node.destroy_node()
-    rclpy.shutdown()
+    try:
+        rclpy.spin(ekf_ros2_node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        # Save both true and estimated trajectories
+        ekf_ros2_node.save_trajectory_data()
+        ekf_ros2_node.plot_trajectory()
+        ekf_ros2_node.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
-
