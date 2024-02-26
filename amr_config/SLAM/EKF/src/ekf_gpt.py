@@ -41,19 +41,25 @@ class ExtendedKalmanFilter:
             [np.cos(self.x[2]), -np.sin(self.x[2]), 0],
             [np.sin(self.x[2]), np.cos(self.x[2]), 0]
         ])
+        print(H.T.shape, measurement.shape)
 
         # Compute the innovation
-        y = measurement - np.dot(H, self.x[:2])
+        y = measurement - np.dot(H, self.x)
+        # print(y)
+        # print(np.dot(H, self.x).shape)
 
-        # Compute the innovation covariance
-        S = np.dot(H, np.dot(self.P[:2, :2], H.T)) + self.R
+        print(self.P.shape)
 
-        # Compute Kalman gain
-        K = np.dot(self.P[:2, :2], np.dot(H.T, np.linalg.inv(S)))
 
-        # Update state and covariance
-        self.x[:2] += np.dot(K, y)
-        self.P[:2, :2] -= np.dot(K, np.dot(H, self.P[:2, :2]))
+        # # Compute the innovation covariance
+        # S = np.dot(H, np.dot(self.P, H.T)) + self.R
+
+        # # Compute Kalman gain
+        # K = np.dot(self.P[:2, :2], np.dot(H.T, np.linalg.inv(S)))
+
+        # # Update state and covariance
+        # self.x[:2] += np.dot(K, y)
+        # self.P[:2, :2] -= np.dot(K, np.dot(H, self.P[:2, :2]))
 
 class EKFRos2Node(Node):
     def __init__(self):
@@ -63,16 +69,16 @@ class EKFRos2Node(Node):
         initial_state = [0.0, 0.0, 0.0]
         initial_covariance = np.diag([1.0, 1.0, 0.1])
         self.ekf = ExtendedKalmanFilter(initial_state, initial_covariance)
-
+        self.ekf_last_update_time = 0.0
         # Subscribe to Lidar (scan) and odometry topics
         self.subscription_lidar = self.create_subscription(
             LaserScan,
-            '/lidar_topic',
+            'scan',
             self.lidar_callback,
             10)
         self.subscription_odom = self.create_subscription(
             Odometry,
-            '/odom_topic',
+            'odom',
             self.odom_callback,
             10)
 
@@ -91,20 +97,20 @@ class EKFRos2Node(Node):
                 self.ekf.update(measurement)
 
         # Save the current state for plotting
-        self.estimated_trajectory.append(self.ekf.x.copy())
+        # self.estimated_trajectory.append(self.ekf.x.copy())
 
     def odom_callback(self, msg):
         # Process odometry data here
         linear_velocity = msg.twist.twist.linear.x
         angular_velocity = msg.twist.twist.angular.z
 
-        dt = msg.header.stamp.to_sec() - self.ekf_last_update_time
+        dt = msg.header.stamp.sec - self.ekf_last_update_time
         self.ekf.predict(dt, linear_velocity, angular_velocity)
 
         # Save the current state for plotting
         self.true_trajectory.append(self.ekf.x.copy())
 
-        self.ekf_last_update_time = msg.header.stamp.to_sec()
+        self.ekf_last_update_time = msg.header.stamp.sec
 
     def plot_trajectory(self):
         true_trajectory = np.array(self.true_trajectory)
@@ -125,7 +131,7 @@ def main(args=None):
     rclpy.spin(ekf_ros2_node)
 
     # Plot trajectory when the node is shutting down
-    ekf_ros2_node.plot_trajectory()
+    # ekf_ros2_node.plot_trajectory()
 
     ekf_ros2_node.destroy_node()
     rclpy.shutdown()
