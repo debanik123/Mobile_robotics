@@ -24,7 +24,7 @@ x_int = data["x_init"]
 y_int = data["y_init"]
 th_int = data["th_init"]
 
-print(x_int, y_int, th_int)
+# print(x_int, y_int, th_int)
+# print(d)
 
 
-print(d)
