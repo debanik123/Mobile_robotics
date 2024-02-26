@@ -96,7 +96,7 @@ class EKFRos2Node(Node):
                 self.ekf.update(measurement)
 
         # Save the current state for plotting
-        # self.estimated_trajectory.append(self.ekf.x.copy())
+        self.estimated_trajectory.append(self.ekf.x.copy())
 
     def odom_callback(self, msg):
         # Process odometry data here
@@ -130,7 +130,7 @@ def main(args=None):
     rclpy.spin(ekf_ros2_node)
 
     # Plot trajectory when the node is shutting down
-    # ekf_ros2_node.plot_trajectory()
+    ekf_ros2_node.plot_trajectory()
 
     ekf_ros2_node.destroy_node()
     rclpy.shutdown()
