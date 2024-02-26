@@ -80,6 +80,8 @@ class EKFRos2Node(Node):
             'odom',
             self.odom_callback,
             10)
+        
+        self.estimated_trajectory_publisher = self.create_publisher(Odometry, 'estimated_trajectory', 10)
 
         # Initialize variables for plotting
         self.true_trajectory = []
@@ -94,7 +96,8 @@ class EKFRos2Node(Node):
             if np.isfinite(r):
                 measurement = np.array([r, angle])
                 self.ekf.update(measurement)
-
+        
+        # print("ok")
         # Save the current state for plotting
         self.estimated_trajectory.append(self.ekf.x.copy())
 
@@ -107,22 +110,23 @@ class EKFRos2Node(Node):
         self.ekf.predict(dt, linear_velocity, angular_velocity)
 
         # Save the current state for plotting
-        self.true_trajectory.append(self.ekf.x.copy())
-
+        # self.true_trajectory.append(self.ekf.x.copy())
+        self.publish_estimated_trajectory()
+        
         self.ekf_last_update_time = msg.header.stamp.sec
 
-    def plot_trajectory(self):
-        true_trajectory = np.array(self.true_trajectory)
-        estimated_trajectory = np.array(self.estimated_trajectory)
+    def publish_estimated_trajectory(self):
+        if self.estimated_trajectory:
+            odom_msg = Odometry()
+            odom_msg.header.stamp = self.get_clock().now().to_msg()
+            odom_msg.header.frame_id = 'map'
+            odom_msg.child_frame_id = 'base_link'
+            odom_msg.pose.pose.position.x = self.ekf.x[0]
+            odom_msg.pose.pose.position.y = self.ekf.x[1]
+            odom_msg.pose.pose.orientation.z = np.sin(self.ekf.x[2] / 2.0)
+            odom_msg.pose.pose.orientation.w = np.cos(self.ekf.x[2] / 2.0)
 
-        plt.figure(figsize=(10, 6))
-        plt.plot(true_trajectory[:, 0], true_trajectory[:, 1], label='True trajectory', marker='.')
-        plt.plot(estimated_trajectory[:, 0], estimated_trajectory[:, 1], label='Estimated trajectory', marker='x')
-        plt.legend()
-        plt.title('Extended Kalman Filter for 2D Localization with Lidar and Odometry')
-        plt.xlabel('X-axis')
-        plt.ylabel('Y-axis')
-        plt.show()
+            self.estimated_trajectory_publisher.publish(odom_msg)
 
 def main(args=None):
     rclpy.init(args=args)
@@ -130,7 +134,7 @@ def main(args=None):
     rclpy.spin(ekf_ros2_node)
 
     # Plot trajectory when the node is shutting down
-    ekf_ros2_node.plot_trajectory()
+    # ekf_ros2_node.plot_trajectory()
 
     ekf_ros2_node.destroy_node()
     rclpy.shutdown()
