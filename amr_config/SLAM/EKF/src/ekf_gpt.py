@@ -41,25 +41,24 @@ class ExtendedKalmanFilter:
             [np.cos(self.x[2]), -np.sin(self.x[2]), 0],
             [np.sin(self.x[2]), np.cos(self.x[2]), 0]
         ])
-        print(H.T.shape, measurement.shape)
+        # print(H.T.shape, measurement.shape)
 
         # Compute the innovation
         y = measurement - np.dot(H, self.x)
         # print(y)
         # print(np.dot(H, self.x).shape)
-
-        print(self.P.shape)
-
-
+        # print(self.P.shape, H.T.shape, np.dot(H, np.dot(self.P, H.T)).shape, self.R.shape)
         # # Compute the innovation covariance
-        # S = np.dot(H, np.dot(self.P, H.T)) + self.R
-
+        S = np.dot(H, np.dot(self.P, H.T)) + self.R
+        # print(S)
         # # Compute Kalman gain
-        # K = np.dot(self.P[:2, :2], np.dot(H.T, np.linalg.inv(S)))
-
+        K = np.dot(self.P, np.dot(H.T, np.linalg.inv(S)))
+        # print(K)
         # # Update state and covariance
-        # self.x[:2] += np.dot(K, y)
-        # self.P[:2, :2] -= np.dot(K, np.dot(H, self.P[:2, :2]))
+        self.x = self.x+ np.dot(K, y)
+        # print(self.x)
+        self.P = self.P  - np.dot(K, np.dot(H, self.P))
+        # print(self.P)
 
 class EKFRos2Node(Node):
     def __init__(self):
