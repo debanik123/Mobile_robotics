@@ -11,6 +11,12 @@ from faker import Faker
 # );
 # .quit
 
+# CREATE TABLE node_job (
+#     id INTEGER PRIMARY KEY AUTOINCREMENT,
+#     Node TEXT NOT NULL,
+#     Job TEXT NOT NULL
+# );
+
 # Connect to the SQLite database
 conn = sqlite3.connect('contacts.db')
 cursor = conn.cursor()
