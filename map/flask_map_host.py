@@ -43,20 +43,27 @@ def publish_topic_data():
 @app.route('/map', methods=['GET'])
 def get_map_image():
     global latest_map_data
-    if latest_map_data is not None:
-        # Create a map image using Matplotlib
-        # plt.imshow(latest_map_data, cmap='gray')
-        plt.imshow(latest_map_data, cmap=custom_cmap, interpolation='nearest')
-        plt.axis('off')  # Hide axes
-        # Save the image to BytesIO buffer
-        buffer = BytesIO()
-        plt.savefig(buffer, format='png')
-        buffer.seek(0)
-        # Clear the plot to release memory
-        plt.clf()
-        plt.close()
-        # Serve the image file from the buffer
-        return send_file(buffer, mimetype='image/png')
+    try:
+        if latest_map_data is not None:
+            # Create a map image using Matplotlib
+            # plt.imshow(latest_map_data, cmap='gray')
+            # rotated_map_data = np.rot90(latest_map_data)
+            rotated_map_data = np.rot90(latest_map_data, -3)
+            # flipped_map_data = np.flip(rotated_map_data, axis=0)
+            # rotated_map_data = latest_map_data
+            plt.imshow(rotated_map_data, cmap=custom_cmap, interpolation='nearest')
+            plt.axis('off')  # Hide axes
+            # Save the image to BytesIO buffer
+            buffer = BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            # Clear the plot to release memory
+            plt.clf()
+            plt.close()
+            # Serve the image file from the buffer
+            return send_file(buffer, mimetype='image/png')
+    except:
+        pass
     else:
         return jsonify({'error': 'Map data not available'})
 
