@@ -7,12 +7,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 from io import BytesIO
 from matplotlib.colors import ListedColormap
+import tf2_ros
+from nav_msgs.msg import OccupancyGrid, Path
+from geometry_msgs.msg import PoseStamped
 
 
 app = Flask(__name__)
 
 # Global variable to store the latest map data
-latest_map_data = None
+# latest_map_data = None
+# latest_transform = None
+p_x = p_y = latest_map_data = latest_transform = path = ros2_node = None
+
 cmap_values = ['white', 'black', 'white']
 custom_cmap = ListedColormap(cmap_values)
 
@@ -25,41 +31,121 @@ class MapSubscriberNode(Node):
             'map',  # Replace with the actual topic name
             self.map_callback,
             10)
-
+        
+        self.subscription_path = self.create_subscription(
+            Path,
+            '/plan',  # Replace with the actual topic name
+            self.path_callback,
+            10)
+        
+        self.tf_buffer = tf2_ros.Buffer()
+        self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
+        # Timer to periodically update the latest transform
+        self.timer = self.create_timer(0.1, self.update_latest_transform)
+        self.map_data = None
     def map_callback(self, msg):
         global latest_map_data
         # Convert OccupancyGrid message to a dictionary
+        # print(msg.info.resolution, msg.info.width, msg.info.height, msg.info.origin.position.x, msg.info.origin.position.y)
         map_data = np.array(msg.data, dtype=np.uint8).reshape((msg.info.height, msg.info.width))
         latest_map_data = map_data
+        self.map_data = msg
+    
+    def update_latest_transform(self):
+        transform = self.get_latest_transform()
+
+        if transform is not None:
+            global latest_transform
+            latest_transform = transform
+    
+    def path_callback(self, msg):
+        global path
+        path = msg
+
+
+    def get_latest_transform(self):
+        global p_x, p_y
+        try:
+            transform = self.tf_buffer.lookup_transform('map', 'base_footprint', rclpy.time.Time().to_msg())
+            # print(transform)
+            if self.map_data is not None:
+                p_x, p_y = self.map_to_image_coordinates(transform.transform.translation.x, transform.transform.translation.y)
+                # print(p_x, p_y)
+
+            return transform
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+            self.get_logger().warn("Failed to lookup transform.")
+            return None
+        
+    def map_to_image_coordinates(self, robot_x, robot_y):
+        # Extract map information
+        map_resolution = self.map_data.info.resolution
+        map_origin_x = self.map_data.info.origin.position.x
+        map_origin_y = self.map_data.info.origin.position.y
+        image_width = self.map_data.info.width
+        image_height = self.map_data.info.height
+
+        # Convert robot's map coordinates to image coordinates
+        pixel_x = int((robot_x - map_origin_x) / map_resolution)
+        pixel_y = int(image_height - (robot_y - map_origin_y) / map_resolution)  # Invert y-axis
+
+        return pixel_x, pixel_y
+    
+    def image_to_map_coordinates(self, pixel_x, pixel_y):
+        # Extract map information
+        map_resolution = self.map_data.info.resolution
+        map_origin_x = self.map_data.info.origin.position.x
+        map_origin_y = self.map_data.info.origin.position.y
+        image_width = self.map_data.info.width
+        image_height = self.map_data.info.height
+
+        # Convert image coordinates to robot's map coordinates
+        robot_x = pixel_x * map_resolution + map_origin_x
+        robot_y = (image_height - pixel_y) * map_resolution + map_origin_y  # Invert y-axis
+
+        return robot_x, robot_y
+
+
 
 def publish_topic_data():
-    global master_task_id_pub_glob
+    global ros2_node
     rclpy.init()
     node = MapSubscriberNode()
-    master_task_id_pub_glob = node
+    ros2_node = node
     rclpy.spin(node)
 
-def get_map(latest_map_data):
-    rotated_map_data = np.rot90(latest_map_data, -3)
-    plt.imshow(rotated_map_data, cmap=custom_cmap, interpolation='nearest')
-    plt.axis('off')  # Hide axes
-    buffer = BytesIO()
-    plt.savefig(buffer, format='png')
-    buffer.seek(0)
-    plt.clf()
-    plt.close()
-    return buffer
 
 # API endpoint to get the latest map data
 @app.route('/map', methods=['GET'])
 def get_map_image():
-    global latest_map_data
+    global latest_map_data, p_x, p_y, ros2_node, path
     try:
         if latest_map_data is not None:
-            buffer = get_map(latest_map_data)
+            if p_x is not None and p_y is not None:
+                plt.plot(p_x, p_y, 'ro', markersize=10)
+            if ros2_node is not None:
+                if path is not None:
+                    for pose in path.poses:
+                        # print(pose.pose.position.x, pose.pose.position.y)
+                        pose_x, pose_y = ros2_node.map_to_image_coordinates(pose.pose.position.x, pose.pose.position.y)
+                        # print(pose_x, pose_y)
+                        plt.plot(pose_x, pose_y, 'g.')  # Plot path points
+
+            plt.imshow(latest_map_data, cmap=custom_cmap, interpolation='nearest')
+            plt.axis('off')  # Hide axes
+            # Save the image to BytesIO buffer
+            buffer = BytesIO()
+            plt.savefig(buffer, format='png')
+            buffer.seek(0)
+            # Clear the plot to release memory
+            plt.clf()
+            plt.close()
+            # Serve the image file from the buffer
             return send_file(buffer, mimetype='image/png')
-    except:
-        pass
+    except Exception as e:
+            # Handle any exceptions that may occur during the service call
+        print(str(e))
+        return jsonify({'error': 'Map data not available'})
     else:
         return jsonify({'error': 'Map data not available'})
 
@@ -67,7 +153,7 @@ def get_map_image():
 def main():
     thread = Thread(target=publish_topic_data)
     thread.start()
-    app.run(debug=True, threaded=True)
+    app.run(port=9000,debug=True, threaded=True)
 
 if __name__ == '__main__':
     main()
