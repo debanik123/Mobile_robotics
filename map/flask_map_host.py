@@ -6,15 +6,15 @@ from threading import Thread
 import numpy as np
 import matplotlib.pyplot as plt
 from io import BytesIO
-# from matplotlib.colors import ListedColormap
+from matplotlib.colors import ListedColormap
 
 
 app = Flask(__name__)
 
 # Global variable to store the latest map data
 latest_map_data = None
-# cmap_values = ['green', 'gray', 'black']
-# custom_cmap = ListedColormap(cmap_values)
+cmap_values = ['white', 'black', 'white']
+custom_cmap = ListedColormap(cmap_values)
 
 # ROS 2 node to subscribe to the map topic and update the map data
 class MapSubscriberNode(Node):
@@ -45,7 +45,8 @@ def get_map_image():
     global latest_map_data
     if latest_map_data is not None:
         # Create a map image using Matplotlib
-        plt.imshow(latest_map_data, cmap='gray')
+        # plt.imshow(latest_map_data, cmap='gray')
+        plt.imshow(latest_map_data, cmap=custom_cmap, interpolation='nearest')
         plt.axis('off')  # Hide axes
         # Save the image to BytesIO buffer
         buffer = BytesIO()
