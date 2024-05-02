@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Viewer</title>
+    <script>
+        function reloadMapImage() {
+            var mapImage = document.getElementById("mapImage");
+            // Update the src attribute of the image to trigger a reload
+            mapImage.src = "/map?" + new Date().getTime();
+        }
+        // Call reloadMapImage every 5 seconds (adjust as needed)
+        setInterval(reloadMapImage, 100);
+    </script>
+</head>
+<body>
+    <h1>Map Viewer</h1>
+    <!-- Display the map image -->
+    <img id="mapImage" src="/map" alt="Map Image">
+</body>
+</html>

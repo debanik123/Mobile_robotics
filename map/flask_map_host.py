@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from nav_msgs.msg import OccupancyGrid
-from flask import Flask, jsonify, send_file
+from flask import Flask, jsonify, send_file, render_template, request
 from threading import Thread
 import numpy as np
 import matplotlib.pyplot as plt
@@ -142,12 +142,31 @@ def get_map_image():
             plt.close()
             # Serve the image file from the buffer
             return send_file(buffer, mimetype='image/png')
+            # return render_template('html/map.html')
     except Exception as e:
             # Handle any exceptions that may occur during the service call
         print(str(e))
         return jsonify({'error': 'Map data not available'})
     else:
         return jsonify({'error': 'Map data not available'})
+
+@app.route('/map_viewer', methods=['GET'])
+def map_viewer():
+    return render_template('map_viewer.html')
+
+# @app.route('/map', methods=['GET'])
+# def show_map():
+#     return render_template('html/map.html')
+
+@app.route('/click', methods=['POST'])
+def handle_click():
+    data = request.json
+    clicked_x = data['x']
+    clicked_y = data['y']
+    print("Clicked coordinates:", clicked_x, clicked_y)
+    # Process the clicked coordinates as needed
+    return jsonify({'status': 'success'})
+
 
 
 def main():
