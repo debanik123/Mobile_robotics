@@ -120,22 +120,9 @@ class MapSubscriberNode(Node):
 
         # Convert image coordinates to robot's map coordinates
         robot_x = pixel_x * map_resolution + map_origin_x
-        robot_y = (image_height - pixel_y) * map_resolution + map_origin_y  # Invert y-axis
+        robot_y = pixel_y * map_resolution + map_origin_y  # Invert y-axis
 
         return robot_x, robot_y
-
-    # def send_goal_pose(self, x, y, theta, tolerance):
-    #     goal_msg = NavigateToPose.Goal()
-    #     goal_msg.pose.pose.position.x = x
-    #     goal_msg.pose.pose.position.y = y
-    #     # Assuming theta is the yaw angle in radians
-    #     goal_msg.pose.pose.orientation.z = math.sin(theta / 2)
-    #     goal_msg.pose.pose.orientation.w = math.cos(theta / 2)
-    #     # goal_msg.pose_tolerance.xy = tolerance
-    #     # goal_msg.pose_tolerance.theta = tolerance
-
-    #     self.nav_to_pose_ac.wait_for_server()
-    #     self.nav_to_pose_ac.send_goal_async(goal_msg)
 
 
 def publish_topic_data():
