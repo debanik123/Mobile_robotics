@@ -18,13 +18,15 @@
         function handleMapClick(event) {
             var mapImage = document.getElementById("mapImage");
             var rect = mapImage.getBoundingClientRect();
-            var offsetX = event.clientX - rect.left;
-            var offsetY = event.clientY - rect.top;
+            // var offsetX = event.clientX - rect.left;
+            // var offsetY = event.clientY - rect.top;
+            const offsetX = event.offsetX;
+            const offsetY = event.offsetY;
             // console.log("Clicked coordinates (pixels):", offsetX, offsetY);
 
-            var resolution = mapImage.naturalWidth / mapImage.width;
-            var width = mapImage.naturalWidth;
-            var height = mapImage.naturalHeight;
+            // var resolution = mapImage.naturalWidth / mapImage.width;
+            // var width = mapImage.naturalWidth;
+            // var height = mapImage.naturalHeight;
 
             
 
@@ -38,9 +40,9 @@
             }).then(response => {
                 if (response.ok) {
                     console.log('Click event sent successfully.');
-                    console.log("Resolution:", resolution);
-                    console.log("Width:", width);
-                    console.log("Height:", height);
+                    // console.log("Resolution:", resolution);
+                    // console.log("Width:", width);
+                    // console.log("Height:", height);
 
                 } else {
                     console.error('Failed to send click event.');
