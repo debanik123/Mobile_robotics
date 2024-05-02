@@ -46,6 +46,8 @@ class MapSubscriberNode(Node):
         self.nav_to_pose_ac = ActionClient(self, NavigateToPose, 'navigate_to_pose')
 
         self.publisher_goal_pose = self.create_publisher(PoseStamped, '/goal_pose', 10)
+        self.timer = self.create_timer(0.1, self.update_latest_transform)
+        self.map_data = None
 
     def publish_goal_pose(self, x, y):
         goal_msg = PoseStamped()
@@ -151,15 +153,15 @@ def get_map_image():
     try:
         if latest_map_data is not None:
             if p_x is not None and p_y is not None:
-                print(p_x, p_y)
-                plt.plot(p_x, p_y, 'ro', markersize=10)
+                # print(p_x, p_y)
+                plt.plot(p_x, p_y, 'ro', markersize=15)
             if ros2_node is not None:
                 if path is not None:
                     for pose in path.poses:
                         # print(pose.pose.position.x, pose.pose.position.y)
                         pose_x, pose_y = ros2_node.map_to_image_coordinates(pose.pose.position.x, pose.pose.position.y)
                         # print(pose_x, pose_y)
-                        plt.plot(pose_x, pose_y, 'g.')  # Plot path points
+                        plt.plot(pose_x, pose_y, 'g.', markersize=1)  # Plot path points
 
             plt.imshow(latest_map_data, cmap=custom_cmap, interpolation='nearest')
             plt.axis('off')  # Hide axes
@@ -210,7 +212,7 @@ def handle_click():
 
     robot_x, robot_y = ros2_node.image_to_map_coordinates(resized_x, resized_y)
     print("robot_x --> ", robot_x, " robot_y --> ", robot_y)
-    # ros2_node.publish_goal_pose(robot_x, robot_y)
+    ros2_node.publish_goal_pose(robot_x, robot_y)
     # Process the clicked coordinates as needed
     return jsonify({'status': 'success'})
 
