@@ -20,7 +20,7 @@ app = Flask(__name__)
 # Global variable to store the latest map data
 # latest_map_data = None
 # latest_transform = None
-p_x = p_y = latest_map_data = latest_transform = path = ros2_node = None
+p_x = p_y = latest_map_data = latest_transform = path = ros2_node = map_h = map_w = None
 
 cmap_values = ['white', 'black', 'white']
 custom_cmap = ListedColormap(cmap_values)
@@ -61,12 +61,15 @@ class MapSubscriberNode(Node):
         self.publisher_goal_pose.publish(goal_msg)
     
     def map_callback(self, msg):
-        global latest_map_data
+        global latest_map_data, map_h, map_w
         # Convert OccupancyGrid message to a dictionary
         # print(msg.info.resolution, msg.info.width, msg.info.height, msg.info.origin.position.x, msg.info.origin.position.y)
         map_data = np.array(msg.data, dtype=np.uint8).reshape((msg.info.height, msg.info.width))
         latest_map_data = map_data
         self.map_data = msg
+        map_w = self.map_data.info.width
+        map_h = self.map_data.info.height
+
     
     def update_latest_transform(self):
         transform = self.get_latest_transform()
@@ -120,9 +123,10 @@ class MapSubscriberNode(Node):
 
         # Convert image coordinates to robot's map coordinates
         robot_x = pixel_x * map_resolution + map_origin_x
-        robot_y = pixel_y * map_resolution + map_origin_y  # Invert y-axis
+        robot_y = (image_height - pixel_y) * map_resolution + map_origin_y  # Invert y-axis
 
         return robot_x, robot_y
+
 
 
 def publish_topic_data():
@@ -176,6 +180,7 @@ def map_viewer():
 
 @app.route('/click', methods=['POST'])
 def handle_click():
+    global map_h, map_w
     data = request.json
     clicked_x = data['x']
     clicked_y = data['y']
@@ -184,8 +189,8 @@ def handle_click():
 
     original_width = 640
     original_height = 480
-    resized_width = 112
-    resized_height = 103
+    resized_width = map_w
+    resized_height = map_h
 
     # Calculate the scaling factors
     scale_x = resized_width / original_width
