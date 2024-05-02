@@ -10,7 +10,10 @@ from matplotlib.colors import ListedColormap
 import tf2_ros
 from nav_msgs.msg import OccupancyGrid, Path
 from geometry_msgs.msg import PoseStamped
-
+from nav2_msgs.action import NavigateThroughPoses, NavigateToPose
+from rclpy.action import ActionClient
+from action_msgs.msg import GoalStatus
+import math
 
 app = Flask(__name__)
 
@@ -40,6 +43,8 @@ class MapSubscriberNode(Node):
         
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
+        self.nav_to_pose_ac = ActionClient(self, NavigateToPose, 'navigate_to_pose')
+
         # Timer to periodically update the latest transform
         self.timer = self.create_timer(0.1, self.update_latest_transform)
         self.map_data = None
@@ -85,6 +90,8 @@ class MapSubscriberNode(Node):
         image_width = self.map_data.info.width
         image_height = self.map_data.info.height
 
+        # print(image_width, image_height)
+
         # Convert robot's map coordinates to image coordinates
         pixel_x = int((robot_x - map_origin_x) / map_resolution)
         pixel_y = int(image_height - (robot_y - map_origin_y) / map_resolution)  # Invert y-axis
@@ -105,6 +112,18 @@ class MapSubscriberNode(Node):
 
         return robot_x, robot_y
 
+    def send_goal_pose(self, x, y, theta, tolerance):
+        goal_msg = NavigateToPose.Goal()
+        goal_msg.pose.pose.position.x = x
+        goal_msg.pose.pose.position.y = y
+        # Assuming theta is the yaw angle in radians
+        goal_msg.pose.pose.orientation.z = math.sin(theta / 2)
+        goal_msg.pose.pose.orientation.w = math.cos(theta / 2)
+        goal_msg.pose_tolerance.xy = tolerance
+        goal_msg.pose_tolerance.theta = tolerance
+
+        self.nav_to_pose_ac.wait_for_server()
+        self.nav_to_pose_ac.send_goal_async(goal_msg)
 
 
 def publish_topic_data():
@@ -161,6 +180,9 @@ def handle_click():
     clicked_x = data['x']
     clicked_y = data['y']
     print("Clicked coordinates:", clicked_x, clicked_y)
+    robot_x, robot_y = ros2_node.image_to_map_coordinates(clicked_x, clicked_y)
+    print("robot_x --> ", robot_x, " robot_y --> ", robot_y)
+    # ros2_node.send_goal_pose(robot_x, robot_y, 0.9, 1.0)
     # Process the clicked coordinates as needed
     return jsonify({'status': 'success'})
 
