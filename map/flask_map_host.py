@@ -152,7 +152,7 @@ def get_map_image():
                         # print(pose.pose.position.x, pose.pose.position.y)
                         pose_x, pose_y = ros2_node.map_to_image_coordinates(pose.pose.position.x, pose.pose.position.y)
                         # print(pose_x, pose_y)
-                        plt.plot(pose_x, pose_y, 'g.', markersize=1)  # Plot path points
+                        plt.plot(pose_x, pose_y, 'g.', markersize=3)  # Plot path points
 
             plt.imshow(latest_map_data, cmap=custom_cmap, interpolation='nearest')
             plt.axis('off')  # Hide axes
