@@ -172,7 +172,7 @@ def handle_click():
 def main():
     thread = Thread(target=publish_topic_data)
     thread.start()
-    app.run(port=9000,debug=True, threaded=True)
+    app.run(host='0.0.0.0', port=9000,debug=True, threaded=False)
 
 if __name__ == '__main__':
     main()
