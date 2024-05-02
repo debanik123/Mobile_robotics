@@ -154,9 +154,6 @@ def get_map_image():
 def map_viewer():
     return render_template('map_viewer.html')
 
-# @app.route('/map', methods=['GET'])
-# def show_map():
-#     return render_template('html/map.html')
 
 @app.route('/click', methods=['POST'])
 def handle_click():
