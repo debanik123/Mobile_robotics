@@ -10,13 +10,40 @@
             // Update the src attribute of the image to trigger a reload
             mapImage.src = "/map?" + new Date().getTime();
         }
+        
         // Call reloadMapImage every 5 seconds (adjust as needed)
         setInterval(reloadMapImage, 500);
+
+        // Function to handle click event on the map image
+        function handleMapClick(event) {
+            var mapImage = document.getElementById("mapImage");
+            var rect = mapImage.getBoundingClientRect();
+            var offsetX = event.clientX - rect.left;
+            var offsetY = event.clientY - rect.top;
+            console.log("Clicked coordinates (pixels):", offsetX, offsetY);
+
+            // Send the clicked coordinates to the server
+            fetch('/click', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({x: offsetX, y: offsetY})
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Click event sent successfully.');
+                } else {
+                    console.error('Failed to send click event.');
+                }
+            }).catch(error => {
+                console.error('Error while sending click event:', error);
+            });
+        }
     </script>
 </head>
 <body>
     <h1>Map Viewer</h1>
     <!-- Display the map image -->
-    <img id="mapImage" src="/map" alt="Map Image">
+    <img id="mapImage" src="/map" alt="Map Image" onclick="handleMapClick(event)">
 </body>
 </html>
