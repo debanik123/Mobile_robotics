@@ -20,7 +20,13 @@
             var rect = mapImage.getBoundingClientRect();
             var offsetX = event.clientX - rect.left;
             var offsetY = event.clientY - rect.top;
-            console.log("Clicked coordinates (pixels):", offsetX, offsetY);
+            // console.log("Clicked coordinates (pixels):", offsetX, offsetY);
+
+            var resolution = mapImage.naturalWidth / mapImage.width;
+            var width = mapImage.naturalWidth;
+            var height = mapImage.naturalHeight;
+
+            
 
             // Send the clicked coordinates to the server
             fetch('/click', {
@@ -32,6 +38,10 @@
             }).then(response => {
                 if (response.ok) {
                     console.log('Click event sent successfully.');
+                    console.log("Resolution:", resolution);
+                    console.log("Width:", width);
+                    console.log("Height:", height);
+
                 } else {
                     console.error('Failed to send click event.');
                 }

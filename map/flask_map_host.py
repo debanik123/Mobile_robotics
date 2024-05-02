@@ -45,9 +45,19 @@ class MapSubscriberNode(Node):
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
         self.nav_to_pose_ac = ActionClient(self, NavigateToPose, 'navigate_to_pose')
 
-        # Timer to periodically update the latest transform
-        self.timer = self.create_timer(0.1, self.update_latest_transform)
-        self.map_data = None
+        self.publisher_goal_pose = self.create_publisher(PoseStamped, '/goal_pose', 10)
+
+    def publish_goal_pose(self, x, y):
+        goal_msg = PoseStamped()
+        goal_msg.header.frame_id = 'map'  # Assuming the goal pose is in the 'map' frame
+        goal_msg.pose.position.x = x
+        goal_msg.pose.position.y = y
+        # Assuming theta is the yaw angle in radians
+        goal_msg.pose.orientation.z = 1.2
+        goal_msg.pose.orientation.w = 1.0
+        # Publish the goal pose
+        self.publisher_goal_pose.publish(goal_msg)
+    
     def map_callback(self, msg):
         global latest_map_data
         # Convert OccupancyGrid message to a dictionary
@@ -90,7 +100,7 @@ class MapSubscriberNode(Node):
         image_width = self.map_data.info.width
         image_height = self.map_data.info.height
 
-        # print(image_width, image_height)
+        # print(image_width, image_height, map_resolution)
 
         # Convert robot's map coordinates to image coordinates
         pixel_x = int((robot_x - map_origin_x) / map_resolution)
@@ -112,18 +122,18 @@ class MapSubscriberNode(Node):
 
         return robot_x, robot_y
 
-    def send_goal_pose(self, x, y, theta, tolerance):
-        goal_msg = NavigateToPose.Goal()
-        goal_msg.pose.pose.position.x = x
-        goal_msg.pose.pose.position.y = y
-        # Assuming theta is the yaw angle in radians
-        goal_msg.pose.pose.orientation.z = math.sin(theta / 2)
-        goal_msg.pose.pose.orientation.w = math.cos(theta / 2)
-        goal_msg.pose_tolerance.xy = tolerance
-        goal_msg.pose_tolerance.theta = tolerance
+    # def send_goal_pose(self, x, y, theta, tolerance):
+    #     goal_msg = NavigateToPose.Goal()
+    #     goal_msg.pose.pose.position.x = x
+    #     goal_msg.pose.pose.position.y = y
+    #     # Assuming theta is the yaw angle in radians
+    #     goal_msg.pose.pose.orientation.z = math.sin(theta / 2)
+    #     goal_msg.pose.pose.orientation.w = math.cos(theta / 2)
+    #     # goal_msg.pose_tolerance.xy = tolerance
+    #     # goal_msg.pose_tolerance.theta = tolerance
 
-        self.nav_to_pose_ac.wait_for_server()
-        self.nav_to_pose_ac.send_goal_async(goal_msg)
+    #     self.nav_to_pose_ac.wait_for_server()
+    #     self.nav_to_pose_ac.send_goal_async(goal_msg)
 
 
 def publish_topic_data():
@@ -141,6 +151,7 @@ def get_map_image():
     try:
         if latest_map_data is not None:
             if p_x is not None and p_y is not None:
+                print(p_x, p_y)
                 plt.plot(p_x, p_y, 'ro', markersize=10)
             if ros2_node is not None:
                 if path is not None:
@@ -180,9 +191,26 @@ def handle_click():
     clicked_x = data['x']
     clicked_y = data['y']
     print("Clicked coordinates:", clicked_x, clicked_y)
-    robot_x, robot_y = ros2_node.image_to_map_coordinates(clicked_x, clicked_y)
+    
+
+    original_width = 640
+    original_height = 480
+    resized_width = 112
+    resized_height = 103
+
+    # Calculate the scaling factors
+    scale_x = resized_width / original_width
+    scale_y = resized_height / original_height
+
+    # Resize the clicked coordinates
+    resized_x = clicked_x * scale_x
+    resized_y = clicked_y * scale_y
+
+    print("Clicked coordinates (resized):", resized_x, resized_y)
+
+    robot_x, robot_y = ros2_node.image_to_map_coordinates(resized_x, resized_y)
     print("robot_x --> ", robot_x, " robot_y --> ", robot_y)
-    # ros2_node.send_goal_pose(robot_x, robot_y, 0.9, 1.0)
+    # ros2_node.publish_goal_pose(robot_x, robot_y)
     # Process the clicked coordinates as needed
     return jsonify({'status': 'success'})
 
