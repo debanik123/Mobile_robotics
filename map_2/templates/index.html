@@ -11,6 +11,7 @@
 <body>
     <h1>ROS 2 Map</h1>
     <div id="map-container" style="width: 800px; height: 600px;"></div>
+    <script src="{{ url_for('static', filename='viewer.js') }}"></script>
     <script>
         // ROS connection setup
         var ros = new ROSLIB.Ros({
@@ -25,9 +26,15 @@
             messageType: 'nav_msgs/OccupancyGrid'  // Adjust based on your map message type
         });
 
-        mapview.subscribe(function(message) {
+        mapview.subscribe(function(map_msg) {
             // Handle map data and visualize it using roslibjs functions (refer to roslibjs documentation)
             console.log('Received map data');
+            console.log("Map resolution:", map_msg.info.resolution);
+            console.log("map Width:", map_msg.info.width);
+	        console.log("map Height:", map_msg.info.height);
+
+            var lengthInPixels = view.getMapUnitsInPixels(100); // Replace 100 with desired map units
+            console.log("Length in pixels:", lengthInPixels);
             // ... (Your map visualization logic here)
         });
 

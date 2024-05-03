@@ -1,0 +1,1 @@
+alert('Hello, world! This is my JavaScript file.');
