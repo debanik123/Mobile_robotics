@@ -18,10 +18,10 @@
         function handleMapClick(event) {
             var mapImage = document.getElementById("mapImage");
             var rect = mapImage.getBoundingClientRect();
-            // var offsetX = event.clientX - rect.left;
-            // var offsetY = event.clientY - rect.top;
-            const offsetX = event.offsetX;
-            const offsetY = event.offsetY;
+            var offsetX = event.clientX - rect.left;
+            var offsetY = event.clientY - rect.top;
+            // const offsetX = event.offsetX;
+            // const offsetY = event.offsetY;
             // console.log("Clicked coordinates (pixels):", offsetX, offsetY);
 
             // var resolution = mapImage.naturalWidth / mapImage.width;

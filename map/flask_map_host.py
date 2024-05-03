@@ -14,6 +14,7 @@ from nav2_msgs.action import NavigateThroughPoses, NavigateToPose
 from rclpy.action import ActionClient
 from action_msgs.msg import GoalStatus
 import math
+import cv2
 
 app = Flask(__name__)
 
@@ -60,11 +61,18 @@ class MapSubscriberNode(Node):
         # Publish the goal pose
         self.publisher_goal_pose.publish(goal_msg)
     
+    
+    def smooth_map_border(self, map_data):
+        map_data_uint8 = np.uint8(map_data)
+        smoothed_map = cv2.GaussianBlur(map_data_uint8, (5, 5), 0)
+        return smoothed_map
+    
     def map_callback(self, msg):
         global latest_map_data, map_h, map_w
         # Convert OccupancyGrid message to a dictionary
         # print(msg.info.resolution, msg.info.width, msg.info.height, msg.info.origin.position.x, msg.info.origin.position.y)
         map_data = np.array(msg.data, dtype=np.uint8).reshape((msg.info.height, msg.info.width))
+        # map_data = self.smooth_map_border(map_data)
         latest_map_data = map_data
         self.map_data = msg
         map_w = self.map_data.info.width
@@ -155,7 +163,7 @@ def get_map_image():
                         plt.plot(pose_x, pose_y, 'g.', markersize=3)  # Plot path points
 
             plt.imshow(latest_map_data, cmap=custom_cmap, interpolation='nearest')
-            plt.axis('off')  # Hide axes
+            # plt.axis('off')  # Hide axes
             # Save the image to BytesIO buffer
             buffer = BytesIO()
             plt.savefig(buffer, format='png')
