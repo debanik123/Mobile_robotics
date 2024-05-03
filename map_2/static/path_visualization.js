@@ -40,6 +40,13 @@ var pathSubscriber = new ROSLIB.Topic({
     messageType : 'nav_msgs/Path'
 });
 
+// Create the tf2Subscriber
+var tf2Subscriber = new ROSLIB.Topic({
+  ros: ros,
+  name: 'tf_static',
+  messageType: 'tf2_msgs/msg/TFMessage'
+});
+
 mapview.subscribe(function(map_msg) {
   mapName = mapview.name; // Assuming topic name represents map name
   console.log(`Received map data for: ${mapName}`);
@@ -86,6 +93,7 @@ function visualizeMap(map_msg) {
       }
       // ctx.fillRect(x, y, 1, 1);
       ctx.fillRect(x * scaleX, y * scaleY, scaleX, scaleY);
+      // ctx.rect(x * scaleX, y * scaleY, scaleX, scaleY);
     }
   }
 }
@@ -115,13 +123,54 @@ function visualizePath(poses) {
         const imageCoords1 = mapToImageCoordinates(pose1.x, pose1.y);
         const imageCoords2 = mapToImageCoordinates(pose2.x, pose2.y);
 
-        ctx.beginPath();
-        ctx.moveTo(imageCoords1.x, imageCoords1.y);
-        ctx.lineTo(imageCoords2.x, imageCoords2.y);
-        ctx.stroke();
+        // ctx.beginPath();
+        // ctx.moveTo(imageCoords1.x, imageCoords1.y);
+        // ctx.lineTo(imageCoords2.x, imageCoords2.y);
+        // ctx.stroke();
+        drawFilledCircle(ctx, imageCoords1.x, imageCoords1.y, 1, 'red');
     }
     
 }
+
+function drawFilledCircle(ctx, centerX, centerY, radius, color) {
+  // Begin a new path
+  ctx.beginPath();
+  
+  // Create a circle path
+  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+  
+  // Set the fill color
+  ctx.fillStyle = color;
+  
+  // Fill the circle path
+  ctx.fill();
+}
+
+// Example usage:
+// Assuming you have a canvas context named ctx
+// and you want to draw a filled circle at coordinates (100, 100) with a radius of 50 and red color
+
+tf2Subscriber.subscribe(function(tf2Msg) 
+{ 
+  console.log('Received transform:');
+  // ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // for (const transform of msg.transforms) 
+  // {
+  //   // Check if the transform is between map and base_footprint
+  //   if (transform.header.frame_id === 'map' && transform.child_frame_id === 'base_footprint') 
+  //   {
+  //       // Extract translation and rotation
+  //       const translation = transform.transform.translation;
+  //       const rotation = transform.transform.rotation;
+
+  //       // Log the transform data
+  //       console.log('Received transform:');
+  //       console.log('Translation:', translation);
+  //       console.log('Rotation:', rotation);
+  //   }
+  // }
+    // console.log(pathMsg.poses);
+});
 
 function mapToImageCoordinates(robot_x, robot_y) {
     // Extract map information
