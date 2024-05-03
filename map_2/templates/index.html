@@ -3,39 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROS 2 Map Visualization</title>
+    <title>ROS 2 Map Visualization (Multiple Maps)</title>
     <script src="https://cdn.jsdelivr.net/npm/easeljs@1/lib/easeljs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/eventemitter2@6/lib/eventemitter2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.min.js"></script>
 </head>
 <body>
-    <h1>ROS 2 Map</h1>
-    <div id="map-container" style="width: 800px; height: 600px;"></div>
-    <script src="{{ url_for('static', filename='viewer.js') }}"></script>
+    <h1>ROS 2 Map Visualization</h1>
+    <div id="map-container"></div>
     <script>
+        var maps = {}; // Dictionary to store maps and their canvas elements
+
         // ROS connection setup
         var ros = new ROSLIB.Ros({
             url: 'ws://localhost:9090'  // Replace with your ROS bridge server address
         });
 
         // Map visualization
-        var mapTopic = '/map';
+        function createMapCanvas(mapName) {
+          const mapContainer = document.getElementById('map-container');
+          const canvas = document.createElement('canvas');
+          canvas.id = `map-canvas-${mapName}`;
+          canvas.width = 0; // Will be set later
+          canvas.height = 0; // Will be set later
+          mapContainer.appendChild(canvas);
+          maps[mapName] = { canvas: canvas };
+          return canvas;
+        }
+
+        function clearMapCanvas(mapName) {
+          if (maps[mapName]) {
+            const canvas = maps[mapName].canvas;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+        }
+
         var mapview = new ROSLIB.Topic({
             ros: ros,
-            name: mapTopic,
+            name: '/map', // Subscribe to all map topics (replace with specific topic if needed)
             messageType: 'nav_msgs/OccupancyGrid'  // Adjust based on your map message type
         });
 
         mapview.subscribe(function(map_msg) {
-            // Handle map data and visualize it using roslibjs functions (refer to roslibjs documentation)
-            console.log('Received map data');
-            console.log("Map resolution:", map_msg.info.resolution);
-            console.log("map Width:", map_msg.info.width);
-	        console.log("map Height:", map_msg.info.height);
+            const mapName = mapview.name; // Assuming topic name represents map name
+            console.log(`Received map data for: ${mapName}`);
 
-            var lengthInPixels = view.getMapUnitsInPixels(100); // Replace 100 with desired map units
-            console.log("Length in pixels:", lengthInPixels);
-            // ... (Your map visualization logic here)
+            if (!maps[mapName]) {
+              const canvas = createMapCanvas(mapName);
+              maps[mapName].ctx = canvas.getContext('2d');
+            }
+
+            const canvas = maps[mapName].canvas;
+            const ctx = maps[mapName].ctx;
+
+            // Update canvas dimensions based on map data
+            canvas.width = map_msg.info.width;
+            canvas.height = map_msg.info.height;
+
+            // Clear previous map visualization (optional)
+            clearMapCanvas(mapName);
+
+            for (var y = 0; y < map_msg.info.height; y++) {
+                for (var x = 0; x < map_msg.info.width; x++) {
+                    var index = x + y * map_msg.info.width;
+                    var value = map_msg.data[index];
+                    if (value === 100) {
+                        // Occupied space
+                        ctx.fillStyle = 'black';
+                    } else if (value === 0) {
+                        // Free space
+                        ctx.fillStyle = 'white';
+                    } else {
+                        // Unknown space
+                        ctx.fillStyle = 'gray';
+                    }
+                    ctx.fillRect(x, y, 1, 1);
+                }
+            }
+
+            // ... (Optional) Additional map processing or visualization logic
         });
 
         ros.on('connected', function() {
@@ -48,6 +95,3 @@
     </script>
 </body>
 </html>
-
-
-
