@@ -1,5 +1,6 @@
 var maps = {}; // Dictionary to store maps and their canvas elements
 var canvas, ctx, mapData, scaleX, scaleY;
+var mapName;
 // ROS connection setup (assuming ROSLIB is already included)
 var ros = new ROSLIB.Ros({
   url: 'ws://localhost:9090'  // Replace with your ROS bridge server address
@@ -41,7 +42,7 @@ var pathSubscriber = new ROSLIB.Topic({
 
 
 mapview.subscribe(function(map_msg) {
-  const mapName = mapview.name; // Assuming topic name represents map name
+  mapName = mapview.name; // Assuming topic name represents map name
   console.log(`Received map data for: ${mapName}`);
   mapData = map_msg;
 
@@ -90,19 +91,14 @@ pathSubscriber.subscribe(function(pathMsg) {
   });
 
 function visualizePath(poses) {
-    for (let i = 0; i < poses.length - 1; i++) {
-        const pose1 = poses[i].pose.position;
+    ctx.beginPath();
+    const pose1 = poses[0].pose.position;
+    const imageCoords1 = mapToImageCoordinates(pose1.x, pose1.y);
+    ctx.moveTo(imageCoords1.x, imageCoords1.y);
+
+    for (let i = 1; i < poses.length - 1; i++) {
         const pose2 = poses[i + 1].pose.position;
-        
-        // console.log(`Path Segment ${i+1}:`);
-        // console.log(`Pose 1: (${pose1.x}, ${pose1.y})`);
-        // console.log(`Pose 2: (${pose2.x}, ${pose2.y})`);
-
-        const imageCoords1 = mapToImageCoordinates(pose1.x, pose1.y);
         const imageCoords2 = mapToImageCoordinates(pose2.x, pose2.y);
-
-        ctx.beginPath();
-        ctx.moveTo(imageCoords1.x, imageCoords1.y);
         ctx.lineTo(imageCoords2.x, imageCoords2.y);
         ctx.stroke();
 
