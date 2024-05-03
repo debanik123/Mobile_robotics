@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROS 2 Map Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/easeljs@1/lib/easeljs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/eventemitter2@6/lib/eventemitter2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.min.js"></script>
+</head>
+<body>
+    <h1>ROS 2 Map</h1>
+    <div id="map-container" style="width: 800px; height: 600px;"></div>
+    <script>
+        // ROS connection setup
+        var ros = new ROSLIB.Ros({
+            url: 'ws://localhost:9090'  // Replace with your ROS bridge server address
+        });
+
+        // Map visualization
+        var mapTopic = '/map';
+        var mapview = new ROSLIB.Topic({
+            ros: ros,
+            name: mapTopic,
+            messageType: 'nav_msgs/OccupancyGrid'  // Adjust based on your map message type
+        });
+
+        mapview.subscribe(function(message) {
+            // Handle map data and visualize it using roslibjs functions (refer to roslibjs documentation)
+            console.log('Received map data');
+            // ... (Your map visualization logic here)
+        });
+
+        ros.on('connected', function() {
+            console.log('Connected to ROS server');
+        });
+
+        ros.on('error', function(error) {
+            console.error('Error connecting to ROS server:', error);
+        });
+    </script>
+</body>
+</html>
+
+
+
