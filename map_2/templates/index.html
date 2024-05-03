@@ -58,11 +58,17 @@
             const ctx = maps[mapName].ctx;
 
             // Update canvas dimensions based on map data
-            canvas.width = map_msg.info.width;
-            canvas.height = map_msg.info.height;
+            // canvas.width = map_msg.info.width;
+            // canvas.height = map_msg.info.height;
+
+            canvas.width = 480;
+            canvas.height = 480;
 
             // Clear previous map visualization (optional)
             clearMapCanvas(mapName);
+
+            var scaleX = 480 / map_msg.info.width;
+            var scaleY = 480 / map_msg.info.height;
 
             for (var y = 0; y < map_msg.info.height; y++) {
                 for (var x = 0; x < map_msg.info.width; x++) {
@@ -78,7 +84,8 @@
                         // Unknown space
                         ctx.fillStyle = 'gray';
                     }
-                    ctx.fillRect(x, y, 1, 1);
+                    // ctx.fillRect(x, y, 1, 1);
+                    ctx.fillRect(x * scaleX, y * scaleY, scaleX, scaleY);
                 }
             }
         });
