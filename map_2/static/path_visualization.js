@@ -1,5 +1,5 @@
 var maps = {}; // Dictionary to store maps and their canvas elements
-var canvas, ctx;
+var canvas, ctx, mapData, scaleX, scaleY;
 // ROS connection setup (assuming ROSLIB is already included)
 var ros = new ROSLIB.Ros({
   url: 'ws://localhost:9090'  // Replace with your ROS bridge server address
@@ -43,6 +43,7 @@ var pathSubscriber = new ROSLIB.Topic({
 mapview.subscribe(function(map_msg) {
   const mapName = mapview.name; // Assuming topic name represents map name
   console.log(`Received map data for: ${mapName}`);
+  mapData = map_msg;
 
   if (!maps[mapName]) {
     canvas = createMapCanvas(mapName);
@@ -59,8 +60,8 @@ mapview.subscribe(function(map_msg) {
   // Clear previous map visualization (optional)
   clearMapCanvas(mapName);
 
-  var scaleX = 480 / map_msg.info.width;
-  var scaleY = 480 / map_msg.info.height;
+  scaleX = 480 / map_msg.info.width;
+  scaleY = 480 / map_msg.info.height;
 
   for (var y = 0; y < map_msg.info.height; y++) {
     for (var x = 0; x < map_msg.info.width; x++) {
@@ -92,11 +93,34 @@ function visualizePath(poses) {
     for (let i = 0; i < poses.length - 1; i++) {
         const pose1 = poses[i].pose.position;
         const pose2 = poses[i + 1].pose.position;
+        
         console.log(`Path Segment ${i+1}:`);
         console.log(`Pose 1: (${pose1.x}, ${pose1.y})`);
         console.log(`Pose 2: (${pose2.x}, ${pose2.y})`);
+
+        const imageCoords1 = mapToImageCoordinates(pose1.x, pose1.y);
+        const imageCoords2 = mapToImageCoordinates(pose2.x, pose2.y);
+
+        console.log("Image coordinates1:", imageCoords1);
+        console.log("Image coordinates2:", imageCoords2);
         console.log("--------------------");
     }
+}
+
+
+function mapToImageCoordinates(robot_x, robot_y) {
+    // Extract map information
+    const map_resolution = mapData.info.resolution;
+    const map_origin_x = mapData.info.origin.position.x;
+    const map_origin_y = mapData.info.origin.position.y;
+    const image_width = mapData.info.width;
+    const image_height = mapData.info.height;
+
+    // Convert robot's map coordinates to image coordinates
+    const pixel_x = Math.floor((robot_x - map_origin_x) / map_resolution);
+    const pixel_y = Math.floor(image_height - (robot_y - map_origin_y) / map_resolution);  // Invert y-axis
+
+    return { x: pixel_x*scaleX, y: pixel_y*scaleY};
 }
 
 // ROS connection events
