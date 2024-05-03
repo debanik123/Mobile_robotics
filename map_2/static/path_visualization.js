@@ -1,7 +1,8 @@
 var maps = {}; // Dictionary to store maps and their canvas elements
 var canvas, ctx, mapData, scaleX, scaleY;
 var mapName;
-
+// ros2 run rosbridge_server rosbridge_websocket
+// ros2 launch nav2_bringup tb3_simulation_launch.py slam:=True
 // ROS connection setup (assuming ROSLIB is already included)
 var ros = new ROSLIB.Ros({
   url: 'ws://localhost:9090'  // Replace with your ROS bridge server address
