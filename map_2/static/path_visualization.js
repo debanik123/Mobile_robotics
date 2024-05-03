@@ -106,9 +106,9 @@ function visualizePath(poses) {
         ctx.lineTo(imageCoords2.x, imageCoords2.y);
         ctx.stroke();
 
-        console.log("Image coordinates1:", imageCoords1);
-        console.log("Image coordinates2:", imageCoords2);
-        console.log("--------------------");
+        // console.log("Image coordinates1:", imageCoords1);
+        // console.log("Image coordinates2:", imageCoords2);
+        // console.log("--------------------");
     }
 }
 
