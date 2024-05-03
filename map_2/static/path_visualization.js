@@ -84,7 +84,7 @@ mapview.subscribe(function(map_msg) {
 });
 
 pathSubscriber.subscribe(function(pathMsg) {
-    // ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear previous path
+    ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear previous path
     visualizePath(pathMsg.poses);
     // console.log(pathMsg.poses);
   });
@@ -100,6 +100,11 @@ function visualizePath(poses) {
 
         const imageCoords1 = mapToImageCoordinates(pose1.x, pose1.y);
         const imageCoords2 = mapToImageCoordinates(pose2.x, pose2.y);
+
+        ctx.beginPath();
+        ctx.moveTo(imageCoords1.x, imageCoords1.y);
+        ctx.lineTo(imageCoords2.x, imageCoords2.y);
+        ctx.stroke();
 
         console.log("Image coordinates1:", imageCoords1);
         console.log("Image coordinates2:", imageCoords2);
