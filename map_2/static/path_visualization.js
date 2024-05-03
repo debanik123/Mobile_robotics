@@ -70,24 +70,47 @@ mapview.subscribe(function(map_msg) {
 });
 
 function visualizeMap(map_msg) {
+  var imageData = ctx.createImageData(canvas.width, canvas.height);
+
   for (var y = 0; y < map_msg.info.height; y++) {
     for (var x = 0; x < map_msg.info.width; x++) {
       var index = x + y * map_msg.info.width;
       var value = map_msg.data[index];
+      var val;
       if (value === 100) {
         // Occupied space
-        ctx.fillStyle = 'black';
-      } else if (value === 0) {
+        // ctx.fillStyle = 'black';
+        val = 0;
+      } 
+      else if (value === 0) {
         // Free space
-        ctx.fillStyle = 'white';
-      } else {
+        // ctx.fillStyle = 'white';
+        val = 255;
+      } 
+      else {
         // Unknown space
-        ctx.fillStyle = 'gray';
+        // ctx.fillStyle = 'gray';
+        val = 127;
       }
       // ctx.fillRect(x, y, 1, 1);
-      ctx.fillRect(x * scaleX, y * scaleY, scaleX, scaleY);
+
+      // determine the index into the image data array
+      var i = (x + (y * canvas.width)) * 4;
+      // r
+      imageData.data[i] = val;
+      // g
+      imageData.data[++i] = val;
+      // b
+      imageData.data[++i] = val;
+      // a
+      imageData.data[++i] = 255;
+
+      // ctx.fillRect(x * scaleX, y * scaleY, scaleX, scaleY);
     }
   }
+
+  ctx.putImageData(imageData, 0, 0);
+  
 }
 
 
@@ -135,7 +158,7 @@ function mapToImageCoordinates(robot_x, robot_y) {
     const pixel_x = Math.floor((robot_x - map_origin_x) / map_resolution);
     const pixel_y = Math.floor(image_height - (robot_y - map_origin_y) / map_resolution);  // Invert y-axis
 
-    return { x: pixel_x * scaleX, y: pixel_y * scaleY };
+    return { x: pixel_x, y: pixel_y};
 }
 
 // ROS connection events
