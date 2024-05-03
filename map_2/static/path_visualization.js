@@ -96,13 +96,14 @@ pathSubscriber.subscribe(function(pathMsg) {
   visualizePath(pathMsg.poses);
   visualizeMap(mapData);
     // console.log(pathMsg.poses);
-  });
+});
 
 function visualizePath(poses) {
-    // ctx.strokeStyle = 'green';
-    const darkGreen = '#006400'; // You can adjust the hex code as needed
-    ctx.strokeStyle = darkGreen;
-    ctx.lineWidth = 10;
+    ctx.strokeStyle = 'green';
+    // const darkGreen = '#006400'; // You can adjust the hex code as needed
+    // ctx.strokeStyle = darkGreen;
+    ctx.lineWidth = 5;
+
     for (let i = 0; i < poses.length - 1; i++) {
         const pose1 = poses[i].pose.position;
         const pose2 = poses[i + 1].pose.position;
