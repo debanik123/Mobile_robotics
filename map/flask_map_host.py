@@ -21,7 +21,7 @@ app = Flask(__name__)
 # Global variable to store the latest map data
 # latest_map_data = None
 # latest_transform = None
-p_x = p_y = latest_map_data = latest_transform = path = ros2_node = map_h = map_w = None
+p_x = p_y = latest_map_data = latest_transform = path = ros2_node = map_h = map_w = map_msg= None
 
 cmap_values = ['white', 'black', 'white']
 custom_cmap = ListedColormap(cmap_values)
@@ -68,15 +68,19 @@ class MapSubscriberNode(Node):
         return smoothed_map
     
     def map_callback(self, msg):
-        global latest_map_data, map_h, map_w
+        global latest_map_data, map_h, map_w, map_msg
         # Convert OccupancyGrid message to a dictionary
         # print(msg.info.resolution, msg.info.width, msg.info.height, msg.info.origin.position.x, msg.info.origin.position.y)
+        w = int(msg.info.height*msg.info.resolution)
+        h = int(msg.info.width*msg.info.resolution)
+        # print(msg.info.height, )
         map_data = np.array(msg.data, dtype=np.uint8).reshape((msg.info.height, msg.info.width))
         # map_data = self.smooth_map_border(map_data)
         latest_map_data = map_data
         self.map_data = msg
         map_w = self.map_data.info.width
         map_h = self.map_data.info.height
+        map_msg = msg
 
     
     def update_latest_transform(self):
@@ -131,7 +135,7 @@ class MapSubscriberNode(Node):
 
         # Convert image coordinates to robot's map coordinates
         robot_x = pixel_x * map_resolution + map_origin_x
-        robot_y = (image_height - pixel_y) * map_resolution + map_origin_y  # Invert y-axis
+        robot_y = ((image_height - pixel_y) * map_resolution) + map_origin_y  # Invert y-axis
 
         return robot_x, robot_y
 
@@ -163,7 +167,7 @@ def get_map_image():
                         plt.plot(pose_x, pose_y, 'g.', markersize=3)  # Plot path points
 
             plt.imshow(latest_map_data, cmap=custom_cmap, interpolation='nearest')
-            # plt.axis('off')  # Hide axes
+            plt.axis('off')  # Hide axes
             # Save the image to BytesIO buffer
             buffer = BytesIO()
             plt.savefig(buffer, format='png')
@@ -188,15 +192,15 @@ def map_viewer():
 
 @app.route('/click', methods=['POST'])
 def handle_click():
-    global map_h, map_w
+    global map_h, map_w, map_msg
     data = request.json
     clicked_x = data['x']
     clicked_y = data['y']
     print("Clicked coordinates:", clicked_x, clicked_y)
     
-
     original_width = 640
     original_height = 480
+
     resized_width = map_w
     resized_height = map_h
 
