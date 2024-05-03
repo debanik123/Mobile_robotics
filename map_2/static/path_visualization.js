@@ -6,7 +6,7 @@ var ros = new ROSLIB.Ros({
 });
 
 // Map visualization functions
-function createMapCanvas(mapName) {
+function createCanvas(mapName) {
   const mapContainer = document.getElementById('map-container');
   canvas = document.createElement('canvas');
   canvas.id = `map-canvas-${mapName}`;
@@ -17,7 +17,7 @@ function createMapCanvas(mapName) {
   return canvas;
 }
 
-function clearMapCanvas(mapName) {
+function clearCanvas(mapName) {
   if (maps[mapName]) {
     canvas = maps[mapName].canvas;
     ctx = canvas.getContext('2d');
@@ -46,7 +46,7 @@ mapview.subscribe(function(map_msg) {
   mapData = map_msg;
 
   if (!maps[mapName]) {
-    canvas = createMapCanvas(mapName);
+    canvas = createCanvas(mapName);
     maps[mapName].ctx = canvas.getContext('2d');
   }
 
@@ -58,7 +58,7 @@ mapview.subscribe(function(map_msg) {
   canvas.height = 480;
 
   // Clear previous map visualization (optional)
-  clearMapCanvas(mapName);
+  clearCanvas(mapName);
 
   scaleX = 480 / map_msg.info.width;
   scaleY = 480 / map_msg.info.height;
@@ -84,7 +84,7 @@ mapview.subscribe(function(map_msg) {
 });
 
 pathSubscriber.subscribe(function(pathMsg) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear previous path
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear previous path
     visualizePath(pathMsg.poses);
     // console.log(pathMsg.poses);
   });
@@ -94,9 +94,9 @@ function visualizePath(poses) {
         const pose1 = poses[i].pose.position;
         const pose2 = poses[i + 1].pose.position;
         
-        console.log(`Path Segment ${i+1}:`);
-        console.log(`Pose 1: (${pose1.x}, ${pose1.y})`);
-        console.log(`Pose 2: (${pose2.x}, ${pose2.y})`);
+        // console.log(`Path Segment ${i+1}:`);
+        // console.log(`Pose 1: (${pose1.x}, ${pose1.y})`);
+        // console.log(`Pose 2: (${pose2.x}, ${pose2.y})`);
 
         const imageCoords1 = mapToImageCoordinates(pose1.x, pose1.y);
         const imageCoords2 = mapToImageCoordinates(pose2.x, pose2.y);
