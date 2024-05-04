@@ -1,6 +1,10 @@
 var maps = {}; // Dictionary to store maps and their canvas elements
 var canvas, ctx, mapData, scaleX, scaleY;
 var mapName;
+var p1_x = null;
+var p1_y = null;
+var path_g = null;
+
 // ros2 run rosbridge_server rosbridge_websocket
 // ros2 launch nav2_bringup tb3_simulation_launch.py slam:=True
 // ROS connection setup (assuming ROSLIB is already included)
@@ -94,6 +98,12 @@ function visualizeMap(map_msg) {
           ctx.fillRect(x * scaleX, y * scaleY, scaleX, scaleY);
       }
   }
+
+  if (path_g !== null) 
+  {
+    // drawFilledCircle(ctx, p1_x, p1_y, 5, 'red');
+    visualizePath(path_g);
+  }
 }
 
 function getColorForOccupancy(occupancyValue) {
@@ -108,9 +118,22 @@ function getColorForOccupancy(occupancyValue) {
   }
 }
 
+function drawLine(startX, startY, endX, endY, color) {
+  ctx.beginPath();
+  ctx.moveTo(startX * scaleX, startY * scaleY);
+  ctx.lineTo(endX * scaleX, endY * scaleY);
+  ctx.strokeStyle = color;
+  ctx.stroke();
+}
+
+// Example usage:
+// Draw a line from (2, 2) to (7, 7) with color red
+
+
 pathSubscriber.subscribe(function(pathMsg) { 
-  // ctx.clearRect(0, 0, canvas.width, canvas.height);
-  visualizePath(pathMsg.poses);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  path_g = pathMsg.poses
+  
   visualizeMap(mapData);
     // console.log(pathMsg.poses);
 });
@@ -131,6 +154,10 @@ function visualizePath(poses) {
 
         const imageCoords1 = mapToImageCoordinates(pose1.x, pose1.y);
         const imageCoords2 = mapToImageCoordinates(pose2.x, pose2.y);
+
+        p1_x = parseInt(imageCoords1.x); 
+        p1_y = parseInt(imageCoords1.y);
+        // console.log(`Pose 1: (${p1_x}, ${p1_y})`);
 
         // ctx.beginPath();
         // ctx.moveTo(imageCoords1.x, imageCoords1.y);
