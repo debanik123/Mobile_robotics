@@ -155,15 +155,15 @@ function visualizePath(poses) {
         const imageCoords1 = mapToImageCoordinates(pose1.x, pose1.y);
         const imageCoords2 = mapToImageCoordinates(pose2.x, pose2.y);
 
-        p1_x = parseInt(imageCoords1.x); 
-        p1_y = parseInt(imageCoords1.y);
+        // p1_x = parseInt(imageCoords1.x); 
+        // p1_y = parseInt(imageCoords1.y);
         // console.log(`Pose 1: (${p1_x}, ${p1_y})`);
 
-        // ctx.beginPath();
-        // ctx.moveTo(imageCoords1.x, imageCoords1.y);
-        // ctx.lineTo(imageCoords2.x, imageCoords2.y);
-        // ctx.stroke();
-        drawFilledCircle(ctx, imageCoords1.x, imageCoords1.y, 1, 'red');
+        ctx.beginPath();
+        ctx.moveTo(imageCoords1.x, imageCoords1.y);
+        ctx.lineTo(imageCoords2.x, imageCoords2.y);
+        ctx.stroke();
+        // drawFilledCircle(ctx, imageCoords1.x, imageCoords1.y, 1, 'red');
     }
     
 }
