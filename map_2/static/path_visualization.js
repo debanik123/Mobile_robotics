@@ -42,11 +42,17 @@ var pathSubscriber = new ROSLIB.Topic({
 });
 
 // Create the tf2Subscriber
-var tf2Subscriber = new ROSLIB.Topic({
-  ros: ros,
-  name: 'tf_static',
-  messageType: 'tf2_msgs/msg/TFMessage'
-});
+// var tf2Subscriber = new ROSLIB.Topic({
+//   ros: ros,
+//   name: 'tf_static',
+//   messageType: 'tf2_msgs/msg/TFMessage'
+// });
+
+// const tfClient = new ROSLIB.TFClient({
+//   ros: ros,
+//   angularThrottlingRate: 10,  // Adjust throttling rate for performance (optional)
+//   linearThrottlingRate: 10   // Adjust throttling rate for performance (optional)
+// });
 
 mapview.subscribe(function(map_msg) {
   mapName = mapview.name; // Assuming topic name represents map name
@@ -79,26 +85,28 @@ mapview.subscribe(function(map_msg) {
 
 function visualizeMap(map_msg) {
   for (var y = 0; y < map_msg.info.height; y++) {
-    for (var x = 0; x < map_msg.info.width; x++) {
-      var index = x + y * map_msg.info.width;
-      var value = map_msg.data[index];
-      if (value === 100) {
-        // Occupied space
-        ctx.fillStyle = 'black';
-      } else if (value === 0) {
-        // Free space
-        ctx.fillStyle = 'white';
-      } else {
-        // Unknown space
-        ctx.fillStyle = 'gray';
+      for (var x = 0; x < map_msg.info.width; x++) {
+          var index = x + y * map_msg.info.width;
+          var value = map_msg.data[index];
+          var color = getColorForOccupancy(value);
+          ctx.fillStyle = color;
+          // ctx.fillRect(x, y, 1, 1);
+          ctx.fillRect(x * scaleX, y * scaleY, scaleX, scaleY);
       }
-      // ctx.fillRect(x, y, 1, 1);
-      ctx.fillRect(x * scaleX, y * scaleY, scaleX, scaleY);
-      // ctx.rect(x * scaleX, y * scaleY, scaleX, scaleY);
-    }
   }
 }
 
+function getColorForOccupancy(occupancyValue) {
+  if (occupancyValue === 100) {
+      return 'black'; // Occupied space
+  } else if (occupancyValue === 0) {
+      return 'white'; // Free space
+  } else {
+      // Calculate grayscale color based on occupancy value
+      var colorValue = 255 - (occupancyValue * 255) / 100;
+      return 'rgb(' + colorValue + ',' + colorValue + ',' + colorValue + ')';
+  }
+}
 
 pathSubscriber.subscribe(function(pathMsg) { 
   // ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -150,28 +158,14 @@ function drawFilledCircle(ctx, centerX, centerY, radius, color) {
 // Example usage:
 // Assuming you have a canvas context named ctx
 // and you want to draw a filled circle at coordinates (100, 100) with a radius of 50 and red color
+// tfClient.subscribe('/tf', handleTFMessage);
 
-tf2Subscriber.subscribe(function(tf2Msg) 
-{ 
-  console.log('Received transform:');
-  // ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // for (const transform of msg.transforms) 
-  // {
-  //   // Check if the transform is between map and base_footprint
-  //   if (transform.header.frame_id === 'map' && transform.child_frame_id === 'base_footprint') 
-  //   {
-  //       // Extract translation and rotation
-  //       const translation = transform.transform.translation;
-  //       const rotation = transform.transform.rotation;
+// function handleTFMessage(tfMsg) {
+//   console.log('Received TF message:', tfMsg);
 
-  //       // Log the transform data
-  //       console.log('Received transform:');
-  //       console.log('Translation:', translation);
-  //       console.log('Rotation:', rotation);
-  //   }
-  // }
-    // console.log(pathMsg.poses);
-});
+//   // Access specific transforms from the message (tfMsg.transforms)
+//   // ... your logic to process and visualize the transforms
+// }
 
 function mapToImageCoordinates(robot_x, robot_y) {
     // Extract map information
@@ -185,6 +179,7 @@ function mapToImageCoordinates(robot_x, robot_y) {
     const pixel_x = Math.floor((robot_x - map_origin_x) / map_resolution);
     const pixel_y = Math.floor(image_height - (robot_y - map_origin_y) / map_resolution);  // Invert y-axis
 
+    // return { x: pixel_x, y: pixel_y };
     return { x: pixel_x * scaleX, y: pixel_y * scaleY };
 }
 
