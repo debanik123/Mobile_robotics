@@ -118,18 +118,6 @@ function getColorForOccupancy(occupancyValue) {
   }
 }
 
-function drawLine(startX, startY, endX, endY, color) {
-  ctx.beginPath();
-  ctx.moveTo(startX * scaleX, startY * scaleY);
-  ctx.lineTo(endX * scaleX, endY * scaleY);
-  ctx.strokeStyle = color;
-  ctx.stroke();
-}
-
-// Example usage:
-// Draw a line from (2, 2) to (7, 7) with color red
-
-
 pathSubscriber.subscribe(function(pathMsg) { 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   path_g = pathMsg.poses
@@ -166,20 +154,6 @@ function visualizePath(poses) {
         // drawFilledCircle(ctx, imageCoords1.x, imageCoords1.y, 1, 'red');
     }
     
-}
-
-function drawFilledCircle(ctx, centerX, centerY, radius, color) {
-  // Begin a new path
-  ctx.beginPath();
-  
-  // Create a circle path
-  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-  
-  // Set the fill color
-  ctx.fillStyle = color;
-  
-  // Fill the circle path
-  ctx.fill();
 }
 
 // Example usage:
