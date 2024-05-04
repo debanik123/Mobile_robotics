@@ -46,17 +46,41 @@ var pathSubscriber = new ROSLIB.Topic({
 });
 
 // Create the tf2Subscriber
-// var tf2Subscriber = new ROSLIB.Topic({
-//   ros: ros,
-//   name: 'tf_static',
-//   messageType: 'tf2_msgs/msg/TFMessage'
-// });
+var tf2Subscriber = new ROSLIB.Topic({
+  ros: ros,
+  name: '/tf',
+  messageType: 'tf2_msgs/msg/TFMessage'
+});
 
-// const tfClient = new ROSLIB.TFClient({
-//   ros: ros,
-//   angularThrottlingRate: 10,  // Adjust throttling rate for performance (optional)
-//   linearThrottlingRate: 10   // Adjust throttling rate for performance (optional)
-// });
+tf2Subscriber.subscribe(function(msg) {
+  // Message handling logic here
+  // console.log('Received TF2 message:', msg.transforms);
+
+  for (const transform of msg.transforms) {
+    
+    console.log('Received TF2 message:', transform.header.frame_id);
+    const translation = transform.transform.translation;
+    const rotation = transform.transform.rotation;
+    
+    console.log('Received transform:');
+    console.log('Translation:', translation);
+    console.log('Rotation:', rotation);
+    
+
+  }
+  //   // Check if the transform is between map and base_footprint
+  //   if (transform.header.frame_id === 'map' && transform.child_frame_id === 'base_footprint') {
+  //       // Extract translation and rotation
+        // const translation = transform.transform.translation;
+        // const rotation = transform.transform.rotation;
+
+  //       // Log the transform data
+        // console.log('Received transform:');
+        // console.log('Translation:', translation);
+        // console.log('Rotation:', rotation);
+  //   }
+  // }
+});
 
 mapview.subscribe(function(map_msg) {
   mapName = mapview.name; // Assuming topic name represents map name
