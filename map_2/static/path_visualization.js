@@ -222,7 +222,6 @@ mapContainer.addEventListener('click', function(event) {
   var mouseX = event.clientX - rect.left;
   var mouseY = event.clientY - rect.top;
   addGoalArrow(mouseX, mouseY, 30, 30);
-  
   // Convert canvas coordinates to map coordinates
   var mapCoordinates = imageToMapCoordinates(mouseX/scaleX, mouseY/scaleY);
   // updateGoalArrowPosition(mouseX/scaleX, mouseY/scaleY);
@@ -263,6 +262,13 @@ function imageToMapCoordinates(pixel_x, pixel_y) {
 
 function addGoalArrow(x, y, width, height) {
   var mapContainer = document.getElementById('map-container');
+
+  var existingArrow = document.querySelector('.goal-arrow');
+  if (existingArrow) {
+    existingArrow.remove();
+  }
+
+
   var arrow = document.createElement('img');
   arrow.src = 'static/icons/simplegoal.svg'; // Update the path to the arrow icon SVG file
   arrow.className = 'goal-arrow';
