@@ -1,0 +1,14 @@
+.goal-arrow {
+    width: 20px; /* Adjust as needed */
+    height: 20px; /* Adjust as needed */
+    /* Add other styles as needed */
+}
+
+#goal-icon {
+    position: absolute;
+    width: 20px; /* Adjust as needed */
+    height: 20px; /* Adjust as needed */
+    top: 0;
+    left: 0;
+    z-index: 2; /* Ensure it's above the canvas and arrow */
+}

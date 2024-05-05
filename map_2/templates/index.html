@@ -8,10 +8,14 @@
     <script src="https://cdn.jsdelivr.net/npm/eventemitter2@6/lib/eventemitter2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tf2_websockets@latest/dist/tf2_websockets.min.js"></script>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> -->
+
 </head>
 <body>
     <h1>ROS 2 Map Visualization</h1>
     <div id="map-container"></div>
+    <div id="goal-arrow" src="icons/simplegoal.png"></div>
+    
     <!-- <script src="path_visualization.js"></script> -->
     <script src="{{ url_for('static', filename='path_visualization.js') }}"></script>
 </body>

@@ -221,9 +221,11 @@ mapContainer.addEventListener('click', function(event) {
   var rect = mapContainer.getBoundingClientRect();
   var mouseX = event.clientX - rect.left;
   var mouseY = event.clientY - rect.top;
+  addGoalArrow(mouseX, mouseY, 30, 30);
+  
   // Convert canvas coordinates to map coordinates
   var mapCoordinates = imageToMapCoordinates(mouseX/scaleX, mouseY/scaleY);
-
+  // updateGoalArrowPosition(mouseX/scaleX, mouseY/scaleY);
   // Log the map coordinates
   console.log('Clicked at map coordinates (x:', mapCoordinates.x, ', y:', mapCoordinates.y, ')');
 
@@ -234,7 +236,7 @@ mapContainer.addEventListener('click', function(event) {
   // Call the createGoalPoseWithOrientation function
   var goalPose = createGoalPoseWithOrientation(mapCoordinates.x, mapCoordinates.y, theta);
   console.log(goalPose);
-
+  
   goalPosePublisher.publish(goalPose);
 
   // console.log('Clicked at map coordinates (x:', mouseX, ', y:', mouseY, ')');
@@ -259,6 +261,18 @@ function imageToMapCoordinates(pixel_x, pixel_y) {
   return { x: robot_x, y: robot_y };
 }
 
+function addGoalArrow(x, y, width, height) {
+  var mapContainer = document.getElementById('map-container');
+  var arrow = document.createElement('img');
+  arrow.src = 'static/icons/simplegoal.svg'; // Update the path to the arrow icon SVG file
+  arrow.className = 'goal-arrow';
+  arrow.style.position = 'absolute';
+  arrow.style.left = x + 'px';
+  arrow.style.top = y + 'px';
+  arrow.style.width = width + 'px'; // Set the width of the arrow
+  arrow.style.height = height + 'px'; // Set the height of the arrow
+  mapContainer.appendChild(arrow);
+}
 
 
 function drawFilledCircle(centerX, centerY, radius, color) {
