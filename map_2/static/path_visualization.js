@@ -60,8 +60,10 @@ var robot_poseSubscriber = new ROSLIB.Topic({
 });
 
 robot_poseSubscriber.subscribe(function(message) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   robot_pose = message.pose;
-  // console.log('Received pose:', pose);
+  console.log('Received pose:', robot_pose);
+  visualizeMap(mapData);
 });
 
 
@@ -162,9 +164,10 @@ function visualizePath(poses) {
     ctx.strokeStyle = 'green';
     // const darkGreen = '#006400'; // You can adjust the hex code as needed
     // ctx.strokeStyle = darkGreen;
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 2;
 
     for (let i = 0; i < poses.length - 1; i++) {
+        // ctx.clearRect(0, 0, canvas.width, canvas.height);
         const pose1 = poses[i].pose.position;
         const pose2 = poses[i + 1].pose.position;
         
@@ -183,6 +186,7 @@ function visualizePath(poses) {
         ctx.moveTo(imageCoords1.x, imageCoords1.y);
         ctx.lineTo(imageCoords2.x, imageCoords2.y);
         ctx.stroke();
+        // visualizeMap(mapData);
         // drawFilledCircle(ctx, imageCoords1.x, imageCoords1.y, 1, 'red');
     }
     
