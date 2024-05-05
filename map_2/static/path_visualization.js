@@ -356,7 +356,7 @@ function calculateOrientationQuaternion(upPoseX, upPoseY, downPoseX, downPoseY)
   var yDelta = upPose.y - downPose.y;
 
   // Calculate theta (rotation angle) based on the difference
-  var thetaRadians = Math.atan2(xDelta, yDelta);
+  var thetaRadians = -Math.atan2(xDelta, yDelta);
 
   // Adjust thetaRadians to get the correct orientation
   if (thetaRadians >= 0 && thetaRadians <= Math.PI) {
