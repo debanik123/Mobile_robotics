@@ -53,33 +53,19 @@ var tf2Subscriber = new ROSLIB.Topic({
 });
 
 tf2Subscriber.subscribe(function(msg) {
-  // Message handling logic here
-  // console.log('Received TF2 message:', msg.transforms);
-
+  
   for (const transform of msg.transforms) {
     
-    console.log('Received TF2 message:', transform.header.frame_id);
+    // console.log('Received TF2 message:', transform.header.frame_id);
     const translation = transform.transform.translation;
     const rotation = transform.transform.rotation;
     
-    console.log('Received transform:');
-    console.log('Translation:', translation);
-    console.log('Rotation:', rotation);
+    // console.log('Received transform:');
+    // console.log('Translation:', translation);
+    // console.log('Rotation:', rotation);
     
 
   }
-  //   // Check if the transform is between map and base_footprint
-  //   if (transform.header.frame_id === 'map' && transform.child_frame_id === 'base_footprint') {
-  //       // Extract translation and rotation
-        // const translation = transform.transform.translation;
-        // const rotation = transform.transform.rotation;
-
-  //       // Log the transform data
-        // console.log('Received transform:');
-        // console.log('Translation:', translation);
-        // console.log('Rotation:', rotation);
-  //   }
-  // }
 });
 
 mapview.subscribe(function(map_msg) {
