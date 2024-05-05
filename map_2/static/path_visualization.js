@@ -62,7 +62,7 @@ var robot_poseSubscriber = new ROSLIB.Topic({
 robot_poseSubscriber.subscribe(function(message) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   robot_pose = message.pose;
-  console.log('Received pose:', robot_pose);
+  // console.log('Received pose:', robot_pose);
   visualizeMap(mapData);
 });
 
