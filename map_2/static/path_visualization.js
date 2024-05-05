@@ -230,10 +230,12 @@ mapContainer.addEventListener('click', function(event) {
   // var x = 1.0;
   // var y = 2.0;
   var theta = Math.PI / 4; // Angle in radians (45 degrees)
-  
+
   // Call the createGoalPoseWithOrientation function
   var goalPose = createGoalPoseWithOrientation(mapCoordinates.x, mapCoordinates.y, theta);
   console.log(goalPose);
+
+  goalPosePublisher.publish(goalPose);
 
   // console.log('Clicked at map coordinates (x:', mouseX, ', y:', mouseY, ')');
   
