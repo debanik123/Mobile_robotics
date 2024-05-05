@@ -216,30 +216,32 @@ function mapToImageCoordinates(robot_x, robot_y) {
 }
 
 var mapContainer = document.getElementById('map-container');
-mapContainer.addEventListener('click', function(event) {
-  // Retrieve the mouse click coordinates relative to the mapContainer
+var isDragging = false;
+var startX, startY;
+
+mapContainer.addEventListener('mousedown', function(event) {
+  isDragging = true;
+  var rect = mapContainer.getBoundingClientRect();
+  startX = event.clientX - rect.left;
+  startY = event.clientY - rect.top;
+  console.log('mousedown');
+});
+
+mapContainer.addEventListener('mousemove', function(event) {
+  if (isDragging) {
+    var rect = mapContainer.getBoundingClientRect();
+    var mouseX = event.clientX - rect.left;
+    var mouseY = event.clientY - rect.top;
+  }
+});
+
+mapContainer.addEventListener('mouseup', function(event) {
+  isDragging = false;
   var rect = mapContainer.getBoundingClientRect();
   var mouseX = event.clientX - rect.left;
   var mouseY = event.clientY - rect.top;
-  addGoalArrow(mouseX, mouseY, 30, 30);
-  // Convert canvas coordinates to map coordinates
-  var mapCoordinates = imageToMapCoordinates(mouseX/scaleX, mouseY/scaleY);
-  // updateGoalArrowPosition(mouseX/scaleX, mouseY/scaleY);
-  // Log the map coordinates
-  console.log('Clicked at map coordinates (x:', mapCoordinates.x, ', y:', mapCoordinates.y, ')');
-
-  // var x = 1.0;
-  // var y = 2.0;
-  var theta = Math.PI / 4; // Angle in radians (45 degrees)
-
-  // Call the createGoalPoseWithOrientation function
-  var goalPose = createGoalPoseWithOrientation(mapCoordinates.x, mapCoordinates.y, theta);
-  console.log(goalPose);
-  
-  goalPosePublisher.publish(goalPose);
-
-  // console.log('Clicked at map coordinates (x:', mouseX, ', y:', mouseY, ')');
-  
+  console.log('mouseup');
+  handleMapClick(mouseX, mouseY);
 });
 
 function imageToMapCoordinates(pixel_x, pixel_y) {
@@ -258,6 +260,16 @@ function imageToMapCoordinates(pixel_x, pixel_y) {
   const robot_y = pixel_y * map_resolution + map_origin_y;
 
   return { x: robot_x, y: robot_y };
+}
+
+function handleMapClick(mouseX, mouseY) {
+  var mapCoordinates = imageToMapCoordinates(mouseX / scaleX, mouseY / scaleY);
+  console.log('Clicked at map coordinates (x:', mapCoordinates.x, ', y:', mapCoordinates.y, ')');
+  var theta = Math.PI / 4; // Angle in radians (45 degrees)
+  var goalPose = createGoalPoseWithOrientation(mapCoordinates.x, mapCoordinates.y, theta);
+  console.log(goalPose);
+
+  goalPosePublisher.publish(goalPose);
 }
 
 function addGoalArrow(x, y, width, height) {
