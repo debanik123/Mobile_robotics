@@ -241,6 +241,7 @@ mapContainer.addEventListener('mouseup', function(event) {
   var mouseX = event.clientX - rect.left;
   var mouseY = event.clientY - rect.top;
   console.log('mouseup');
+  addGoalArrow(mouseX, mouseY, 30, 30);
   handleMapClick(mouseX, mouseY);
 });
 
