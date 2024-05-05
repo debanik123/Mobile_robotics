@@ -250,7 +250,7 @@ mapContainer.addEventListener('mouseup', function(event) {
   // Log the calculated orientation quaternion
   console.log('Orientation quaternion:', orientation);
   
-  handleMapClick(startX, startY);
+  handleMapClick(startX, startY, orientation);
 });
 
 function imageToMapCoordinates(pixel_x, pixel_y) {
@@ -271,11 +271,11 @@ function imageToMapCoordinates(pixel_x, pixel_y) {
   return { x: robot_x, y: robot_y };
 }
 
-function handleMapClick(mouseX, mouseY) {
+function handleMapClick(mouseX, mouseY, orientation) {
   var mapCoordinates = imageToMapCoordinates(mouseX / scaleX, mouseY / scaleY);
   console.log('Clicked at map coordinates (x:', mapCoordinates.x, ', y:', mapCoordinates.y, ')');
-  var theta = Math.PI / 4; // Angle in radians (45 degrees)
-  var goalPose = createGoalPoseWithOrientation(mapCoordinates.x, mapCoordinates.y, theta);
+  // var theta = Math.PI / 4; // Angle in radians (45 degrees)
+  var goalPose = createGoalPoseWithOrientation(mapCoordinates.x, mapCoordinates.y, orientation);
   console.log(goalPose);
 
   goalPosePublisher.publish(goalPose);
@@ -323,9 +323,9 @@ function createQuaternion(theta) {
 }
 
 // Function to create and return a goal pose message with position (x, y) and orientation theta
-function createGoalPoseWithOrientation(x, y, theta) {
+function createGoalPoseWithOrientation(x, y, orientation) {
   // Create the quaternion orientation
-  var orientation = createQuaternion(theta);
+  // var orientation = createQuaternion(theta);
 
   // Define the pose data
   var poseMsg = new ROSLIB.Message({
