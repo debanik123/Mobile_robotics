@@ -59,6 +59,13 @@ var robot_poseSubscriber = new ROSLIB.Topic({
   messageType: 'geometry_msgs/PoseStamped'
 });
 
+// Create a ROSLIB.Topic object for publishing
+var goalPosePublisher = new ROSLIB.Topic({
+    ros: ros,
+    name: '/goal_pose',
+    messageType: 'geometry_msgs/PoseStamped'
+});
+
 robot_poseSubscriber.subscribe(function(message) {
   // ctx.clearRect(0, 0, canvas.width, canvas.height);
   robot_pose = message.pose;
@@ -208,16 +215,28 @@ function mapToImageCoordinates(robot_x, robot_y) {
     return { x: pixel_x * scaleX, y: pixel_y * scaleY };
 }
 
+var mapContainer = document.getElementById('map-container');
 mapContainer.addEventListener('click', function(event) {
   // Retrieve the mouse click coordinates relative to the mapContainer
   var rect = mapContainer.getBoundingClientRect();
   var mouseX = event.clientX - rect.left;
   var mouseY = event.clientY - rect.top;
   // Convert canvas coordinates to map coordinates
-  // var mapCoordinates = imageToMapCoordinates(mouseX, mouseY);
+  var mapCoordinates = imageToMapCoordinates(mouseX/scaleX, mouseY/scaleY);
 
   // Log the map coordinates
-  console.log('Clicked at map coordinates (x:', mouseX, ', y:', mouseY, ')');
+  console.log('Clicked at map coordinates (x:', mapCoordinates.x, ', y:', mapCoordinates.y, ')');
+
+  // var x = 1.0;
+  // var y = 2.0;
+  var theta = Math.PI / 4; // Angle in radians (45 degrees)
+  
+  // Call the createGoalPoseWithOrientation function
+  var goalPose = createGoalPoseWithOrientation(mapCoordinates.x, mapCoordinates.y, theta);
+  console.log(goalPose);
+
+  // console.log('Clicked at map coordinates (x:', mouseX, ', y:', mouseY, ')');
+  
 });
 
 function imageToMapCoordinates(pixel_x, pixel_y) {
@@ -232,8 +251,8 @@ function imageToMapCoordinates(pixel_x, pixel_y) {
   pixel_y = image_height - pixel_y;
 
   // Convert image coordinates to robot's map coordinates with scaling factors
-  const robot_x = (pixel_x * scaleX) * map_resolution + map_origin_x;
-  const robot_y = (pixel_y * scaleY) * map_resolution + map_origin_y;
+  const robot_x = pixel_x * map_resolution + map_origin_x;
+  const robot_y = pixel_y * map_resolution + map_origin_y;
 
   return { x: robot_x, y: robot_y };
 }
@@ -246,6 +265,36 @@ function drawFilledCircle(centerX, centerY, radius, color) {
   ctx.fillStyle = color;
   ctx.fill();
 }
+
+function createQuaternion(theta) {
+  var qx = 0.0;
+  var qy = 0.0;
+  var qz = Math.sin(theta / 2);
+  var qw = Math.cos(theta / 2);
+  
+  return { x: qx, y: qy, z: qz, w: qw };
+}
+
+// Function to create and return a goal pose message with position (x, y) and orientation theta
+function createGoalPoseWithOrientation(x, y, theta) {
+  // Create the quaternion orientation
+  var orientation = createQuaternion(theta);
+
+  // Define the pose data
+  var poseMsg = new ROSLIB.Message({
+      header: {
+          stamp: { sec: 0, nanosec: 0 },
+          frame_id: 'map'
+      },
+      pose: {
+          position: { x: x, y: y, z: 0.0 },
+          orientation: orientation
+      }
+  });
+
+  return poseMsg;
+}
+
 
 // ROS connection events
 ros.on('connected', function() {
