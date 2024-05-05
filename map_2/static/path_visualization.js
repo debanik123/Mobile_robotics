@@ -1,11 +1,12 @@
 var maps = {}; // Dictionary to store maps and their canvas elements
-var canvas, ctx, mapData, scaleX, scaleY, startX, startY;
+var canvas, ctx, scaleX, scaleY, startX, startY;
 var mapName;
 var p1_x = null;
 var p1_y = null;
 var path_g = null;
 var robot_pose = null;
 var isDragging = false;
+var mapData = null;
 // ros2 run rosbridge_server rosbridge_websocket
 // ros2 launch nav2_bringup tb3_simulation_launch.py slam:=True
 // ROS connection setup (assuming ROSLIB is already included)
@@ -70,7 +71,11 @@ robot_poseSubscriber.subscribe(function(message) {
   // ctx.clearRect(0, 0, canvas.width, canvas.height);
   robot_pose = message.pose;
   // console.log('Received pose:', robot_pose);
-  visualizeMap(mapData);
+  if (mapData !== null) 
+  {
+    visualizeMap(mapData);
+  }
+  
 });
 
 
