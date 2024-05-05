@@ -1,5 +1,5 @@
 var maps = {}; // Dictionary to store maps and their canvas elements
-var canvas, ctx, scaleX, scaleY, startX, startY;
+var canvas, ctx, scaleX, scaleY, startX, startY, mouseUpPose, mouseDownPose;
 var mapName;
 var p1_x = null;
 var p1_y = null;
@@ -235,19 +235,22 @@ mapContainer.addEventListener('mousemove', function(event) {
     var rect = mapContainer.getBoundingClientRect();
     var mouseX = event.clientX - rect.left;
     var mouseY = event.clientY - rect.top;
-    addGoalArrow(mouseX, mouseY, 30, 30);
+    // addGoalArrow(mouseX, mouseY, 30, 30);
   }
 });
 
 mapContainer.addEventListener('mouseup', function(event) {
   isDragging = false;
   var rect = mapContainer.getBoundingClientRect();
-  // var mouseX = event.clientX - rect.left;
-  // var mouseY = event.clientY - rect.top;
+  var endX = event.clientX - rect.left;
+  var endY = event.clientY - rect.top;
   console.log('mouseup');
+
+  var orientation = calculateOrientationQuaternion(startX, startY, endX, endY);
+  // Log the calculated orientation quaternion
+  console.log('Orientation quaternion:', orientation);
   
   handleMapClick(startX, startY);
-  
 });
 
 function imageToMapCoordinates(pixel_x, pixel_y) {
@@ -286,6 +289,9 @@ function addGoalArrow(x, y, width, height) {
     existingArrow.remove();
   }
 
+  console.log('addGoalArrow', x, y);
+ 
+
 
   var arrow = document.createElement('img');
   arrow.src = 'static/icons/simplegoal.svg'; // Update the path to the arrow icon SVG file
@@ -296,6 +302,7 @@ function addGoalArrow(x, y, width, height) {
   arrow.style.width = width + 'px'; // Set the width of the arrow
   arrow.style.height = height + 'px'; // Set the height of the arrow
   mapContainer.appendChild(arrow);
+  
 }
 
 
@@ -333,6 +340,51 @@ function createGoalPoseWithOrientation(x, y, theta) {
   });
 
   return poseMsg;
+}
+
+function calculateOrientationQuaternion(upPoseX, upPoseY, downPoseX, downPoseY) 
+{
+  // Convert mouse coordinates to map coordinates
+  var upPose = imageToMapCoordinates(upPoseX / scaleX, upPoseY / scaleY);
+  var downPose = imageToMapCoordinates(downPoseX / scaleX, downPoseY / scaleY);
+
+  console.log(`Map upPose coordinates: (${upPose.x}, ${upPose.y})`);
+  console.log(`Map downPose coordinates: (${downPose.x}, ${downPose.y})`);
+
+  // Calculate the difference between map coordinates of upPose and downPose
+  var xDelta = upPose.x - downPose.x;
+  var yDelta = upPose.y - downPose.y;
+
+  // Calculate theta (rotation angle) based on the difference
+  var thetaRadians = Math.atan2(xDelta, yDelta);
+
+  // Adjust thetaRadians to get the correct orientation
+  if (thetaRadians >= 0 && thetaRadians <= Math.PI) {
+      thetaRadians += (3 * Math.PI / 2);
+  } else {
+      thetaRadians -= (Math.PI / 2);
+  }
+
+  // Calculate theta in degrees
+  var thetaDegrees = thetaRadians * (180.0 / Math.PI);
+
+  // Calculate quaternion components
+  var qz = Math.sin(-thetaRadians / 2.0);
+  var qw = Math.cos(-thetaRadians / 2.0);
+
+  // Create the orientation quaternion
+  var orientation = new ROSLIB.Quaternion({
+      x: 0,
+      y: 0,
+      z: qz,
+      w: qw
+  });
+
+  // Log the calculated values
+  // console.log(`Map coordinates: (${mapCoordinates.x}, ${mapCoordinates.y})`);
+  console.log(`xDelta: ${xDelta}, yDelta: ${yDelta}, thetaDegrees: ${thetaDegrees}`);
+
+  return orientation;
 }
 
 
