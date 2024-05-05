@@ -60,7 +60,7 @@ var robot_poseSubscriber = new ROSLIB.Topic({
 });
 
 robot_poseSubscriber.subscribe(function(message) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // ctx.clearRect(0, 0, canvas.width, canvas.height);
   robot_pose = message.pose;
   // console.log('Received pose:', robot_pose);
   visualizeMap(mapData);
@@ -134,7 +134,7 @@ function visualizeMap(map_msg) {
     // var px = robot_pose.position.x;
     // var py = robot_pose.position.y;
     const image_robot_pose = mapToImageCoordinates(robot_pose.position.x, robot_pose.position.y);
-    console.log('image_robot_pose:', image_robot_pose);
+    // console.log('image_robot_pose:', image_robot_pose);
     drawFilledCircle(image_robot_pose.x, image_robot_pose.y, 10, "red");
   }
   
@@ -153,7 +153,7 @@ function getColorForOccupancy(occupancyValue) {
 }
 
 pathSubscriber.subscribe(function(pathMsg) { 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // ctx.clearRect(0, 0, canvas.width, canvas.height);
   path_g = pathMsg.poses
   
   visualizeMap(mapData);
@@ -208,6 +208,18 @@ function mapToImageCoordinates(robot_x, robot_y) {
     return { x: pixel_x * scaleX, y: pixel_y * scaleY };
 }
 
+mapContainer.addEventListener('click', function(event) {
+  // Retrieve the mouse click coordinates relative to the mapContainer
+  var rect = mapContainer.getBoundingClientRect();
+  var mouseX = event.clientX - rect.left;
+  var mouseY = event.clientY - rect.top;
+  // Convert canvas coordinates to map coordinates
+  // var mapCoordinates = imageToMapCoordinates(mouseX, mouseY);
+
+  // Log the map coordinates
+  console.log('Clicked at map coordinates (x:', mouseX, ', y:', mouseY, ')');
+});
+
 function imageToMapCoordinates(pixel_x, pixel_y) {
   // Extract map information
   const map_resolution = mapData.info.resolution;
@@ -219,12 +231,13 @@ function imageToMapCoordinates(pixel_x, pixel_y) {
   // Invert y-axis
   pixel_y = image_height - pixel_y;
 
-  // Convert image coordinates to robot's map coordinates
-  const robot_x = pixel_x * map_resolution + map_origin_x;
-  const robot_y = pixel_y * map_resolution + map_origin_y;
+  // Convert image coordinates to robot's map coordinates with scaling factors
+  const robot_x = (pixel_x * scaleX) * map_resolution + map_origin_x;
+  const robot_y = (pixel_y * scaleY) * map_resolution + map_origin_y;
 
   return { x: robot_x, y: robot_y };
 }
+
 
 
 function drawFilledCircle(centerX, centerY, radius, color) {
