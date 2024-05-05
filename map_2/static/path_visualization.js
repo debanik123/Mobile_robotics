@@ -208,6 +208,24 @@ function mapToImageCoordinates(robot_x, robot_y) {
     return { x: pixel_x * scaleX, y: pixel_y * scaleY };
 }
 
+function imageToMapCoordinates(pixel_x, pixel_y) {
+  // Extract map information
+  const map_resolution = mapData.info.resolution;
+  const map_origin_x = mapData.info.origin.position.x;
+  const map_origin_y = mapData.info.origin.position.y;
+  const image_width = mapData.info.width;
+  const image_height = mapData.info.height;
+
+  // Invert y-axis
+  pixel_y = image_height - pixel_y;
+
+  // Convert image coordinates to robot's map coordinates
+  const robot_x = pixel_x * map_resolution + map_origin_x;
+  const robot_y = pixel_y * map_resolution + map_origin_y;
+
+  return { x: robot_x, y: robot_y };
+}
+
 
 function drawFilledCircle(centerX, centerY, radius, color) {
   ctx.beginPath();
