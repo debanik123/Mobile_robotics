@@ -75,7 +75,7 @@ robot_poseSubscriber.subscribe(function(message) {
   {
     visualizeMap(mapData);
   }
-  
+
 });
 
 
@@ -227,6 +227,7 @@ mapContainer.addEventListener('mousedown', function(event) {
   startX = event.clientX - rect.left;
   startY = event.clientY - rect.top;
   console.log('mousedown');
+  addGoalArrow(startX, startY, 30, 30);
 });
 
 mapContainer.addEventListener('mousemove', function(event) {
@@ -234,17 +235,19 @@ mapContainer.addEventListener('mousemove', function(event) {
     var rect = mapContainer.getBoundingClientRect();
     var mouseX = event.clientX - rect.left;
     var mouseY = event.clientY - rect.top;
+    addGoalArrow(mouseX, mouseY, 30, 30);
   }
 });
 
 mapContainer.addEventListener('mouseup', function(event) {
   isDragging = false;
   var rect = mapContainer.getBoundingClientRect();
-  var mouseX = event.clientX - rect.left;
-  var mouseY = event.clientY - rect.top;
+  // var mouseX = event.clientX - rect.left;
+  // var mouseY = event.clientY - rect.top;
   console.log('mouseup');
-  addGoalArrow(mouseX, mouseY, 30, 30);
-  handleMapClick(mouseX, mouseY);
+  
+  handleMapClick(startX, startY);
+  
 });
 
 function imageToMapCoordinates(pixel_x, pixel_y) {
