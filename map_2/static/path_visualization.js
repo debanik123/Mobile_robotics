@@ -1,11 +1,11 @@
 var maps = {}; // Dictionary to store maps and their canvas elements
-var canvas, ctx, mapData, scaleX, scaleY;
+var canvas, ctx, mapData, scaleX, scaleY, startX, startY;
 var mapName;
 var p1_x = null;
 var p1_y = null;
 var path_g = null;
 var robot_pose = null;
-
+var isDragging = false;
 // ros2 run rosbridge_server rosbridge_websocket
 // ros2 launch nav2_bringup tb3_simulation_launch.py slam:=True
 // ROS connection setup (assuming ROSLIB is already included)
@@ -216,9 +216,6 @@ function mapToImageCoordinates(robot_x, robot_y) {
 }
 
 var mapContainer = document.getElementById('map-container');
-var isDragging = false;
-var startX, startY;
-
 mapContainer.addEventListener('mousedown', function(event) {
   isDragging = true;
   var rect = mapContainer.getBoundingClientRect();
