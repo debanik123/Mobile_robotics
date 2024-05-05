@@ -4,6 +4,7 @@ var mapName;
 var p1_x = null;
 var p1_y = null;
 var path_g = null;
+var robot_pose = null;
 
 // ros2 run rosbridge_server rosbridge_websocket
 // ros2 launch nav2_bringup tb3_simulation_launch.py slam:=True
@@ -59,8 +60,8 @@ var robot_poseSubscriber = new ROSLIB.Topic({
 });
 
 robot_poseSubscriber.subscribe(function(message) {
-  var pose = message.pose;
-  console.log('Received pose:', pose);
+  robot_pose = message.pose;
+  // console.log('Received pose:', pose);
 });
 
 
@@ -126,6 +127,15 @@ function visualizeMap(map_msg) {
     // drawFilledCircle(ctx, p1_x, p1_y, 5, 'red');
     visualizePath(path_g);
   }
+  if (robot_pose !== null) 
+  {
+    // var px = robot_pose.position.x;
+    // var py = robot_pose.position.y;
+    const image_robot_pose = mapToImageCoordinates(robot_pose.position.x, robot_pose.position.y);
+    console.log('image_robot_pose:', image_robot_pose);
+    drawFilledCircle(image_robot_pose.x, image_robot_pose.y, 10, "red");
+  }
+  
 }
 
 function getColorForOccupancy(occupancyValue) {
@@ -178,18 +188,6 @@ function visualizePath(poses) {
     
 }
 
-// Example usage:
-// Assuming you have a canvas context named ctx
-// and you want to draw a filled circle at coordinates (100, 100) with a radius of 50 and red color
-// tfClient.subscribe('/tf', handleTFMessage);
-
-// function handleTFMessage(tfMsg) {
-//   console.log('Received TF message:', tfMsg);
-
-//   // Access specific transforms from the message (tfMsg.transforms)
-//   // ... your logic to process and visualize the transforms
-// }
-
 function mapToImageCoordinates(robot_x, robot_y) {
     // Extract map information
     const map_resolution = mapData.info.resolution;
@@ -204,6 +202,14 @@ function mapToImageCoordinates(robot_x, robot_y) {
 
     // return { x: pixel_x, y: pixel_y };
     return { x: pixel_x * scaleX, y: pixel_y * scaleY };
+}
+
+
+function drawFilledCircle(centerX, centerY, radius, color) {
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill();
 }
 
 // ROS connection events
