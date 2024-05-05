@@ -52,6 +52,18 @@ var tf2Subscriber = new ROSLIB.Topic({
   messageType: 'tf2_msgs/msg/TFMessage'
 });
 
+var robot_poseSubscriber = new ROSLIB.Topic({
+  ros: ros,
+  name: '/robot_pose',
+  messageType: 'geometry_msgs/PoseStamped'
+});
+
+robot_poseSubscriber.subscribe(function(message) {
+  var pose = message.pose;
+  console.log('Received pose:', pose);
+});
+
+
 tf2Subscriber.subscribe(function(msg) {
   
   for (const transform of msg.transforms) {
