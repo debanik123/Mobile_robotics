@@ -113,7 +113,7 @@ mapview.subscribe(function(map_msg) {
   if (!maps[mapName]) {
     canvas = createCanvas(mapName);
     maps[mapName].ctx = canvas.getContext('2d');
-    console.log(`Inside: ${mapName}`);
+    // console.log(`Inside: ${mapName}`);
 
     canvas = maps[mapName].canvas;
     ctx = maps[mapName].ctx;
