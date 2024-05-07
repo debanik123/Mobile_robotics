@@ -256,16 +256,15 @@ mapContainer.addEventListener('mousemove', function(event) {
 		x: start_point.x - clientX,
 		y: start_point.y - clientY,
 	};
+  drawArrow();
 
 });
 
 mapContainer.addEventListener('mouseup', function(event) {
-  
-
   console.log('mouseup');
+  drawArrow();
   var orientation = calculateOrientationQuaternion(start_point.x, start_point.y, delta.x, delta.y);
   handleMapClick(start_point.x, start_point.y, orientation);
-
   start_point = undefined;
 	delta = undefined;
 
@@ -317,38 +316,36 @@ function addGoalArrow(x, y, width, height) {
   console.log('addGoalArrow', x, y);
   
 
-  var arrow = document.createElement('img');
-  arrow.src = 'static/icons/simplegoal.svg'; // Update the path to the arrow icon SVG file
-  arrow.className = 'goal-arrow';
-  arrow.style.position = 'absolute';
-  arrow.style.left = x + 'px';
-  arrow.style.top = y + 'px';
-  arrow.style.width = width + 'px'; // Set the width of the arrow
-  arrow.style.height = height + 'px'; // Set the height of the arrow
-  mapContainer.appendChild(arrow);
-
-  let sprite = new Image();
-  sprite.src = "assets/simplegoal.png";
+  // var arrow = document.createElement('img');
+  // arrow.src = 'static/icons/simplegoal.svg'; // Update the path to the arrow icon SVG file
+  // arrow.className = 'goal-arrow';
+  // arrow.style.position = 'absolute';
+  // arrow.style.left = x + 'px';
+  // arrow.style.top = y + 'px';
+  // arrow.style.width = width + 'px'; // Set the width of the arrow
+  // arrow.style.height = height + 'px'; // Set the height of the arrow
+  // mapContainer.appendChild(arrow);
+  
 
   
 }
 
 function drawArrow() {
-  const wid = canvas.width;
-  const hei = canvas.height;
+  // const wid = canvas.width;
+  // const hei = canvas.height;
 
-  ctx.clearRect(0, 0, wid, hei);
+  // ctx.clearRect(0, 0, wid, hei);
 
-if(delta){
-  let ratio = sprite.naturalHeight/sprite.naturalWidth;
+  if(delta){
+    let ratio = sprite.naturalHeight/sprite.naturalWidth;
 
-  ctx.save();
-  ctx.translate(start_point.x, start_point.y);
-  ctx.scale(1.0, 1.0);
-  ctx.rotate(Math.atan2(-delta.y, -delta.x));
-  ctx.drawImage(sprite, -80, -80*ratio, 160, 160*ratio);
-  ctx.restore();
-}
+    ctx.save();
+    ctx.translate(start_point.x, start_point.y);
+    ctx.scale(1.0, 1.0);
+    ctx.rotate(Math.atan2(-delta.y, -delta.x));
+    ctx.drawImage(sprite, -80, -80*ratio, 160, 160*ratio);
+    ctx.restore();
+  }
 }
 
 
