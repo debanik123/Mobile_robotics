@@ -299,37 +299,7 @@ function handleMapClick(mouseX, mouseY, orientation) {
   goalPosePublisher.publish(goalPose);
 }
 
-function addGoalArrow(x, y, width, height) {
-  var mapContainer = document.getElementById('map-container');
 
-  var existingArrow = document.querySelector('.goal-arrow');
-  if (existingArrow) {
-    existingArrow.remove();
-  }
-
-  mouse_x = x;
-  mouse_y = y;
-  // x = x/scaleX;
-  // y = y/scaleY;
-  // width = width/scaleX;
-  // height = height/scaleY;
-
-  console.log('addGoalArrow', x, y);
-  
-
-  // var arrow = document.createElement('img');
-  // arrow.src = 'static/icons/simplegoal.svg'; // Update the path to the arrow icon SVG file
-  // arrow.className = 'goal-arrow';
-  // arrow.style.position = 'absolute';
-  // arrow.style.left = x + 'px';
-  // arrow.style.top = y + 'px';
-  // arrow.style.width = width + 'px'; // Set the width of the arrow
-  // arrow.style.height = height + 'px'; // Set the height of the arrow
-  // mapContainer.appendChild(arrow);
-  
-
-  
-}
 
 function drawArrow() {
   // const wid = canvas.width;
