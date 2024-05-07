@@ -159,10 +159,11 @@ function visualizeMap(map_msg) {
     drawFilledCircle(image_robot_pose.x, image_robot_pose.y, 10, "red");
   }
 
-  if (mouse_x !== null && mouse_y !== null)
-  {
-    drawFilledCircle(mouse_x, mouse_y, 5, 'blue');
-  }
+  drawArrow();
+  // if (mouse_x !== null && mouse_y !== null)
+  // {
+  //   drawFilledCircle(mouse_x, mouse_y, 5, 'blue');
+  // }
   
 }
 
@@ -256,13 +257,13 @@ mapContainer.addEventListener('mousemove', function(event) {
 		x: start_point.x - clientX,
 		y: start_point.y - clientY,
 	};
-  drawArrow();
+  // drawArrow();
 
 });
 
 mapContainer.addEventListener('mouseup', function(event) {
   console.log('mouseup');
-  drawArrow();
+  // drawArrow();
   var orientation = calculateOrientationQuaternion(start_point.x, start_point.y, delta.x, delta.y);
   handleMapClick(start_point.x, start_point.y, orientation);
   start_point = undefined;
