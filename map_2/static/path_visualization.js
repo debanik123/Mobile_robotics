@@ -15,6 +15,7 @@ let sprite = new Image();
 let start_point = undefined;
 let delta = undefined;
 sprite.src = "static/icons/simplegoal.png";
+// const Quaternion = require('quaternion');
 
 // ros2 run rosbridge_server rosbridge_websocket
 // ros2 launch nav2_bringup tb3_simulation_launch.py slam:=True
@@ -279,7 +280,7 @@ function sendMessage(pos, delta){
 	}
   
 	let yaw = Math.atan2(delta.y, -delta.x);
-	let quat = Quaternion.fromEuler(yaw, 0, 0, 'ZXY');
+	let quat = new Quaternion.fromEuler(yaw, 0, 0, 'ZXY');
 
   var map_pos = imageToMapCoordinates(pos.x / scaleX, pos.y / scaleY);
 	// let map_pos = view.screenToFixed(pos);
@@ -300,7 +301,7 @@ function sendMessage(pos, delta){
 				secs: currentTimeSecs,
       			nsecs: currentTimeNsecs
 			},
-			frame_id: tf.fixed_frame
+			frame_id: 'map'
 		},
 		pose: {
 			position: {
@@ -317,7 +318,7 @@ function sendMessage(pos, delta){
 		}
 	});	
 	publisher.publish(poseMessage);
-	status.setOK();
+	// status.setOK();
 }
 
 function imageToMapCoordinates(pixel_x, pixel_y) {
