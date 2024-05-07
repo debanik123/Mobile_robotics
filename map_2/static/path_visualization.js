@@ -154,7 +154,7 @@ function visualizeMap(map_msg) {
 
   if (mouse_x !== null && mouse_y !== null)
   {
-    drawFilledCircle(mouse_x, mouse_y, 10, 'blue');
+    drawFilledCircle(mouse_x, mouse_y, 5, 'blue');
   }
   
 }
