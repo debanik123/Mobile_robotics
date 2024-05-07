@@ -7,6 +7,8 @@ var path_g = null;
 var robot_pose = null;
 var isDragging = false;
 var mapData = null;
+var mouse_x = null;
+var mouse_y = null;
 // ros2 run rosbridge_server rosbridge_websocket
 // ros2 launch nav2_bringup tb3_simulation_launch.py slam:=True
 // ROS connection setup (assuming ROSLIB is already included)
@@ -149,6 +151,11 @@ function visualizeMap(map_msg) {
     // console.log('image_robot_pose:', image_robot_pose);
     drawFilledCircle(image_robot_pose.x, image_robot_pose.y, 10, "red");
   }
+
+  if (mouse_x !== null && mouse_y !== null)
+  {
+    drawFilledCircle(mouse_x, mouse_y, 10, 'blue');
+  }
   
 }
 
@@ -248,7 +255,7 @@ mapContainer.addEventListener('mouseup', function(event) {
 
   var orientation = calculateOrientationQuaternion(startX, startY, endX, endY);
   // Log the calculated orientation quaternion
-  console.log('Orientation quaternion:', orientation);
+  // console.log('Orientation quaternion:', orientation);
   
   handleMapClick(startX, startY, orientation);
 });
@@ -273,10 +280,10 @@ function imageToMapCoordinates(pixel_x, pixel_y) {
 
 function handleMapClick(mouseX, mouseY, orientation) {
   var mapCoordinates = imageToMapCoordinates(mouseX / scaleX, mouseY / scaleY);
-  console.log('Clicked at map coordinates (x:', mapCoordinates.x, ', y:', mapCoordinates.y, ')');
+  console.log('Clicked at map path coordinates (x:', mouseX / scaleX, ', y:', mouseY / scaleY, ')');
   // var theta = Math.PI / 4; // Angle in radians (45 degrees)
   var goalPose = createGoalPoseWithOrientation(mapCoordinates.x, mapCoordinates.y, orientation);
-  console.log(goalPose);
+  // console.log(goalPose);
 
   goalPosePublisher.publish(goalPose);
 }
@@ -289,9 +296,15 @@ function addGoalArrow(x, y, width, height) {
     existingArrow.remove();
   }
 
-  console.log('addGoalArrow', x, y);
- 
+  mouse_x = x;
+  mouse_y = y;
+  // x = x/scaleX;
+  // y = y/scaleY;
+  // width = width/scaleX;
+  // height = height/scaleY;
 
+  console.log('addGoalArrow', x, y);
+  
 
   var arrow = document.createElement('img');
   arrow.src = 'static/icons/simplegoal.svg'; // Update the path to the arrow icon SVG file
@@ -348,8 +361,8 @@ function calculateOrientationQuaternion(upPoseX, upPoseY, downPoseX, downPoseY)
   var upPose = imageToMapCoordinates(upPoseX / scaleX, upPoseY / scaleY);
   var downPose = imageToMapCoordinates(downPoseX / scaleX, downPoseY / scaleY);
 
-  console.log(`Map upPose coordinates: (${upPose.x}, ${upPose.y})`);
-  console.log(`Map downPose coordinates: (${downPose.x}, ${downPose.y})`);
+  // console.log(`Map upPose coordinates: (${upPose.x}, ${upPose.y})`);
+  // console.log(`Map downPose coordinates: (${downPose.x}, ${downPose.y})`);
 
   // Calculate the difference between map coordinates of upPose and downPose
   var xDelta = upPose.x - downPose.x;
