@@ -263,13 +263,62 @@ mapContainer.addEventListener('mousemove', function(event) {
 
 mapContainer.addEventListener('mouseup', function(event) {
   console.log('mouseup');
-  // drawArrow();
-  var orientation = calculateOrientationQuaternion(start_point.x, start_point.y, delta.x, delta.y);
-  handleMapClick(start_point.x, start_point.y, orientation);
+  sendMessage(start_point, delta);
+  drawArrow();
+  // var orientation = calculateOrientationQuaternion(start_point.x, start_point.y, delta.x, delta.y);
+  // handleMapClick(start_point.x, start_point.y, orientation);
   start_point = undefined;
 	delta = undefined;
 
 });
+
+function sendMessage(pos, delta){
+	if(!pos || !delta){
+		status.setError("Could not send message, pose invalid.");
+		return;
+	}
+  
+	let yaw = Math.atan2(delta.y, -delta.x);
+	let quat = Quaternion.fromEuler(yaw, 0, 0, 'ZXY');
+
+  var map_pos = imageToMapCoordinates(pos.x / scaleX, pos.y / scaleY);
+	// let map_pos = view.screenToFixed(pos);
+
+	const currentTime = new Date();
+	const currentTimeSecs = Math.floor(currentTime.getTime() / 1000);
+	const currentTimeNsecs = (currentTime.getTime() % 1000) * 1e6;
+
+	const publisher = new ROSLIB.Topic({
+		ros: ros,
+    name: '/goal_pose',
+    messageType: 'geometry_msgs/PoseStamped'
+	});
+
+	const poseMessage = new ROSLIB.Message({
+		header: {
+			stamp: {
+				secs: currentTimeSecs,
+      			nsecs: currentTimeNsecs
+			},
+			frame_id: tf.fixed_frame
+		},
+		pose: {
+			position: {
+				x: map_pos.x,
+				y: map_pos.y,
+				z: 0.0
+			},
+			orientation: {
+				x: quat.x,
+				y: quat.y,
+				z: quat.z,
+				w: quat.w
+			}
+		}
+	});	
+	publisher.publish(poseMessage);
+	status.setOK();
+}
 
 function imageToMapCoordinates(pixel_x, pixel_y) {
   // Extract map information
