@@ -9,6 +9,13 @@ var isDragging = false;
 var mapData = null;
 var mouse_x = null;
 var mouse_y = null;
+
+let active = false;
+let sprite = new Image();
+let start_point = undefined;
+let delta = undefined;
+sprite.src = "static/icons/simplegoal.png";
+
 // ros2 run rosbridge_server rosbridge_websocket
 // ros2 launch nav2_bringup tb3_simulation_launch.py slam:=True
 // ROS connection setup (assuming ROSLIB is already included)
@@ -229,35 +236,39 @@ function mapToImageCoordinates(robot_x, robot_y) {
 
 var mapContainer = document.getElementById('map-container');
 mapContainer.addEventListener('mousedown', function(event) {
-  isDragging = true;
   var rect = mapContainer.getBoundingClientRect();
-  startX = event.clientX - rect.left;
-  startY = event.clientY - rect.top;
+  const { clientX, clientY } = event.touches ? event.touches[0] : event;
+	start_point = {
+		x: clientX- rect.left,
+		y: clientY - rect.top
+	};
+
+  isDragging = true;
   console.log('mousedown');
-  addGoalArrow(startX, startY, 30, 30);
+
 });
 
 mapContainer.addEventListener('mousemove', function(event) {
-  if (isDragging) {
-    var rect = mapContainer.getBoundingClientRect();
-    var mouseX = event.clientX - rect.left;
-    var mouseY = event.clientY - rect.top;
-    // addGoalArrow(mouseX, mouseY, 30, 30);
-  }
+  if (start_point === undefined) return;
+
+	const { clientX, clientY } = event.touches ? event.touches[0] : event;
+	delta = {
+		x: start_point.x - clientX,
+		y: start_point.y - clientY,
+	};
+
 });
 
 mapContainer.addEventListener('mouseup', function(event) {
-  isDragging = false;
-  var rect = mapContainer.getBoundingClientRect();
-  var endX = event.clientX - rect.left;
-  var endY = event.clientY - rect.top;
-  console.log('mouseup');
-
-  var orientation = calculateOrientationQuaternion(startX, startY, endX, endY);
-  // Log the calculated orientation quaternion
-  // console.log('Orientation quaternion:', orientation);
   
-  handleMapClick(startX, startY, orientation);
+
+  console.log('mouseup');
+  var orientation = calculateOrientationQuaternion(start_point.x, start_point.y, delta.x, delta.y);
+  handleMapClick(start_point.x, start_point.y, orientation);
+
+  start_point = undefined;
+	delta = undefined;
+
 });
 
 function imageToMapCoordinates(pixel_x, pixel_y) {
@@ -315,7 +326,29 @@ function addGoalArrow(x, y, width, height) {
   arrow.style.width = width + 'px'; // Set the width of the arrow
   arrow.style.height = height + 'px'; // Set the height of the arrow
   mapContainer.appendChild(arrow);
+
+  let sprite = new Image();
+  sprite.src = "assets/simplegoal.png";
+
   
+}
+
+function drawArrow() {
+  const wid = canvas.width;
+  const hei = canvas.height;
+
+  ctx.clearRect(0, 0, wid, hei);
+
+if(delta){
+  let ratio = sprite.naturalHeight/sprite.naturalWidth;
+
+  ctx.save();
+  ctx.translate(start_point.x, start_point.y);
+  ctx.scale(1.0, 1.0);
+  ctx.rotate(Math.atan2(-delta.y, -delta.x));
+  ctx.drawImage(sprite, -80, -80*ratio, 160, 160*ratio);
+  ctx.restore();
+}
 }
 
 
