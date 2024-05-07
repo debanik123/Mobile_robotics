@@ -9,6 +9,8 @@ var isDragging = false;
 var mapData = null;
 var mouse_x = null;
 var mouse_y = null;
+var init_start_point = null;
+var init_delta = null;
 
 let active = false;
 let sprite = new Image();
@@ -161,10 +163,11 @@ function visualizeMap(map_msg) {
   }
 
   drawArrow();
-  // if (mouse_x !== null && mouse_y !== null)
-  // {
-  //   drawFilledCircle(mouse_x, mouse_y, 5, 'blue');
-  // }
+  if (init_start_point !== null && init_delta !== null)
+  {
+    static_drawArrow(init_start_point, init_delta);
+    // drawFilledCircle(mouse_x, mouse_y, 5, 'blue');
+  }
   
 }
 
@@ -247,6 +250,8 @@ mapContainer.addEventListener('mousedown', function(event) {
 
   isDragging = true;
   console.log('mousedown');
+  init_start_point = null;
+  init_delta = null;
 
 });
 
@@ -266,12 +271,26 @@ mapContainer.addEventListener('mouseup', function(event) {
   console.log('mouseup');
   sendMessage(start_point, delta);
   drawArrow();
+  init_start_point = start_point;
+  init_delta = delta;
+  // static_drawArrow(start_point, delta);
   // var orientation = calculateOrientationQuaternion(start_point.x, start_point.y, delta.x, delta.y);
   // handleMapClick(start_point.x, start_point.y, orientation);
   start_point = undefined;
 	delta = undefined;
 
 });
+
+function static_drawArrow(point, delta)
+{
+  let ratio = sprite.naturalHeight/sprite.naturalWidth;
+  ctx.save();
+  ctx.translate(point.x, point.y);
+  ctx.scale(1.0, 1.0);
+  ctx.rotate(Math.atan2(-delta.y, -delta.x));
+  ctx.drawImage(sprite, -80, -80*ratio, 160, 160*ratio);
+  ctx.restore();
+}
 
 function sendMessage(pos, delta){
 	if(!pos || !delta){
