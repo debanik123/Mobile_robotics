@@ -269,7 +269,7 @@ mapContainer.addEventListener('mousemove', function(event) {
 
 mapContainer.addEventListener('mouseup', function(event) {
   console.log('mouseup');
-  sendMessage(start_point, delta);
+  send_nav2_goal_Message(start_point, delta);
   drawArrow();
   init_start_point = start_point;
   init_delta = delta;
@@ -292,7 +292,7 @@ function static_drawArrow(point, delta)
   ctx.restore();
 }
 
-function sendMessage(pos, delta){
+function send_nav2_goal_Message(pos, delta){
 	if(!pos || !delta){
 		status.setError("Could not send message, pose invalid.");
 		return;
