@@ -11,3 +11,9 @@ where:
 - `ω` is the angular velocity of the wheel
 - `rpm` is the revolutions per minute of the wheel
 - `π` is the revolutions per minute of the object
+
+```
+sudo apt install ros-foxy-pcl-ros
+sudo apt install libpcl-dev
+
+```

@@ -7,6 +7,26 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(pcl_ros REQUIRED)
+find_package(pcl_conversions REQUIRED)
+
+add_executable(ndt_mapping_node src/ndt_mapping.cpp)
+
+ament_target_dependencies(ndt_mapping_node
+  rclcpp
+  sensor_msgs
+  nav_msgs
+  pcl_ros
+  pcl_conversions
+)
+
+install(TARGETS
+  ndt_mapping_node
+  DESTINATION lib/${PROJECT_NAME}
+)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
