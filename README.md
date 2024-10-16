@@ -22,6 +22,6 @@ $$omega = RPM×0.1047$$
 
 ### After calculating the angular velocity, we divide by the gear ratio to adjust for the gearing system. The final formula for motor velocity is:
 
-$motorVelocity=\frac{RPM×0.1047}{gear_ratio}$$
+$$motorVelocity=\frac{RPM×0.1047}{gear_ratio}$$
 
 ### gear ratio might be (30:1, 20:1, 60:1, ....)
