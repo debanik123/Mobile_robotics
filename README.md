@@ -8,7 +8,7 @@ $$rpm = \frac{v \cdot 60}{2 \pi r}$$
 where:
 - `v` is the velocity of the wheel
 - `r` is the radius of the wheel
-- `ω` is the angular velocity of the wheel
+- `ω` is the angular velocity (motorVelocity) of the wheel
 - `rpm` is the revolutions per minute of the wheel
 - `π` is the revolutions per minute of the object
 
@@ -16,12 +16,12 @@ where:
 
 ### Step 1: Convert RPM to Angular Velocity
 
-$$angular_velocity= RPM×\frac{2 \pi}{60}$$
+$$omega= RPM×\frac{2 \pi}{60}$$
 or,
-$$angular_velocity = RPM×0.1047
+$$omega = RPM×0.1047
 
 ### After calculating the angular velocity, we divide by the gear ratio to adjust for the gearing system. The final formula for motor velocity is:
 
-$motor_velocity=\frac{RPM×0.1047}{gear_ratio}$$
+$motorVelocity=\frac{RPM×0.1047}{gear_ratio}$$
 
 ### gear ratio might be (30:1, 20:1, 60:1, ....)
