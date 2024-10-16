@@ -1,6 +1,5 @@
-# Mobile_robotics
-Design algorithm for Mobile Robots
 
+## Calculation of Angular Displacement from RPM and Time Interval
 $$v = r \omega$$
 
 $$rpm = \frac{v \cdot 60}{2 \pi r}$$
@@ -11,9 +10,7 @@ where:
 - `ω` is the angular velocity (motorVelocity) of the wheel
 - `rpm` is the revolutions per minute of the wheel
 - `π` is the revolutions per minute of the object
-
-## Calculation of Angular Displacement from RPM and Time Interval
-
+  
 ### Step 1: Convert RPM to Angular Velocity
 To calculate the motor’s angular displacement, we first need to convert the rotational speed from RPM to angular velocity in radians per second.
 
