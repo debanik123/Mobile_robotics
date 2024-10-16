@@ -15,6 +15,9 @@ where:
 ## Calculation of Angular Displacement from RPM and Time Interval
 
 ### Step 1: Convert RPM to Angular Velocity
+To calculate the motor’s angular displacement, we first need to convert the rotational speed from RPM to angular velocity in radians per second.
+
+#### The formula for converting RPM to angular velocity is:
 
 $$omega= RPM×\frac{2 \pi}{60}$$
 or,
@@ -25,3 +28,10 @@ $$omega = RPM×0.1047$$
 $$motorVelocity=\frac{RPM×0.1047}{gearRatio}$$
 
 ### gear ratio might be (30:1, 20:1, 60:1, ....)
+
+
+### Step 2: Calculate Angular Displacement
+Once we have the angular velocity, the next step is to calculate the angular displacement. Angular displacement refers to how far the motor has rotated during a given time interval.
+
+#### The formula for angular displacement is:
+$$theta=ω×Δt$$
