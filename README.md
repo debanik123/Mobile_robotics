@@ -41,8 +41,8 @@ Once we have the angular velocity, the next step is to calculate the angular dis
 $$θ = ω×Δt$$
 
 #### Thus, the formulas for the left and right motor angular displacements are:
-$$left_angularDisplacement = left_motor_velocity×Δt$$
-$$right_angularDisplacement = right_motor_velocity×Δt$$
+$$leftAngularDisplacement = leftMotorVelocity×Δt$$
+$$rightAngularDisplacement = rightMotorVelocity×Δt$$
 
 where:
 - `θ` is the angular displacement
