@@ -1,3 +1,4 @@
+# Forward and Inverser kinematics of mobile robot
 
 ## Calculation of Angular Displacement from RPM and Time Interval
 $$v = r \omega$$
