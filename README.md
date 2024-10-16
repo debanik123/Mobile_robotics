@@ -16,11 +16,12 @@ where:
 
 ### Step 1: Convert RPM to Angular Velocity
 
-$$ angular_velocity= RPM×\frac{2 \pi}{60}$$
+$$angular_velocity= RPM×\frac{2 \pi}{60}$$
 or,
-$$ angular_velocity = RPM×0.1047
+$$angular_velocity = RPM×0.1047
 
-$$ After calculating the angular velocity, we divide by the gear ratio to adjust for the gearing system. The final formula for motor velocity is:
-$ motor_velocity=\frac{RPM×0.1047}{gear_ratio}$$
+### After calculating the angular velocity, we divide by the gear ratio to adjust for the gearing system. The final formula for motor velocity is:
 
-$ gear ratio might be (30:1, 20:1, 60:1, ....)
+$motor_velocity=\frac{RPM×0.1047}{gear_ratio}$$
+
+### gear ratio might be (30:1, 20:1, 60:1, ....)
