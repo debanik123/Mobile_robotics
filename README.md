@@ -34,4 +34,4 @@ $$motorVelocity=\frac{RPM×0.1047}{gearRatio}$$
 Once we have the angular velocity, the next step is to calculate the angular displacement. Angular displacement refers to how far the motor has rotated during a given time interval.
 
 #### The formula for angular displacement is:
-$$theta=ω×Δt$$
+$$θ = ω×Δt$$
