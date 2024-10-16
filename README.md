@@ -27,6 +27,10 @@ $$omega = RPM×0.1047$$
 
 $$motorVelocity=\frac{RPM×0.1047}{gearRatio}$$
 
+##### For the left and right motors, respectively:
+$$LeftmotorVelocity=\frac{LeftRPM×0.1047}{gearRatio}$$
+$$RightmotorVelocity=\frac{RightRPM×0.1047}{gearRatio}$$
+
 ### gear ratio might be (30:1, 20:1, 60:1, ....)
 
 
@@ -35,3 +39,12 @@ Once we have the angular velocity, the next step is to calculate the angular dis
 
 #### The formula for angular displacement is:
 $$θ = ω×Δt$$
+
+#### Thus, the formulas for the left and right motor angular displacements are:
+$$left_angularDisplacement = left_motor_velocity×Δt$$
+$$right_angularDisplacement = right_motor_velocity×Δt$$
+
+where:
+- `θ` is the angular displacement
+- `Δt` represents the time interval (delta_seconds).
+  
